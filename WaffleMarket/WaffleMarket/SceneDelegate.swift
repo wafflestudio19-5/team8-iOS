@@ -22,12 +22,12 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         let homeNavigationController = UINavigationController(rootViewController: HomeRootViewController())
         let chatNavigationController = UINavigationController(rootViewController: ChatRoomListViewController())
         
-        homeNavigationController.tabBarItem = UITabBarItem(title: "Home", image: UIImage(systemName: "house"), selectedImage: UIImage(systemName:"house.fill"))
+        homeNavigationController.tabBarItem = UITabBarItem(title: "Home", image: UIImage(systemName: "house"), selectedImage: UIImage(systemName: "house.fill"))
         chatNavigationController.tabBarItem = UITabBarItem(title: "Chats", image: UIImage(systemName: "message"), selectedImage: UIImage(systemName: "message.fill"))
-        let window = UIWindow(windowScene: windowScene)
         
         tabBarController.viewControllers = [homeNavigationController, chatNavigationController]
         
+        let window = UIWindow(windowScene: windowScene)
         window.rootViewController = tabBarController
         window.makeKeyAndVisible()
         self.window = window

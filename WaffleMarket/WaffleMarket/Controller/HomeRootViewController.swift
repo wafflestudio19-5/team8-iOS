@@ -18,8 +18,6 @@ class HomeRootViewController: UIViewController {
         helloWorldLabel.textAlignment = .center
         self.view.addSubview(helloWorldLabel)
         setHelloWorldLabel()
-        
-        // Do any additional setup after loading the view.
     }
     
     private func setHelloWorldLabel(){
