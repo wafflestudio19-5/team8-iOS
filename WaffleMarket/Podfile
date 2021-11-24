@@ -5,7 +5,11 @@ target 'WaffleMarket' do
   # Comment the next line if you don't want to use dynamic frameworks
   use_frameworks!
   pod 'Kingfisher', '~> 7.1'
-  pod 'Alamofire', '~> 5.4'
-  # Pods for WaffleMarket
+  pod 'RxAlamofire', '~> 6.1'
+  pod 'RxSwift', '~> 6.2'
+  pod 'RxCocoa', '~> 6.2'
+  pod 'RxDataSources', '~> 5.0'
+  pod 'RxRelay', '~> 6.2'
+  pod 'RxGesture', '~> 4.0'
 
 end
