@@ -8,10 +8,11 @@
 
 /* Begin PBXBuildFile section */
 		8CD1849BC625C91E0F039E3D /* Pods_WaffleMarket.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 9392CA6CEFFDF7DE9FA1D4A1 /* Pods_WaffleMarket.framework */; };
+		B744C15F274E8F290083A74C /* HomeRootViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = B744C15E274E8F290083A74C /* HomeRootViewController.swift */; };
+		B744C161274E95360083A74C /* ChatRoomListViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = B744C160274E95360083A74C /* ChatRoomListViewController.swift */; };
 		B74730B2274E8B4800F7EC3B /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = B74730B1274E8B4800F7EC3B /* AppDelegate.swift */; };
 		B74730B4274E8B4800F7EC3B /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = B74730B3274E8B4800F7EC3B /* SceneDelegate.swift */; };
 		B74730B6274E8B4800F7EC3B /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = B74730B5274E8B4800F7EC3B /* ViewController.swift */; };
-		B74730B9274E8B4800F7EC3B /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = B74730B7274E8B4800F7EC3B /* Main.storyboard */; };
 		B74730BC274E8B4800F7EC3B /* WaffleMarket.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = B74730BA274E8B4800F7EC3B /* WaffleMarket.xcdatamodeld */; };
 		B74730BE274E8B4900F7EC3B /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = B74730BD274E8B4900F7EC3B /* Assets.xcassets */; };
 		B74730C1274E8B4900F7EC3B /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = B74730BF274E8B4900F7EC3B /* LaunchScreen.storyboard */; };
@@ -21,11 +22,12 @@
 		91C77851C5293D0690223C46 /* Pods-WaffleMarket.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-WaffleMarket.debug.xcconfig"; path = "Target Support Files/Pods-WaffleMarket/Pods-WaffleMarket.debug.xcconfig"; sourceTree = "<group>"; };
 		9392CA6CEFFDF7DE9FA1D4A1 /* Pods_WaffleMarket.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_WaffleMarket.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		96529C4EC7DA091653C7631D /* Pods-WaffleMarket.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-WaffleMarket.release.xcconfig"; path = "Target Support Files/Pods-WaffleMarket/Pods-WaffleMarket.release.xcconfig"; sourceTree = "<group>"; };
+		B744C15E274E8F290083A74C /* HomeRootViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeRootViewController.swift; sourceTree = "<group>"; };
+		B744C160274E95360083A74C /* ChatRoomListViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChatRoomListViewController.swift; sourceTree = "<group>"; };
 		B74730AE274E8B4800F7EC3B /* WaffleMarket.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = WaffleMarket.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		B74730B1274E8B4800F7EC3B /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		B74730B3274E8B4800F7EC3B /* SceneDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SceneDelegate.swift; sourceTree = "<group>"; };
 		B74730B5274E8B4800F7EC3B /* ViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewController.swift; sourceTree = "<group>"; };
-		B74730B8274E8B4800F7EC3B /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
 		B74730BB274E8B4800F7EC3B /* WaffleMarket.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = WaffleMarket.xcdatamodel; sourceTree = "<group>"; };
 		B74730BD274E8B4900F7EC3B /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		B74730C0274E8B4900F7EC3B /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
@@ -52,6 +54,15 @@
 			name = Frameworks;
 			sourceTree = "<group>";
 		};
+		B744C15D274E8EE90083A74C /* Controller */ = {
+			isa = PBXGroup;
+			children = (
+				B744C15E274E8F290083A74C /* HomeRootViewController.swift */,
+				B744C160274E95360083A74C /* ChatRoomListViewController.swift */,
+			);
+			path = Controller;
+			sourceTree = "<group>";
+		};
 		B74730A5274E8B4800F7EC3B = {
 			isa = PBXGroup;
 			children = (
@@ -73,10 +84,10 @@
 		B74730B0274E8B4800F7EC3B /* WaffleMarket */ = {
 			isa = PBXGroup;
 			children = (
+				B744C15D274E8EE90083A74C /* Controller */,
 				B74730B1274E8B4800F7EC3B /* AppDelegate.swift */,
 				B74730B3274E8B4800F7EC3B /* SceneDelegate.swift */,
 				B74730B5274E8B4800F7EC3B /* ViewController.swift */,
-				B74730B7274E8B4800F7EC3B /* Main.storyboard */,
 				B74730BD274E8B4900F7EC3B /* Assets.xcassets */,
 				B74730BF274E8B4900F7EC3B /* LaunchScreen.storyboard */,
 				B74730C2274E8B4900F7EC3B /* Info.plist */,
@@ -91,7 +102,6 @@
 				91C77851C5293D0690223C46 /* Pods-WaffleMarket.debug.xcconfig */,
 				96529C4EC7DA091653C7631D /* Pods-WaffleMarket.release.xcconfig */,
 			);
-			name = Pods;
 			path = Pods;
 			sourceTree = "<group>";
 		};
@@ -157,7 +167,6 @@
 			files = (
 				B74730C1274E8B4900F7EC3B /* LaunchScreen.storyboard in Resources */,
 				B74730BE274E8B4900F7EC3B /* Assets.xcassets in Resources */,
-				B74730B9274E8B4800F7EC3B /* Main.storyboard in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -210,9 +219,11 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				B744C15F274E8F290083A74C /* HomeRootViewController.swift in Sources */,
 				B74730B6274E8B4800F7EC3B /* ViewController.swift in Sources */,
 				B74730B2274E8B4800F7EC3B /* AppDelegate.swift in Sources */,
 				B74730BC274E8B4800F7EC3B /* WaffleMarket.xcdatamodeld in Sources */,
+				B744C161274E95360083A74C /* ChatRoomListViewController.swift in Sources */,
 				B74730B4274E8B4800F7EC3B /* SceneDelegate.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -220,14 +231,6 @@
 /* End PBXSourcesBuildPhase section */
 
 /* Begin PBXVariantGroup section */
-		B74730B7274E8B4800F7EC3B /* Main.storyboard */ = {
-			isa = PBXVariantGroup;
-			children = (
-				B74730B8274E8B4800F7EC3B /* Base */,
-			);
-			name = Main.storyboard;
-			sourceTree = "<group>";
-		};
 		B74730BF274E8B4900F7EC3B /* LaunchScreen.storyboard */ = {
 			isa = PBXVariantGroup;
 			children = (
@@ -367,7 +370,6 @@
 				INFOPLIST_FILE = WaffleMarket/Info.plist;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchStoryboardName = LaunchScreen;
-				INFOPLIST_KEY_UIMainStoryboardFile = Main;
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
 				LD_RUNPATH_SEARCH_PATHS = (
@@ -395,7 +397,6 @@
 				INFOPLIST_FILE = WaffleMarket/Info.plist;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchStoryboardName = LaunchScreen;
-				INFOPLIST_KEY_UIMainStoryboardFile = Main;
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
 				LD_RUNPATH_SEARCH_PATHS = (

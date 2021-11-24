@@ -1,0 +1,42 @@
+//
+//  ChatRoomListViewController.swift
+//  WaffleMarket
+//
+//  Created by 안재우 on 2021/11/25.
+//
+
+import UIKit
+
+class ChatRoomListViewController: UIViewController {
+    var helloWorldLabel: UILabel!
+    override func viewDidLoad() {
+        super.viewDidLoad()
+        self.view.backgroundColor = .white
+        // Do any additional setup after loading the view.
+        helloWorldLabel = UILabel()
+        helloWorldLabel.text = "Chats!"
+        helloWorldLabel.textAlignment = .center
+        self.view.addSubview(helloWorldLabel)
+        setHelloWorldLabel()
+    }
+    
+    private func setHelloWorldLabel(){
+        helloWorldLabel.translatesAutoresizingMaskIntoConstraints = false
+        helloWorldLabel.centerXAnchor.constraint(equalTo: self.view.centerXAnchor).isActive = true
+        helloWorldLabel.centerYAnchor.constraint(equalTo: self.view.centerYAnchor).isActive = true
+        helloWorldLabel.bottomAnchor.constraint(equalTo: self.view.bottomAnchor).isActive = true
+        helloWorldLabel.widthAnchor.constraint(equalTo: self.view.widthAnchor).isActive = true
+        helloWorldLabel.heightAnchor.constraint(equalTo: self.view.heightAnchor).isActive = true
+    }
+
+    /*
+    // MARK: - Navigation
+
+    // In a storyboard-based application, you will often want to do a little preparation before navigation
+    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
+        // Get the new view controller using segue.destination.
+        // Pass the selected object to the new view controller.
+    }
+    */
+
+}
