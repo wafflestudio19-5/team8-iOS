@@ -23,7 +23,7 @@ class LoginViewController: UIViewController {
                 if let dict = json as? [String:String]{
                     print(dict["ping"] ?? "")
                     let sceneDelegate = UIApplication.shared.connectedScenes.first?.delegate as? SceneDelegate
-                    sceneDelegate?.window?.rootViewController = MainTabBarController()
+                    sceneDelegate?.changeRootViewController(MainTabBarController())
                     
                 }
             } onError: { error in

@@ -649,7 +649,7 @@
 		1D4152AF937209EA47BB7616A39BF48D /* AsMaybe.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = AsMaybe.swift; path = RxSwift/Observables/AsMaybe.swift; sourceTree = "<group>"; };
 		1DB1662D8728FE045512BF1B4013D389 /* Placeholder.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = Placeholder.swift; path = Sources/Image/Placeholder.swift; sourceTree = "<group>"; };
 		1E026B759115D2CCB0056D63ACC66A7A /* RxDataSources.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; path = RxDataSources.debug.xcconfig; sourceTree = "<group>"; };
-		1EA36DD7E17163BA2BC56957AEFA0CED /* Pods-WaffleMarket */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; name = "Pods-WaffleMarket"; path = Pods_WaffleMarket.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		1EA36DD7E17163BA2BC56957AEFA0CED /* Pods_WaffleMarket.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_WaffleMarket.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		1EE55EF730C014810E00647992A982F9 /* Utilities.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = Utilities.swift; path = Sources/Differentiator/Utilities.swift; sourceTree = "<group>"; };
 		1EF34EE334449A42C2CD5F70C48FF6C0 /* NSTextAttachment+Kingfisher.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = "NSTextAttachment+Kingfisher.swift"; path = "Sources/Extensions/NSTextAttachment+Kingfisher.swift"; sourceTree = "<group>"; };
 		1EF3B13AF592ACCCFAB17741739447E6 /* UITapGestureRecognizer+RxGesture.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = "UITapGestureRecognizer+RxGesture.swift"; path = "Pod/Classes/iOS/UITapGestureRecognizer+RxGesture.swift"; sourceTree = "<group>"; };
@@ -894,7 +894,7 @@
 		9C655C9848A251C1C4CFD2C17449D53B /* SharedSequence+Operators.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = "SharedSequence+Operators.swift"; path = "RxCocoa/Traits/SharedSequence/SharedSequence+Operators.swift"; sourceTree = "<group>"; };
 		9CCE3DD36BA4CF1748DE67DE85E33D59 /* PriorityQueue.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = PriorityQueue.swift; path = Platform/DataStructures/PriorityQueue.swift; sourceTree = "<group>"; };
 		9D3E37BF8E03D54AA3A4068AEEA414F5 /* UIStepper+Rx.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = "UIStepper+Rx.swift"; path = "RxCocoa/iOS/UIStepper+Rx.swift"; sourceTree = "<group>"; };
-		9D940727FF8FB9C785EB98E56350EF41 /* Podfile */ = {isa = PBXFileReference; explicitFileType = text.script.ruby; includeInIndex = 1; indentWidth = 2; lastKnownFileType = text; name = Podfile; path = ../Podfile; sourceTree = SOURCE_ROOT; tabWidth = 2; xcLanguageSpecificationIdentifier = xcode.lang.ruby; };
+		9D940727FF8FB9C785EB98E56350EF41 /* Podfile */ = {isa = PBXFileReference; explicitFileType = text.script.ruby; includeInIndex = 1; indentWidth = 2; name = Podfile; path = ../Podfile; sourceTree = SOURCE_ROOT; tabWidth = 2; xcLanguageSpecificationIdentifier = xcode.lang.ruby; };
 		9D9FB49AC8FE9D857D8729CA287B46F3 /* Producer.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = Producer.swift; path = RxSwift/Observables/Producer.swift; sourceTree = "<group>"; };
 		9DFEEAE275170F81831568711DFC36AF /* Observable+Bind.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = "Observable+Bind.swift"; path = "RxCocoa/Common/Observable+Bind.swift"; sourceTree = "<group>"; };
 		9E6C0D5B20DED2CBC8507770E0C4C24F /* GenericRxGestureRecognizerDelegate.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = GenericRxGestureRecognizerDelegate.swift; path = Pod/Classes/GenericRxGestureRecognizerDelegate.swift; sourceTree = "<group>"; };
@@ -1203,7 +1203,6 @@
 				1EE55EF730C014810E00647992A982F9 /* Utilities.swift */,
 				BBA64C1CA93F1C2E4B183976748ECC42 /* Support Files */,
 			);
-			name = Differentiator;
 			path = Differentiator;
 			sourceTree = "<group>";
 		};
@@ -1228,7 +1227,6 @@
 				2D78978F930E60C2C1AB6FE9FE6ACBD2 /* View+RxGesture.swift */,
 				8AB0D65FD8A8FE079F2183BD26A948E9 /* Support Files */,
 			);
-			name = RxGesture;
 			path = RxGesture;
 			sourceTree = "<group>";
 		};
@@ -1242,7 +1240,6 @@
 				A52AF30B46604016BF470FC8B66F861D /* Utils.swift */,
 				C6D1FAE916BC016065CAF44C81305C49 /* Support Files */,
 			);
-			name = RxRelay;
 			path = RxRelay;
 			sourceTree = "<group>";
 		};
@@ -1377,7 +1374,6 @@
 				94408B3D51DC06939DD032BBEB9C07EC /* WKInterfaceImage+Kingfisher.swift */,
 				39FB64A22A7D29C0045FA3E4CD9A4B0F /* Support Files */,
 			);
-			name = Kingfisher;
 			path = Kingfisher;
 			sourceTree = "<group>";
 		};
@@ -1510,7 +1506,6 @@
 				B8034762FD90D8E192386BE440D28261 /* WKWebView+Rx.swift */,
 				783A062567F2FEA30E7D156639BBCA21 /* Support Files */,
 			);
-			name = RxCocoa;
 			path = RxCocoa;
 			sourceTree = "<group>";
 		};
@@ -1707,7 +1702,6 @@
 				8FB3502C4F78543968AE22AC5B761EA1 /* Zip+Collection.swift */,
 				C943C223419D83357C6594AEAFA1EF08 /* Support Files */,
 			);
-			name = RxSwift;
 			path = RxSwift;
 			sourceTree = "<group>";
 		};
@@ -1732,7 +1726,7 @@
 				5D797E9A5C5782CE845840781FA1CC81 /* Alamofire */,
 				D51C3D0C53D23B97B032E3BDD4F82C82 /* Differentiator */,
 				C3F44C782D64D7EB20B61CE3844EBFAD /* Kingfisher */,
-				1EA36DD7E17163BA2BC56957AEFA0CED /* Pods-WaffleMarket */,
+				1EA36DD7E17163BA2BC56957AEFA0CED /* Pods_WaffleMarket.framework */,
 				82F1475AA0F9C33F7EA4A1459305D2AB /* RxAlamofire */,
 				BC432FD48A5932251F1CAFBC4BF74894 /* RxCocoa */,
 				692F92D73EC27270EA9CC9575C3E65B6 /* RxDataSources */,
@@ -1783,7 +1777,6 @@
 				CC876C7CB03025E897A6B2EB3098B75C /* Validation.swift */,
 				58D5E3BE8D5595E484AAB8F764CD5747 /* Support Files */,
 			);
-			name = Alamofire;
 			path = Alamofire;
 			sourceTree = "<group>";
 		};
@@ -1853,7 +1846,6 @@
 				EA4DD84348608264144DDC7CD67E6B25 /* ViewTransition.swift */,
 				7628A3E56209FC52D9F8ECA703CDB4C4 /* Support Files */,
 			);
-			name = RxDataSources;
 			path = RxDataSources;
 			sourceTree = "<group>";
 		};
@@ -1863,7 +1855,6 @@
 				D753FA39F7F7ADFDD9154B31127BEA74 /* Core */,
 				D3008743358E84CC79DB0816083DEAD6 /* Support Files */,
 			);
-			name = RxAlamofire;
 			path = RxAlamofire;
 			sourceTree = "<group>";
 		};
@@ -2189,7 +2180,7 @@
 			);
 			name = "Pods-WaffleMarket";
 			productName = Pods_WaffleMarket;
-			productReference = 1EA36DD7E17163BA2BC56957AEFA0CED /* Pods-WaffleMarket */;
+			productReference = 1EA36DD7E17163BA2BC56957AEFA0CED /* Pods_WaffleMarket.framework */;
 			productType = "com.apple.product-type.framework";
 		};
 /* End PBXNativeTarget section */
