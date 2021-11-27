@@ -19,7 +19,7 @@ class LoginViewController: UIViewController {
         loginBtn.setTitle("Test Login", for: .normal)
         
         loginBtn.rx.tap.bind{
-            RxAlamofire.requestJSON(.get, "http://127.0.0.1:8000/api/v1/ping").subscribe { response, json in
+            WaffleAPI.ping().subscribe { response, json in
                 if let dict = json as? [String:String]{
                     print(dict["ping"] ?? "")
                     let sceneDelegate = UIApplication.shared.connectedScenes.first?.delegate as? SceneDelegate

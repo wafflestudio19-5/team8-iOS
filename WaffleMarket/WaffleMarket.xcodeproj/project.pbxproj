@@ -17,6 +17,7 @@
 		B74730C1274E8B4900F7EC3B /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = B74730BF274E8B4900F7EC3B /* LaunchScreen.storyboard */; };
 		B7B90D8D2751D7290024DD41 /* MainTabBarController.swift in Sources */ = {isa = PBXBuildFile; fileRef = B7B90D8C2751D7290024DD41 /* MainTabBarController.swift */; };
 		B7B90D8F2751D86F0024DD41 /* LoginViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = B7B90D8E2751D86F0024DD41 /* LoginViewController.swift */; };
+		B7B90D922751DB4B0024DD41 /* WaffleAPI.swift in Sources */ = {isa = PBXBuildFile; fileRef = B7B90D912751DB4B0024DD41 /* WaffleAPI.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -34,6 +35,7 @@
 		B74730C2274E8B4900F7EC3B /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		B7B90D8C2751D7290024DD41 /* MainTabBarController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MainTabBarController.swift; sourceTree = "<group>"; };
 		B7B90D8E2751D86F0024DD41 /* LoginViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoginViewController.swift; sourceTree = "<group>"; };
+		B7B90D912751DB4B0024DD41 /* WaffleAPI.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WaffleAPI.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -88,6 +90,7 @@
 		B74730B0274E8B4800F7EC3B /* WaffleMarket */ = {
 			isa = PBXGroup;
 			children = (
+				B7B90D902751DB2A0024DD41 /* Network */,
 				B744C15D274E8EE90083A74C /* Controller */,
 				B74730B1274E8B4800F7EC3B /* AppDelegate.swift */,
 				B74730B3274E8B4800F7EC3B /* SceneDelegate.swift */,
@@ -97,6 +100,14 @@
 				B74730BA274E8B4800F7EC3B /* WaffleMarket.xcdatamodeld */,
 			);
 			path = WaffleMarket;
+			sourceTree = "<group>";
+		};
+		B7B90D902751DB2A0024DD41 /* Network */ = {
+			isa = PBXGroup;
+			children = (
+				B7B90D912751DB4B0024DD41 /* WaffleAPI.swift */,
+			);
+			path = Network;
 			sourceTree = "<group>";
 		};
 		D73766856443BC908E499503 /* Pods */ = {
@@ -223,6 +234,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				B7B90D8F2751D86F0024DD41 /* LoginViewController.swift in Sources */,
+				B7B90D922751DB4B0024DD41 /* WaffleAPI.swift in Sources */,
 				B744C15F274E8F290083A74C /* HomeViewController.swift in Sources */,
 				B74730B2274E8B4800F7EC3B /* AppDelegate.swift in Sources */,
 				B7B90D8D2751D7290024DD41 /* MainTabBarController.swift in Sources */,
