@@ -35,7 +35,7 @@ class LoginViewController: UIViewController {
                 }
             }.disposed(by: self.disposeBag)
 
-        }
+        }.disposed(by: disposeBag)
         self.view.addSubview(loginBtn)
         setLoginBtn()
         
