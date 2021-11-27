@@ -15,6 +15,7 @@
 		B74730BC274E8B4800F7EC3B /* WaffleMarket.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = B74730BA274E8B4800F7EC3B /* WaffleMarket.xcdatamodeld */; };
 		B74730BE274E8B4900F7EC3B /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = B74730BD274E8B4900F7EC3B /* Assets.xcassets */; };
 		B74730C1274E8B4900F7EC3B /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = B74730BF274E8B4900F7EC3B /* LaunchScreen.storyboard */; };
+		B7B90D8D2751D7290024DD41 /* MainTabBarController.swift in Sources */ = {isa = PBXBuildFile; fileRef = B7B90D8C2751D7290024DD41 /* MainTabBarController.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -30,6 +31,7 @@
 		B74730BD274E8B4900F7EC3B /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		B74730C0274E8B4900F7EC3B /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		B74730C2274E8B4900F7EC3B /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		B7B90D8C2751D7290024DD41 /* MainTabBarController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MainTabBarController.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -57,6 +59,7 @@
 			children = (
 				B744C15E274E8F290083A74C /* HomeRootViewController.swift */,
 				B744C160274E95360083A74C /* ChatRoomListViewController.swift */,
+				B7B90D8C2751D7290024DD41 /* MainTabBarController.swift */,
 			);
 			path = Controller;
 			sourceTree = "<group>";
@@ -218,6 +221,7 @@
 			files = (
 				B744C15F274E8F290083A74C /* HomeRootViewController.swift in Sources */,
 				B74730B2274E8B4800F7EC3B /* AppDelegate.swift in Sources */,
+				B7B90D8D2751D7290024DD41 /* MainTabBarController.swift in Sources */,
 				B74730BC274E8B4800F7EC3B /* WaffleMarket.xcdatamodeld in Sources */,
 				B744C161274E95360083A74C /* ChatRoomListViewController.swift in Sources */,
 				B74730B4274E8B4800F7EC3B /* SceneDelegate.swift in Sources */,
