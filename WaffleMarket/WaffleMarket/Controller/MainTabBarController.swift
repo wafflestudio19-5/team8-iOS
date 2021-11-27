@@ -12,7 +12,7 @@ class MainTabBarController: UITabBarController, UITabBarControllerDelegate {
     override func viewDidLoad() {
         super.viewDidLoad()
 
-        let homeNavigationController = UINavigationController(rootViewController: HomeRootViewController())
+        let homeNavigationController = UINavigationController(rootViewController: HomeViewController())
         let chatNavigationController = UINavigationController(rootViewController: ChatRoomListViewController())
         
         homeNavigationController.tabBarItem = UITabBarItem(title: "Home", image: UIImage(systemName: "house"), selectedImage: UIImage(systemName: "house.fill"))

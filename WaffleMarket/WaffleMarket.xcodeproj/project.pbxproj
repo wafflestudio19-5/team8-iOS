@@ -8,7 +8,7 @@
 
 /* Begin PBXBuildFile section */
 		8CD1849BC625C91E0F039E3D /* Pods_WaffleMarket.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 9392CA6CEFFDF7DE9FA1D4A1 /* Pods_WaffleMarket.framework */; };
-		B744C15F274E8F290083A74C /* HomeRootViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = B744C15E274E8F290083A74C /* HomeRootViewController.swift */; };
+		B744C15F274E8F290083A74C /* HomeViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = B744C15E274E8F290083A74C /* HomeViewController.swift */; };
 		B744C161274E95360083A74C /* ChatRoomListViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = B744C160274E95360083A74C /* ChatRoomListViewController.swift */; };
 		B74730B2274E8B4800F7EC3B /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = B74730B1274E8B4800F7EC3B /* AppDelegate.swift */; };
 		B74730B4274E8B4800F7EC3B /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = B74730B3274E8B4800F7EC3B /* SceneDelegate.swift */; };
@@ -22,7 +22,7 @@
 		91C77851C5293D0690223C46 /* Pods-WaffleMarket.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-WaffleMarket.debug.xcconfig"; path = "Target Support Files/Pods-WaffleMarket/Pods-WaffleMarket.debug.xcconfig"; sourceTree = "<group>"; };
 		9392CA6CEFFDF7DE9FA1D4A1 /* Pods_WaffleMarket.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_WaffleMarket.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		96529C4EC7DA091653C7631D /* Pods-WaffleMarket.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-WaffleMarket.release.xcconfig"; path = "Target Support Files/Pods-WaffleMarket/Pods-WaffleMarket.release.xcconfig"; sourceTree = "<group>"; };
-		B744C15E274E8F290083A74C /* HomeRootViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeRootViewController.swift; sourceTree = "<group>"; };
+		B744C15E274E8F290083A74C /* HomeViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeViewController.swift; sourceTree = "<group>"; };
 		B744C160274E95360083A74C /* ChatRoomListViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChatRoomListViewController.swift; sourceTree = "<group>"; };
 		B74730AE274E8B4800F7EC3B /* WaffleMarket.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = WaffleMarket.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		B74730B1274E8B4800F7EC3B /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
@@ -57,7 +57,7 @@
 		B744C15D274E8EE90083A74C /* Controller */ = {
 			isa = PBXGroup;
 			children = (
-				B744C15E274E8F290083A74C /* HomeRootViewController.swift */,
+				B744C15E274E8F290083A74C /* HomeViewController.swift */,
 				B744C160274E95360083A74C /* ChatRoomListViewController.swift */,
 				B7B90D8C2751D7290024DD41 /* MainTabBarController.swift */,
 			);
@@ -219,7 +219,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				B744C15F274E8F290083A74C /* HomeRootViewController.swift in Sources */,
+				B744C15F274E8F290083A74C /* HomeViewController.swift in Sources */,
 				B74730B2274E8B4800F7EC3B /* AppDelegate.swift in Sources */,
 				B7B90D8D2751D7290024DD41 /* MainTabBarController.swift in Sources */,
 				B74730BC274E8B4800F7EC3B /* WaffleMarket.xcdatamodeld in Sources */,
