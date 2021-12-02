@@ -7,7 +7,7 @@
 
 import UIKit
 
-class HomeRootViewController: UIViewController {
+class HomeViewController: UIViewController {
     var helloWorldLabel: UILabel!
     override func viewDidLoad() {
         super.viewDidLoad()

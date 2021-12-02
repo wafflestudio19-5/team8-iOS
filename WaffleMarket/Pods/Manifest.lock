@@ -2,6 +2,11 @@ PODS:
   - Alamofire (5.4.4)
   - Differentiator (5.0.0)
   - Kingfisher (7.1.1)
+  - Moya/Core (15.0.0):
+    - Alamofire (~> 5.0)
+  - Moya/RxSwift (15.0.0):
+    - Moya/Core
+    - RxSwift (~> 6.0)
   - RxAlamofire (6.1.1):
     - RxAlamofire/Core (= 6.1.1)
   - RxAlamofire/Core (6.1.1):
@@ -23,6 +28,7 @@ PODS:
 
 DEPENDENCIES:
   - Kingfisher (~> 7.1)
+  - Moya/RxSwift (~> 15.0)
   - RxAlamofire (~> 6.1)
   - RxCocoa (~> 6.2)
   - RxDataSources (~> 5.0)
@@ -35,6 +41,7 @@ SPEC REPOS:
     - Alamofire
     - Differentiator
     - Kingfisher
+    - Moya
     - RxAlamofire
     - RxCocoa
     - RxDataSources
@@ -46,6 +53,7 @@ SPEC CHECKSUMS:
   Alamofire: f3b09a368f1582ab751b3fff5460276e0d2cf5c9
   Differentiator: e8497ceab83c1b10ca233716d547b9af21b9344d
   Kingfisher: f738f9c4a3415823b8e2985d10aa2d6a9f37bc4d
+  Moya: 138f0573e53411fb3dc17016add0b748dfbd78ee
   RxAlamofire: beb75a1c452d0de225651db4903f5d29d034a620
   RxCocoa: 4baf94bb35f2c0ab31bc0cb9f1900155f646ba42
   RxDataSources: aa47cc1ed6c500fa0dfecac5c979b723542d79cf
@@ -53,6 +61,6 @@ SPEC CHECKSUMS:
   RxRelay: e72dbfd157807478401ef1982e1c61c945c94b2f
   RxSwift: d356ab7bee873611322f134c5f9ef379fa183d8f
 
-PODFILE CHECKSUM: 67c29a27a610cacac68ecb0fa954155eab70c4ac
+PODFILE CHECKSUM: 56a9f7ccd3e2f77f841c7df7677bb7f5d8b981f8
 
 COCOAPODS: 1.11.2
