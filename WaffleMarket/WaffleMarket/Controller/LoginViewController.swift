@@ -19,14 +19,14 @@ class LoginViewController: UIViewController {
         loginBtn.setTitle("Test Login", for: .normal)
         
         loginBtn.rx.tap.bind{
-            WaffleAPI.ping().subscribe { response, json in
-                if let dict = json as? [String:String]{
+            WaffleAPI.ping().subscribe { response in
+                if let dict = try? response.mapJSON() as? [String:String]{
                     print(dict["ping"] ?? "")
                     let sceneDelegate = UIApplication.shared.connectedScenes.first?.delegate as? SceneDelegate
                     sceneDelegate?.changeRootViewController(MainTabBarController())
                     
                 }
-            } onError: { error in
+            } onFailure: { error in
                 DispatchQueue.main.async {
                     let alert = UIAlertController(title: "Error", message: error.localizedDescription, preferredStyle: .alert)
                     let alertOKAction = UIAlertAction(title: "OK", style: .default)
