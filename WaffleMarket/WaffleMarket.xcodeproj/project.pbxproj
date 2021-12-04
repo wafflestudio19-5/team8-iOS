@@ -15,6 +15,7 @@
 		B74730BC274E8B4800F7EC3B /* WaffleMarket.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = B74730BA274E8B4800F7EC3B /* WaffleMarket.xcdatamodeld */; };
 		B74730BE274E8B4900F7EC3B /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = B74730BD274E8B4900F7EC3B /* Assets.xcassets */; };
 		B74730C1274E8B4900F7EC3B /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = B74730BF274E8B4900F7EC3B /* LaunchScreen.storyboard */; };
+		B787A8B5275B3CBE003B5A5E /* GoogleLogin.swift in Sources */ = {isa = PBXBuildFile; fileRef = B787A8B4275B3CBE003B5A5E /* GoogleLogin.swift */; };
 		B7B90D8D2751D7290024DD41 /* MainTabBarController.swift in Sources */ = {isa = PBXBuildFile; fileRef = B7B90D8C2751D7290024DD41 /* MainTabBarController.swift */; };
 		B7B90D8F2751D86F0024DD41 /* LoginViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = B7B90D8E2751D86F0024DD41 /* LoginViewController.swift */; };
 		B7B90D922751DB4B0024DD41 /* WaffleAPI.swift in Sources */ = {isa = PBXBuildFile; fileRef = B7B90D912751DB4B0024DD41 /* WaffleAPI.swift */; };
@@ -33,6 +34,7 @@
 		B74730BD274E8B4900F7EC3B /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		B74730C0274E8B4900F7EC3B /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		B74730C2274E8B4900F7EC3B /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		B787A8B4275B3CBE003B5A5E /* GoogleLogin.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GoogleLogin.swift; sourceTree = "<group>"; };
 		B7B90D8C2751D7290024DD41 /* MainTabBarController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MainTabBarController.swift; sourceTree = "<group>"; };
 		B7B90D8E2751D86F0024DD41 /* LoginViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoginViewController.swift; sourceTree = "<group>"; };
 		B7B90D912751DB4B0024DD41 /* WaffleAPI.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WaffleAPI.swift; sourceTree = "<group>"; };
@@ -106,6 +108,7 @@
 			isa = PBXGroup;
 			children = (
 				B7B90D912751DB4B0024DD41 /* WaffleAPI.swift */,
+				B787A8B4275B3CBE003B5A5E /* GoogleLogin.swift */,
 			);
 			path = Network;
 			sourceTree = "<group>";
@@ -241,6 +244,7 @@
 				B74730BC274E8B4800F7EC3B /* WaffleMarket.xcdatamodeld in Sources */,
 				B744C161274E95360083A74C /* ChatRoomListViewController.swift in Sources */,
 				B74730B4274E8B4800F7EC3B /* SceneDelegate.swift in Sources */,
+				B787A8B5275B3CBE003B5A5E /* GoogleLogin.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

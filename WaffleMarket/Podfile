@@ -12,4 +12,5 @@ target 'WaffleMarket' do
   pod 'RxRelay', '~> 6.2'
   pod 'RxGesture', '~> 4.0'
   pod 'Moya/RxSwift', '~> 15.0'
+  pod 'GoogleSignIn'
 end
