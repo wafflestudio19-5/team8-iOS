@@ -11,16 +11,19 @@ import RxAlamofire
 import Moya
 enum WaffleService{
     case ping
+    case googleLogin(idToken: String)
 }
 extension WaffleService: TargetType{
     var baseURL: URL {
-        URL(string: "http://127.0.0.1:8000/api/v1")!
+        URL(string: "ec2-54-180-144-124.ap-northeast-2.compute.amazonaws.com")! // 54.180.144.124
     }
     
     var path: String {
         switch self {
         case .ping:
             return "/ping"
+        case .googleLogin(_):
+            return "/google-login-test" // MARK: change later
         }
     }
     
@@ -28,6 +31,8 @@ extension WaffleService: TargetType{
         switch self {
         case .ping:
             return .get
+        case .googleLogin:
+            return .post
         }
     }
     
@@ -36,6 +41,8 @@ extension WaffleService: TargetType{
         switch self {
         case .ping:
             return .requestPlain
+        case let .googleLogin(idToken):
+            return .requestJSONEncodable(idToken)
         }
     }
     
@@ -49,6 +56,10 @@ class WaffleAPI{
 
     static func ping() -> Single<Response> {
         return provider.rx.request(.ping)
+    }
+    
+    static func googleLogin(idToken: String) -> Single<Response> {
+        return provider.rx.request(.googleLogin(idToken: idToken))
     }
 }
 

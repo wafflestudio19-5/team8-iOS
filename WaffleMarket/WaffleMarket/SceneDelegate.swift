@@ -6,6 +6,7 @@
 //
 
 import UIKit
+import GoogleSignIn
 class SceneDelegate: UIResponder, UIWindowSceneDelegate {
 
     var window: UIWindow?
@@ -16,16 +17,30 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         // If using a storyboard, the `window` property will automatically be initialized and attached to the scene.
         // This delegate does not imply the connecting scene or session are new (see `application:configurationForConnectingSceneSession` instead).
         guard let windowScene = (scene as? UIWindowScene) else { return }
-        
-        let window = UIWindow(windowScene: windowScene)
-        let hasLoginData = false
-        if hasLoginData {
-            window.rootViewController = MainTabBarController()
-        } else {
-            window.rootViewController = LoginViewController()
+    
+        self.window = UIWindow(windowScene: windowScene)
+        if GIDSignIn.sharedInstance.hasPreviousSignIn() {
+            GIDSignIn.sharedInstance.restorePreviousSignIn { user, error in
+                if error != nil || user == nil {
+                    // signed-out
+                    self.presentRootViewController(false)
+                } else {
+                    // signed-in
+                    self.presentRootViewController(true)
+                }
+            }
+        } else { // MARK: check built-in login
+            self.presentRootViewController(false)
         }
+    }
+    
+    
+    func presentRootViewController(_ isLoggedIn: Bool){
+        guard let window = window else {
+            return
+        }
+        window.rootViewController = isLoggedIn ? MainTabBarController() : LoginViewController()
         window.makeKeyAndVisible()
-        self.window = window
     }
 
     func changeRootViewController(_ vc: UIViewController, animated: Bool = true){
