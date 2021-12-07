@@ -11,12 +11,19 @@ import RxCocoa
 import RxAlamofire
 
 class LoginViewController: UIViewController {
+    
+    var waffleLogoLabel: UILabel = UILabel()
+    var welcomeLabel: UILabel! = UILabel()
     var loginBtn = UIButton(type: .system)
+    var idField: UITextField = UITextField()
+    var pwField: UITextField = UITextField()
+    var signUpBtn = UIButton(type: .system)
+    
     let disposeBag = DisposeBag()
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         self.view.backgroundColor = .white
-        loginBtn.setTitle("Test Login", for: .normal)
         
         loginBtn.rx.tap.bind{
             WaffleAPI.ping().subscribe { response in
@@ -36,15 +43,84 @@ class LoginViewController: UIViewController {
             }.disposed(by: self.disposeBag)
 
         }.disposed(by: disposeBag)
+        
+        self.view.addSubview(waffleLogoLabel)
+        setWaffleLogoLabel()
+        self.view.addSubview(welcomeLabel)
+        setWelcomeLabel()
+        self.view.addSubview(idField)
+        setIdField()
+        self.view.addSubview(pwField)
+        setPwField()
         self.view.addSubview(loginBtn)
         setLoginBtn()
+        self.view.addSubview(signUpBtn)
+        setSignUpBtn()
         
         // Do any additional setup after loading the view.
     }
+    
+    private func setWaffleLogoLabel(){
+        waffleLogoLabel.translatesAutoresizingMaskIntoConstraints = false
+        waffleLogoLabel.centerXAnchor.constraint(equalTo: self.view.centerXAnchor).isActive = true
+        waffleLogoLabel.topAnchor.constraint(equalTo: self.view.topAnchor, constant: 200).isActive = true
+        
+        waffleLogoLabel.text = "🧇"
+        waffleLogoLabel.font = .systemFont(ofSize: 100)
+    }
+    
+    private func setWelcomeLabel(){
+        welcomeLabel.translatesAutoresizingMaskIntoConstraints = false
+        welcomeLabel.centerXAnchor.constraint(equalTo: self.view.centerXAnchor).isActive = true
+        welcomeLabel.topAnchor.constraint(equalTo: waffleLogoLabel.bottomAnchor, constant: 30).isActive = true
+        
+        welcomeLabel.text = "당신 근처의 와플마켓을 시작해보세요!"
+    }
+    
+    private func setIdField(){
+        idField.translatesAutoresizingMaskIntoConstraints = false
+        idField.centerXAnchor.constraint(equalTo: self.view.centerXAnchor).isActive = true
+        idField.topAnchor.constraint(equalTo: welcomeLabel.bottomAnchor, constant: 100).isActive = true
+        idField.leadingAnchor.constraint(equalTo: self.view.leadingAnchor, constant: 50).isActive = true
+        idField.trailingAnchor.constraint(equalTo: self.view.trailingAnchor, constant: -50).isActive = true
+        idField.heightAnchor.constraint(equalToConstant: 50).isActive = true
+        
+        idField.backgroundColor = .white
+        idField.placeholder = "id"
+    }
+    
+    private func setPwField(){
+        pwField.translatesAutoresizingMaskIntoConstraints = false
+        pwField.centerXAnchor.constraint(equalTo: self.view.centerXAnchor).isActive = true
+        pwField.topAnchor.constraint(equalTo: idField.bottomAnchor, constant: 20).isActive = true
+        pwField.leadingAnchor.constraint(equalTo: idField.leadingAnchor).isActive = true
+        pwField.trailingAnchor.constraint(equalTo: idField.trailingAnchor).isActive = true
+        pwField.heightAnchor.constraint(equalTo: idField.heightAnchor).isActive = true
+        
+        pwField.backgroundColor = .white
+        pwField.placeholder = "pw"
+    }
+    
     private func setLoginBtn(){
         loginBtn.translatesAutoresizingMaskIntoConstraints = false
         loginBtn.centerXAnchor.constraint(equalTo: self.view.centerXAnchor).isActive = true
-        loginBtn.centerYAnchor.constraint(equalTo: self.view.centerYAnchor).isActive = true
+        loginBtn.topAnchor.constraint(equalTo: pwField.bottomAnchor, constant: 50).isActive = true
+        loginBtn.leadingAnchor.constraint(equalTo: pwField.leadingAnchor).isActive = true
+        loginBtn.trailingAnchor.constraint(equalTo: pwField.trailingAnchor).isActive = true
+        loginBtn.heightAnchor.constraint(equalTo: pwField.heightAnchor).isActive = true
+        
+        loginBtn.setTitle("로그인", for: .normal)
+        loginBtn.backgroundColor = .orange
+        loginBtn.setTitleColor(.white, for: .normal)
+        loginBtn.layer.cornerRadius = 10
+    }
+    
+    private func setSignUpBtn(){
+        signUpBtn.translatesAutoresizingMaskIntoConstraints = false
+        signUpBtn.centerXAnchor.constraint(equalTo: self.view.centerXAnchor).isActive = true
+        signUpBtn.topAnchor.constraint(equalTo: loginBtn.bottomAnchor, constant: 20).isActive = true
+        
+        signUpBtn.setTitle("회원가입하기", for: .normal)
     }
 
     /*
