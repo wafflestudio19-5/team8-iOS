@@ -14,9 +14,10 @@ class LoginViewController: UIViewController {
     
     var waffleLogoLabel: UILabel = UILabel()
     var welcomeLabel: UILabel! = UILabel()
-    var loginBtn = UIButton(type: .system)
     var idField: UITextField = UITextField()
     var pwField: UITextField = UITextField()
+    var loginBtn = UIButton(type: .system)
+    var googleLoginBtn = UIButton(type: .system)
     var signUpBtn = UIButton(type: .system)
     
     let disposeBag = DisposeBag()
@@ -44,6 +45,10 @@ class LoginViewController: UIViewController {
 
         }.disposed(by: disposeBag)
         
+        signUpBtn.rx.tap.bind{
+            self.present(SignUpViewController(), animated:true, completion: nil)
+        }
+        
         self.view.addSubview(waffleLogoLabel)
         setWaffleLogoLabel()
         self.view.addSubview(welcomeLabel)
@@ -54,6 +59,8 @@ class LoginViewController: UIViewController {
         setPwField()
         self.view.addSubview(loginBtn)
         setLoginBtn()
+        self.view.addSubview(googleLoginBtn)
+        setGoogleLoginBtn()
         self.view.addSubview(signUpBtn)
         setSignUpBtn()
         
@@ -115,10 +122,24 @@ class LoginViewController: UIViewController {
         loginBtn.layer.cornerRadius = 10
     }
     
+    private func setGoogleLoginBtn(){
+        googleLoginBtn.translatesAutoresizingMaskIntoConstraints = false
+        googleLoginBtn.centerXAnchor.constraint(equalTo: self.view.centerXAnchor).isActive = true
+        googleLoginBtn.topAnchor.constraint(equalTo: loginBtn.bottomAnchor, constant: 20).isActive = true
+        googleLoginBtn.leadingAnchor.constraint(equalTo: loginBtn.leadingAnchor).isActive = true
+        googleLoginBtn.trailingAnchor.constraint(equalTo: loginBtn.trailingAnchor).isActive = true
+        googleLoginBtn.heightAnchor.constraint(equalTo: loginBtn.heightAnchor).isActive = true
+        
+        googleLoginBtn.setTitle("Goggle로 로그인", for: .normal)
+        googleLoginBtn.backgroundColor = .blue
+        googleLoginBtn.setTitleColor(.white, for: .normal)
+        googleLoginBtn.layer.cornerRadius = 10
+    }
+    
     private func setSignUpBtn(){
         signUpBtn.translatesAutoresizingMaskIntoConstraints = false
         signUpBtn.centerXAnchor.constraint(equalTo: self.view.centerXAnchor).isActive = true
-        signUpBtn.topAnchor.constraint(equalTo: loginBtn.bottomAnchor, constant: 20).isActive = true
+        signUpBtn.topAnchor.constraint(equalTo: googleLoginBtn.bottomAnchor, constant: 20).isActive = true
         
         signUpBtn.setTitle("회원가입하기", for: .normal)
     }
