@@ -19,6 +19,9 @@ class LoginViewController: UIViewController {
         loginBtn.setTitle("Test Login", for: .normal)
         
         loginBtn.rx.tap.bind{
+            GoogleSignInAuthenticator.sharedInstance.signIn(presenting: self, disposeBag: self.disposeBag) {
+                print("success")
+            }
             WaffleAPI.ping().subscribe { response in
                 if let dict = try? response.mapJSON() as? [String:String]{
                     print(dict["ping"] ?? "")

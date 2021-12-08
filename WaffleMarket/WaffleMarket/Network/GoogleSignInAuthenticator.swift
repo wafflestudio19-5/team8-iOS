@@ -30,7 +30,6 @@ class GoogleSignInAuthenticator{
                 }
                 guard let authentication = authentication else { return }
                 guard let idToken = authentication.idToken else { return }
-                
                 WaffleAPI.googleLogin(idToken: idToken).subscribe { response in
                     guard response.statusCode == 200 else {
                         print("Google Login statusCode:", response.statusCode)
