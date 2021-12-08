@@ -15,7 +15,11 @@ class LoginViewController: UIViewController {
     var waffleLogoLabel: UILabel = UILabel()
     var welcomeLabel: UILabel! = UILabel()
     var idField: UITextField = UITextField()
+    let idText = BehaviorSubject(value: "")
+    let isIdValid = BehaviorSubject(value: false)
     var pwField: UITextField = UITextField()
+    let pwText = BehaviorSubject(value: "")
+    let isPwValid = BehaviorSubject(value: false)
     var loginBtn = UIButton(type: .system)
     var googleLoginBtn = UIButton(type: .system)
     var signUpBtn = UIButton(type: .system)
@@ -45,9 +49,7 @@ class LoginViewController: UIViewController {
 
         }.disposed(by: disposeBag)
         
-        signUpBtn.rx.tap.bind{
-            self.present(SignUpViewController(), animated:true, completion: nil)
-        }
+        
         
         self.view.addSubview(waffleLogoLabel)
         setWaffleLogoLabel()
@@ -63,6 +65,18 @@ class LoginViewController: UIViewController {
         setGoogleLoginBtn()
         self.view.addSubview(signUpBtn)
         setSignUpBtn()
+        
+        Observable.combineLatest(isIdValid, isPwValid, resultSelector: {$0 && $1})
+            .subscribe { value in
+                guard let element = value.element else { return }
+                if element {
+                    self.loginBtn.alpha=1
+                } else {
+                    self.loginBtn.alpha=0.5
+                }
+                self.loginBtn.isEnabled = element
+            }.disposed(by: disposeBag)
+
         
         // Do any additional setup after loading the view.
     }
@@ -94,6 +108,10 @@ class LoginViewController: UIViewController {
         
         idField.backgroundColor = .white
         idField.placeholder = "id"
+        idField.autocapitalizationType = .none
+        idField.autocorrectionType = .no
+        idField.rx.text.orEmpty.bind(to: idText).disposed(by: disposeBag)
+        idText.map(validateID(_:)).bind(to: isIdValid).disposed(by: disposeBag)
     }
     
     private func setPwField(){
@@ -106,6 +124,11 @@ class LoginViewController: UIViewController {
         
         pwField.backgroundColor = .white
         pwField.placeholder = "pw"
+        pwField.isSecureTextEntry = true
+        pwField.autocapitalizationType = .none
+        pwField.autocorrectionType = .no
+        pwField.rx.text.orEmpty.bind(to: pwText).disposed(by: disposeBag)
+        pwText.map(validatePassword(_:)).bind(to: isPwValid).disposed(by: disposeBag)
     }
     
     private func setLoginBtn(){
@@ -142,6 +165,19 @@ class LoginViewController: UIViewController {
         signUpBtn.topAnchor.constraint(equalTo: googleLoginBtn.bottomAnchor, constant: 20).isActive = true
         
         signUpBtn.setTitle("회원가입하기", for: .normal)
+        
+        signUpBtn.rx.tap.bind{
+            self.present(SignUpViewController(), animated:true, completion: nil)
+        }.disposed(by: disposeBag)
+    }
+    
+    private func validateID(_ id: String)->Bool{
+        
+        return !id.isEmpty
+    }
+    
+    private func validatePassword(_ pw: String)->Bool{
+        return !pw.isEmpty
     }
 
     /*
