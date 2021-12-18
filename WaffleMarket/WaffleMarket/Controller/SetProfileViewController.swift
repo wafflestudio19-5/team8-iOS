@@ -57,7 +57,7 @@ class SetProfileViewController: UIViewController {
         picSelectBtn.layer.cornerRadius = 10
         
         picSelectBtn.rx.tap.bind{
-            let camera = CameraViewController {[weak self] image, assert in
+            let camera = CameraViewController {[weak self] image, asset in
                 self?.profileImage.image = image
                 let imageData = image?.jpegData(compressionQuality: 0.5)
                 self!.sendImage(dataImage: imageData!)
