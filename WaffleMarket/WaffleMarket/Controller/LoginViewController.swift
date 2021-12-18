@@ -9,45 +9,29 @@ import UIKit
 import RxSwift
 import RxCocoa
 import RxAlamofire
+import GoogleSignIn
 
 class LoginViewController: UIViewController {
-    var loginBtn = UIButton(type: .system)
+    var googleLoginBtn = GIDSignInButton()
     let disposeBag = DisposeBag()
     override func viewDidLoad() {
         super.viewDidLoad()
         self.view.backgroundColor = .white
-        loginBtn.setTitle("Test Login", for: .normal)
         
-        loginBtn.rx.tap.bind{
+        googleLoginBtn.rx.controlEvent(.touchUpInside).bind{
             GoogleSignInAuthenticator.sharedInstance.signIn(presenting: self, disposeBag: self.disposeBag) {
                 print("success")
             }
-//            WaffleAPI.ping().subscribe { response in
-//                if let dict = try? response.mapJSON() as? [String:String]{
-//                    print(dict["ping"] ?? "")
-//                    let sceneDelegate = UIApplication.shared.connectedScenes.first?.delegate as? SceneDelegate
-//                    sceneDelegate?.changeRootViewController(MainTabBarController())
-//
-//                }
-//            } onFailure: { error in
-//                DispatchQueue.main.async {
-//                    let alert = UIAlertController(title: "Error", message: error.localizedDescription, preferredStyle: .alert)
-//                    let alertOKAction = UIAlertAction(title: "OK", style: .default)
-//                    alert.addAction(alertOKAction)
-//                    self.present(alert, animated: true)
-//                }
-//            }.disposed(by: self.disposeBag)
-
         }.disposed(by: disposeBag)
-        self.view.addSubview(loginBtn)
+        self.view.addSubview(googleLoginBtn)
         setLoginBtn()
         
         // Do any additional setup after loading the view.
     }
     private func setLoginBtn(){
-        loginBtn.translatesAutoresizingMaskIntoConstraints = false
-        loginBtn.centerXAnchor.constraint(equalTo: self.view.centerXAnchor).isActive = true
-        loginBtn.centerYAnchor.constraint(equalTo: self.view.centerYAnchor).isActive = true
+        googleLoginBtn.translatesAutoresizingMaskIntoConstraints = false
+        googleLoginBtn.centerXAnchor.constraint(equalTo: self.view.centerXAnchor).isActive = true
+        googleLoginBtn.centerYAnchor.constraint(equalTo: self.view.centerYAnchor).isActive = true
     }
 
     /*
