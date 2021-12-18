@@ -153,7 +153,7 @@ class LoginViewController: UIViewController {
         googleLoginBtn.trailingAnchor.constraint(equalTo: loginBtn.trailingAnchor).isActive = true
         googleLoginBtn.heightAnchor.constraint(equalTo: loginBtn.heightAnchor).isActive = true
         
-        googleLoginBtn.setTitle("Goggle로 로그인", for: .normal)
+        googleLoginBtn.setTitle("Google로 로그인", for: .normal)
         googleLoginBtn.backgroundColor = .blue
         googleLoginBtn.setTitleColor(.white, for: .normal)
         googleLoginBtn.layer.cornerRadius = 10
