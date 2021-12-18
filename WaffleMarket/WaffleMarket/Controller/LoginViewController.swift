@@ -31,21 +31,21 @@ class LoginViewController: UIViewController {
         self.view.backgroundColor = .white
         
         loginBtn.rx.tap.bind{
-            WaffleAPI.ping().subscribe { response in
-                if let dict = try? response.mapJSON() as? [String:String]{
-                    print(dict["ping"] ?? "")
-                    let sceneDelegate = UIApplication.shared.connectedScenes.first?.delegate as? SceneDelegate
-                    sceneDelegate?.changeRootViewController(MainTabBarController())
-                    
-                }
-            } onFailure: { error in
-                DispatchQueue.main.async {
-                    let alert = UIAlertController(title: "Error", message: error.localizedDescription, preferredStyle: .alert)
-                    let alertOKAction = UIAlertAction(title: "OK", style: .default)
-                    alert.addAction(alertOKAction)
-                    self.present(alert, animated: true)
-                }
-            }.disposed(by: self.disposeBag)
+//            WaffleAPI.ping().subscribe { response in
+//                if let dict = try? response.mapJSON() as? [String:String]{
+//                    print(dict["ping"] ?? "")
+//                    let sceneDelegate = UIApplication.shared.connectedScenes.first?.delegate as? SceneDelegate
+//                    sceneDelegate?.changeRootViewController(MainTabBarController())
+//
+//                }
+//            } onFailure: { error in
+//                DispatchQueue.main.async {
+//                    let alert = UIAlertController(title: "Error", message: error.localizedDescription, preferredStyle: .alert)
+//                    let alertOKAction = UIAlertAction(title: "OK", style: .default)
+//                    alert.addAction(alertOKAction)
+//                    self.present(alert, animated: true)
+//                }
+//            }.disposed(by: self.disposeBag)
 
         }.disposed(by: disposeBag)
         
