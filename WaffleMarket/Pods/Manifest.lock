@@ -28,6 +28,7 @@ PODS:
   - RxSwift (6.2.0)
 
 DEPENDENCIES:
+  - Alamofire
   - ALCameraViewController
   - Kingfisher (~> 7.1)
   - Moya/RxSwift (~> 15.0)
@@ -65,6 +66,6 @@ SPEC CHECKSUMS:
   RxRelay: e72dbfd157807478401ef1982e1c61c945c94b2f
   RxSwift: d356ab7bee873611322f134c5f9ef379fa183d8f
 
-PODFILE CHECKSUM: c1f0efe008ae9661855a587a8a45dad20dcb66cf
+PODFILE CHECKSUM: a56c708f6796cf47b41a83bd3c60e3c935968f0d
 
 COCOAPODS: 1.11.2

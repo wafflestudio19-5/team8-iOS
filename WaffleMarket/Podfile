@@ -13,4 +13,5 @@ target 'WaffleMarket' do
   pod 'RxGesture', '~> 4.0'
   pod 'Moya/RxSwift', '~> 15.0'
   pod 'ALCameraViewController'
+  pod 'Alamofire'
 end

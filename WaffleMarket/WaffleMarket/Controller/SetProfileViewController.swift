@@ -10,6 +10,7 @@ import RxSwift
 import RxCocoa
 import RxAlamofire
 import ALCameraViewController
+import Alamofire
 
 class SetProfileViewController: UIViewController {
     
@@ -68,6 +69,12 @@ class SetProfileViewController: UIViewController {
     }
     
     private func sendImage(dataImage: Data?) {
+        let headers: HTTPHeaders = [ "Content-type" : "multipart/form-data"]
+        AF.upload(multipartFormData: { (multipartFormData) in
+            if let data = dataImage {
+                multipartFormData.append(data, withName: "image", fileName: "image.jpg", mimeType: "image/jpg")
+            }
+        }, to: "your_url", method: .post, headers: headers)
         
     }
     
