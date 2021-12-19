@@ -9,8 +9,12 @@ import UIKit
 import RxSwift
 import RxCocoa
 import RxAlamofire
+import GoogleSignIn
 
 class LoginViewController: UIViewController {
+
+    var googleLoginBtn = GIDSignInButton()
+
     
     var waffleLogoLabel: UILabel = UILabel()
     var welcomeLabel: UILabel! = UILabel()
@@ -21,33 +25,16 @@ class LoginViewController: UIViewController {
     let pwText = BehaviorSubject(value: "")
     let isPwValid = BehaviorSubject(value: false)
     var loginBtn = UIButton(type: .system)
-    var googleLoginBtn = UIButton(type: .system)
     var signUpBtn = UIButton(type: .system)
-    
+
     let disposeBag = DisposeBag()
     
     override func viewDidLoad() {
         super.viewDidLoad()
         self.view.backgroundColor = .white
         
-        loginBtn.rx.tap.bind{
-            WaffleAPI.ping().subscribe { response in
-                if let dict = try? response.mapJSON() as? [String:String]{
-                    print(dict["ping"] ?? "")
-                    let sceneDelegate = UIApplication.shared.connectedScenes.first?.delegate as? SceneDelegate
-                    sceneDelegate?.changeRootViewController(MainTabBarController())
-                    
-                }
-            } onFailure: { error in
-                DispatchQueue.main.async {
-                    let alert = UIAlertController(title: "Error", message: error.localizedDescription, preferredStyle: .alert)
-                    let alertOKAction = UIAlertAction(title: "OK", style: .default)
-                    alert.addAction(alertOKAction)
-                    self.present(alert, animated: true)
-                }
-            }.disposed(by: self.disposeBag)
+        
 
-        }.disposed(by: disposeBag)
         
         
         
@@ -132,6 +119,7 @@ class LoginViewController: UIViewController {
     }
     
     private func setLoginBtn(){
+
         loginBtn.translatesAutoresizingMaskIntoConstraints = false
         loginBtn.centerXAnchor.constraint(equalTo: self.view.centerXAnchor).isActive = true
         loginBtn.topAnchor.constraint(equalTo: pwField.bottomAnchor, constant: 50).isActive = true
@@ -152,11 +140,12 @@ class LoginViewController: UIViewController {
         googleLoginBtn.leadingAnchor.constraint(equalTo: loginBtn.leadingAnchor).isActive = true
         googleLoginBtn.trailingAnchor.constraint(equalTo: loginBtn.trailingAnchor).isActive = true
         googleLoginBtn.heightAnchor.constraint(equalTo: loginBtn.heightAnchor).isActive = true
-        
-        googleLoginBtn.setTitle("Goggle로 로그인", for: .normal)
-        googleLoginBtn.backgroundColor = .blue
-        googleLoginBtn.setTitleColor(.white, for: .normal)
-        googleLoginBtn.layer.cornerRadius = 10
+      
+        googleLoginBtn.rx.controlEvent(.touchUpInside).bind{
+            GoogleSignInAuthenticator.sharedInstance.signIn(presenting: self, disposeBag: self.disposeBag) {
+                print("success")
+            }
+        }.disposed(by: disposeBag)
     }
     
     private func setSignUpBtn(){
