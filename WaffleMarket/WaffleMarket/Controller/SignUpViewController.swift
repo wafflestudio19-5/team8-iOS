@@ -6,20 +6,14 @@
 //
 
 import UIKit
-import RxSwift
-import RxCocoa
-import RxAlamofire
 
 class SignUpViewController: UIViewController {
     
     var idField: UITextField = UITextField()
-    var idValidateBtn: UIButton = UIButton()
     var nameField: UITextField = UITextField()
     var pwField: UITextField = UITextField()
     var signUpBtn: UIButton = UIButton()
     var googleSignUpBtn: UIButton = UIButton()
-    
-    let disposeBag = DisposeBag()
 
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -28,18 +22,22 @@ class SignUpViewController: UIViewController {
         
         self.view.addSubview(idField)
         setPhoneNumField()
-        self.view.addSubview(idValidateBtn)
-        setIdValidateBtn()
+        self.view.addSubview(nameField)
+        setNameField()
         self.view.addSubview(pwField)
         setPwField()
         self.view.addSubview(signUpBtn)
         setSignUpBtn()
+        self.view.addSubview(googleSignUpBtn)
+        setGoogleSignUpBtn()
+        
     }
     
     private func setPhoneNumField(){
         idField.translatesAutoresizingMaskIntoConstraints = false
         idField.centerXAnchor.constraint(equalTo: self.view.centerXAnchor).isActive = true
         idField.topAnchor.constraint(equalTo: self.view.topAnchor, constant: 200).isActive = true
+        
         idField.leadingAnchor.constraint(equalTo: self.view.leadingAnchor, constant: 50).isActive = true
         idField.trailingAnchor.constraint(equalTo: self.view.trailingAnchor, constant: -50).isActive = true
         idField.heightAnchor.constraint(equalToConstant: 50).isActive = true
@@ -48,27 +46,25 @@ class SignUpViewController: UIViewController {
         idField.placeholder = "핸드폰 번호를 입력하세요 (숫자만)"
     }
     
-    private func setIdValidateBtn(){
-        idValidateBtn.translatesAutoresizingMaskIntoConstraints = false
-        idValidateBtn.centerXAnchor.constraint(equalTo: self.view.centerXAnchor).isActive = true
-        idValidateBtn.topAnchor.constraint(equalTo: idField.bottomAnchor, constant: 10).isActive = true
-        idValidateBtn.leadingAnchor.constraint(equalTo: idField.leadingAnchor).isActive = true
-        idValidateBtn.trailingAnchor.constraint(equalTo: idField.trailingAnchor).isActive = true
-        idValidateBtn.heightAnchor.constraint(equalToConstant: 40).isActive = true
+    private func setNameField(){
+        nameField.translatesAutoresizingMaskIntoConstraints = false
+        nameField.centerXAnchor.constraint(equalTo: self.view.centerXAnchor).isActive = true
+        nameField.topAnchor.constraint(equalTo: idField.bottomAnchor, constant: 20).isActive = true
+        nameField.leadingAnchor.constraint(equalTo: idField.leadingAnchor).isActive = true
+        nameField.trailingAnchor.constraint(equalTo: idField.trailingAnchor).isActive = true
+        nameField.heightAnchor.constraint(equalTo: idField.heightAnchor).isActive = true
         
-        idValidateBtn.setTitle("인증하기", for: .normal)
-        idValidateBtn.backgroundColor = .gray
-        idValidateBtn.setTitleColor(.white, for: .normal)
-        idValidateBtn.layer.cornerRadius = 10
+        nameField.backgroundColor = .white
+        nameField.placeholder = "닉네임을 설정하세요(2글자 이상)"
     }
     
     private func setPwField(){
         pwField.translatesAutoresizingMaskIntoConstraints = false
         pwField.centerXAnchor.constraint(equalTo: self.view.centerXAnchor).isActive = true
-        pwField.topAnchor.constraint(equalTo: idValidateBtn.bottomAnchor, constant: 20).isActive = true
-        pwField.leadingAnchor.constraint(equalTo: idValidateBtn.leadingAnchor).isActive = true
-        pwField.trailingAnchor.constraint(equalTo: idValidateBtn.trailingAnchor).isActive = true
-        pwField.heightAnchor.constraint(equalTo: idField.heightAnchor).isActive = true
+        pwField.topAnchor.constraint(equalTo: nameField.bottomAnchor, constant: 20).isActive = true
+        pwField.leadingAnchor.constraint(equalTo: nameField.leadingAnchor).isActive = true
+        pwField.trailingAnchor.constraint(equalTo: nameField.trailingAnchor).isActive = true
+        pwField.heightAnchor.constraint(equalTo: nameField.heightAnchor).isActive = true
         
         pwField.backgroundColor = .white
         pwField.placeholder = "패스워드를 설정하세요 (영문+숫자 6글자 이상)"
@@ -86,12 +82,21 @@ class SignUpViewController: UIViewController {
         signUpBtn.backgroundColor = .orange
         signUpBtn.setTitleColor(.white, for: .normal)
         signUpBtn.layer.cornerRadius = 10
-        
-        signUpBtn.rx.tap.bind{
-            self.present(SetProfileViewController(), animated:true, completion: nil)
-        }.disposed(by: disposeBag)
     }
     
+    private func setGoogleSignUpBtn(){
+        googleSignUpBtn.translatesAutoresizingMaskIntoConstraints = false
+        googleSignUpBtn.centerXAnchor.constraint(equalTo: self.view.centerXAnchor).isActive = true
+        googleSignUpBtn.topAnchor.constraint(equalTo: signUpBtn.bottomAnchor, constant: 20).isActive = true
+        googleSignUpBtn.leadingAnchor.constraint(equalTo: signUpBtn.leadingAnchor).isActive = true
+        googleSignUpBtn.trailingAnchor.constraint(equalTo: signUpBtn.trailingAnchor).isActive = true
+        googleSignUpBtn.heightAnchor.constraint(equalTo: signUpBtn.heightAnchor).isActive = true
+        
+        googleSignUpBtn.setTitle("Goggle로 회원가입", for: .normal)
+        googleSignUpBtn.backgroundColor = .blue
+        googleSignUpBtn.setTitleColor(.white, for: .normal)
+        googleSignUpBtn.layer.cornerRadius = 10
+    }
     
     
     /*
