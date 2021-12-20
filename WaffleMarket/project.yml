@@ -1,0 +1,15 @@
+name: WaffleMarket
+options:
+  deploymentTarget:
+    iOS: "15.0"
+  postGenCommand: pod install
+
+targets:
+  WaffleMarket:
+    type: application
+    platform: iOS
+    sources:
+      - path: WaffleMarket
+    settings:
+      INFOPLIST_FILE: WaffleMarket/Info.plist
+      PRODUCT_BUNDLE_IDENTIFIER: com.wafflestudio.team8.wafflemarket

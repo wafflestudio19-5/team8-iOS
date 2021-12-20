@@ -3,130 +3,130 @@
 	archiveVersion = 1;
 	classes = {
 	};
-	objectVersion = 55;
+	objectVersion = 51;
 	objects = {
 
 /* Begin PBXBuildFile section */
-		8CD1849BC625C91E0F039E3D /* Pods_WaffleMarket.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 9392CA6CEFFDF7DE9FA1D4A1 /* Pods_WaffleMarket.framework */; };
-		AF465EAE27608A290017A360 /* SignUpViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = AF465EAD27608A290017A360 /* SignUpViewController.swift */; };
-		AF9B205D276F04EB00D3E13C /* SetProfileViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = AF9B205C276F04EB00D3E13C /* SetProfileViewController.swift */; };
-		AF9B205F276F066700D3E13C /* SetLocationViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = AF9B205E276F066700D3E13C /* SetLocationViewController.swift */; };
-		B744C15F274E8F290083A74C /* HomeViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = B744C15E274E8F290083A74C /* HomeViewController.swift */; };
-		B744C161274E95360083A74C /* ChatRoomListViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = B744C160274E95360083A74C /* ChatRoomListViewController.swift */; };
-		B74730B2274E8B4800F7EC3B /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = B74730B1274E8B4800F7EC3B /* AppDelegate.swift */; };
-		B74730B4274E8B4800F7EC3B /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = B74730B3274E8B4800F7EC3B /* SceneDelegate.swift */; };
-		B74730BC274E8B4800F7EC3B /* WaffleMarket.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = B74730BA274E8B4800F7EC3B /* WaffleMarket.xcdatamodeld */; };
-		B74730BE274E8B4900F7EC3B /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = B74730BD274E8B4900F7EC3B /* Assets.xcassets */; };
-		B74730C1274E8B4900F7EC3B /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = B74730BF274E8B4900F7EC3B /* LaunchScreen.storyboard */; };
-		B787A8B5275B3CBE003B5A5E /* GoogleSignInAuthenticator.swift in Sources */ = {isa = PBXBuildFile; fileRef = B787A8B4275B3CBE003B5A5E /* GoogleSignInAuthenticator.swift */; };
-		B7B90D8D2751D7290024DD41 /* MainTabBarController.swift in Sources */ = {isa = PBXBuildFile; fileRef = B7B90D8C2751D7290024DD41 /* MainTabBarController.swift */; };
-		B7B90D8F2751D86F0024DD41 /* LoginViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = B7B90D8E2751D86F0024DD41 /* LoginViewController.swift */; };
-		B7B90D922751DB4B0024DD41 /* WaffleAPI.swift in Sources */ = {isa = PBXBuildFile; fileRef = B7B90D912751DB4B0024DD41 /* WaffleAPI.swift */; };
+		0585797C66B2DE437455B244 /* SetLocationViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 58012C6F7296CEB25981DEF1 /* SetLocationViewController.swift */; };
+		27AC754067F66D60005BE1D8 /* LoginViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = E65EF2B3CB0A85B25C689546 /* LoginViewController.swift */; };
+		3A45C64B2B073E8CD9C148DF /* MainTabBarController.swift in Sources */ = {isa = PBXBuildFile; fileRef = D9C5C3DE19B9A45030F8ED35 /* MainTabBarController.swift */; };
+		4AFDD516B860D86E176CB16B /* SignUpViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8FB4F1ACE05049E7194BDE8B /* SignUpViewController.swift */; };
+		70671B4EA2909B7F12B4B897 /* WaffleAPI.swift in Sources */ = {isa = PBXBuildFile; fileRef = FBE14F4CECB7681A5A000922 /* WaffleAPI.swift */; };
+		779021A4094BEFA4732009D9 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = BCAC14FE50B0C879FCAFE718 /* LaunchScreen.storyboard */; };
+		7F22C89D97D83B18158EC94F /* WaffleMarket.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = 280A1F212D70F871C39D6D8F /* WaffleMarket.xcdatamodeld */; };
+		B1A9028A5B23A3F6C742DC73 /* HomeViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1A531933021175C92772E579 /* HomeViewController.swift */; };
+		BE470F19D5F715A63F0C9645 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 7B6E3A229BB0023BBE78CA63 /* Assets.xcassets */; };
+		BE839680F6A8A67CF105BD47 /* SetProfileViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = D8293840FFED5AA4A7FA3D02 /* SetProfileViewController.swift */; };
+		C8EB81716AC18DBAEE12D1AF /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = A32C6F3F9D53CDFD2494D7B2 /* SceneDelegate.swift */; };
+		D7F0A35144A7F148777B39AB /* ChatRoomListViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3FF473DA1AEF2B8E04B38129 /* ChatRoomListViewController.swift */; };
+		DE2673B123605932A0F54D3D /* Pods_WaffleMarket.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C2364BC6A615BDB612E14B83 /* Pods_WaffleMarket.framework */; };
+		E8203F036BC2565A4C3971FE /* GoogleSignInAuthenticator.swift in Sources */ = {isa = PBXBuildFile; fileRef = FBA84C212B8792717579522A /* GoogleSignInAuthenticator.swift */; };
+		FF50611FBB851A766B91F170 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 55686EE3FA4B87FCD958A870 /* AppDelegate.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
-		91C77851C5293D0690223C46 /* Pods-WaffleMarket.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-WaffleMarket.debug.xcconfig"; path = "Target Support Files/Pods-WaffleMarket/Pods-WaffleMarket.debug.xcconfig"; sourceTree = "<group>"; };
-		9392CA6CEFFDF7DE9FA1D4A1 /* Pods_WaffleMarket.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_WaffleMarket.framework; sourceTree = BUILT_PRODUCTS_DIR; };
-		96529C4EC7DA091653C7631D /* Pods-WaffleMarket.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-WaffleMarket.release.xcconfig"; path = "Target Support Files/Pods-WaffleMarket/Pods-WaffleMarket.release.xcconfig"; sourceTree = "<group>"; };
-		AF465EAD27608A290017A360 /* SignUpViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SignUpViewController.swift; sourceTree = "<group>"; };
-		AF9B205C276F04EB00D3E13C /* SetProfileViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SetProfileViewController.swift; sourceTree = "<group>"; };
-		AF9B205E276F066700D3E13C /* SetLocationViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SetLocationViewController.swift; sourceTree = "<group>"; };
-		B744C15E274E8F290083A74C /* HomeViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeViewController.swift; sourceTree = "<group>"; };
-		B744C160274E95360083A74C /* ChatRoomListViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChatRoomListViewController.swift; sourceTree = "<group>"; };
-		B74730AE274E8B4800F7EC3B /* WaffleMarket.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = WaffleMarket.app; sourceTree = BUILT_PRODUCTS_DIR; };
-		B74730B1274E8B4800F7EC3B /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
-		B74730B3274E8B4800F7EC3B /* SceneDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SceneDelegate.swift; sourceTree = "<group>"; };
-		B74730BB274E8B4800F7EC3B /* WaffleMarket.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = WaffleMarket.xcdatamodel; sourceTree = "<group>"; };
-		B74730BD274E8B4900F7EC3B /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
-		B74730C0274E8B4900F7EC3B /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
-		B74730C2274E8B4900F7EC3B /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
-		B787A8B4275B3CBE003B5A5E /* GoogleSignInAuthenticator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GoogleSignInAuthenticator.swift; sourceTree = "<group>"; };
-		B7B90D8C2751D7290024DD41 /* MainTabBarController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MainTabBarController.swift; sourceTree = "<group>"; };
-		B7B90D8E2751D86F0024DD41 /* LoginViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoginViewController.swift; sourceTree = "<group>"; };
-		B7B90D912751DB4B0024DD41 /* WaffleAPI.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WaffleAPI.swift; sourceTree = "<group>"; };
+		1A531933021175C92772E579 /* HomeViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeViewController.swift; sourceTree = "<group>"; };
+		1C74D63C0BEFEAA5EDF08FA0 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
+		1F3EE813B0AC0A5E73214EAA /* WaffleMarket.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = WaffleMarket.xcdatamodel; sourceTree = "<group>"; };
+		3FF473DA1AEF2B8E04B38129 /* ChatRoomListViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChatRoomListViewController.swift; sourceTree = "<group>"; };
+		55686EE3FA4B87FCD958A870 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
+		58012C6F7296CEB25981DEF1 /* SetLocationViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SetLocationViewController.swift; sourceTree = "<group>"; };
+		659D0A7263DE6F064C32B9CE /* Pods-WaffleMarket.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-WaffleMarket.debug.xcconfig"; path = "Target Support Files/Pods-WaffleMarket/Pods-WaffleMarket.debug.xcconfig"; sourceTree = "<group>"; };
+		7B6E3A229BB0023BBE78CA63 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
+		8FB4F1ACE05049E7194BDE8B /* SignUpViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SignUpViewController.swift; sourceTree = "<group>"; };
+		A32C6F3F9D53CDFD2494D7B2 /* SceneDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SceneDelegate.swift; sourceTree = "<group>"; };
+		A588F132C78D1862FAE18182 /* WaffleMarket.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = WaffleMarket.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		B5A95F3D028194E8FA13D5CD /* Pods-WaffleMarket.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-WaffleMarket.release.xcconfig"; path = "Target Support Files/Pods-WaffleMarket/Pods-WaffleMarket.release.xcconfig"; sourceTree = "<group>"; };
+		C2364BC6A615BDB612E14B83 /* Pods_WaffleMarket.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_WaffleMarket.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		D5D2D2898266DA3B3A8EB4B1 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = Info.plist; sourceTree = "<group>"; };
+		D8293840FFED5AA4A7FA3D02 /* SetProfileViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SetProfileViewController.swift; sourceTree = "<group>"; };
+		D9C5C3DE19B9A45030F8ED35 /* MainTabBarController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MainTabBarController.swift; sourceTree = "<group>"; };
+		E65EF2B3CB0A85B25C689546 /* LoginViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoginViewController.swift; sourceTree = "<group>"; };
+		FBA84C212B8792717579522A /* GoogleSignInAuthenticator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GoogleSignInAuthenticator.swift; sourceTree = "<group>"; };
+		FBE14F4CECB7681A5A000922 /* WaffleAPI.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WaffleAPI.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
-		B74730AB274E8B4800F7EC3B /* Frameworks */ = {
+		ED75435C831BAB0A0EC38B7A /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				8CD1849BC625C91E0F039E3D /* Pods_WaffleMarket.framework in Frameworks */,
+				DE2673B123605932A0F54D3D /* Pods_WaffleMarket.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
-		0ED1D476F798A864C1C35BB6 /* Frameworks */ = {
+		49A3EFE6FF1C9ACBCA747CB8 /* Controller */ = {
 			isa = PBXGroup;
 			children = (
-				9392CA6CEFFDF7DE9FA1D4A1 /* Pods_WaffleMarket.framework */,
-			);
-			name = Frameworks;
-			sourceTree = "<group>";
-		};
-		B744C15D274E8EE90083A74C /* Controller */ = {
-			isa = PBXGroup;
-			children = (
-				B744C15E274E8F290083A74C /* HomeViewController.swift */,
-				B744C160274E95360083A74C /* ChatRoomListViewController.swift */,
-				B7B90D8C2751D7290024DD41 /* MainTabBarController.swift */,
-				B7B90D8E2751D86F0024DD41 /* LoginViewController.swift */,
-				AF465EAD27608A290017A360 /* SignUpViewController.swift */,
-				AF9B205C276F04EB00D3E13C /* SetProfileViewController.swift */,
-				AF9B205E276F066700D3E13C /* SetLocationViewController.swift */,
+				3FF473DA1AEF2B8E04B38129 /* ChatRoomListViewController.swift */,
+				1A531933021175C92772E579 /* HomeViewController.swift */,
+				E65EF2B3CB0A85B25C689546 /* LoginViewController.swift */,
+				D9C5C3DE19B9A45030F8ED35 /* MainTabBarController.swift */,
+				58012C6F7296CEB25981DEF1 /* SetLocationViewController.swift */,
+				D8293840FFED5AA4A7FA3D02 /* SetProfileViewController.swift */,
+				8FB4F1ACE05049E7194BDE8B /* SignUpViewController.swift */,
 			);
 			path = Controller;
 			sourceTree = "<group>";
 		};
-		B74730A5274E8B4800F7EC3B = {
+		52B34C458847E5DCB9E0B6E4 /* Products */ = {
 			isa = PBXGroup;
 			children = (
-				B74730B0274E8B4800F7EC3B /* WaffleMarket */,
-				B74730AF274E8B4800F7EC3B /* Products */,
-				D73766856443BC908E499503 /* Pods */,
-				0ED1D476F798A864C1C35BB6 /* Frameworks */,
-			);
-			sourceTree = "<group>";
-		};
-		B74730AF274E8B4800F7EC3B /* Products */ = {
-			isa = PBXGroup;
-			children = (
-				B74730AE274E8B4800F7EC3B /* WaffleMarket.app */,
+				A588F132C78D1862FAE18182 /* WaffleMarket.app */,
 			);
 			name = Products;
 			sourceTree = "<group>";
 		};
-		B74730B0274E8B4800F7EC3B /* WaffleMarket */ = {
+		66EABF05EDB6A7607B100D13 = {
 			isa = PBXGroup;
 			children = (
-				B7B90D902751DB2A0024DD41 /* Network */,
-				B744C15D274E8EE90083A74C /* Controller */,
-				B74730B1274E8B4800F7EC3B /* AppDelegate.swift */,
-				B74730B3274E8B4800F7EC3B /* SceneDelegate.swift */,
-				B74730BD274E8B4900F7EC3B /* Assets.xcassets */,
-				B74730BF274E8B4900F7EC3B /* LaunchScreen.storyboard */,
-				B74730C2274E8B4900F7EC3B /* Info.plist */,
-				B74730BA274E8B4800F7EC3B /* WaffleMarket.xcdatamodeld */,
+				C0F2729D8793C589A747063E /* WaffleMarket */,
+				52B34C458847E5DCB9E0B6E4 /* Products */,
+				C2C9CF52D955BEF722C74730 /* Pods */,
+				BD782C488CEFFE46A43BD281 /* Frameworks */,
 			);
-			path = WaffleMarket;
 			sourceTree = "<group>";
 		};
-		B7B90D902751DB2A0024DD41 /* Network */ = {
+		94CE5A6D0AFC2DF02F543E7F /* Network */ = {
 			isa = PBXGroup;
 			children = (
-				B7B90D912751DB4B0024DD41 /* WaffleAPI.swift */,
-				B787A8B4275B3CBE003B5A5E /* GoogleSignInAuthenticator.swift */,
+				FBA84C212B8792717579522A /* GoogleSignInAuthenticator.swift */,
+				FBE14F4CECB7681A5A000922 /* WaffleAPI.swift */,
 			);
 			path = Network;
 			sourceTree = "<group>";
 		};
-		D73766856443BC908E499503 /* Pods */ = {
+		BD782C488CEFFE46A43BD281 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
-				91C77851C5293D0690223C46 /* Pods-WaffleMarket.debug.xcconfig */,
-				96529C4EC7DA091653C7631D /* Pods-WaffleMarket.release.xcconfig */,
+				C2364BC6A615BDB612E14B83 /* Pods_WaffleMarket.framework */,
+			);
+			name = Frameworks;
+			sourceTree = "<group>";
+		};
+		C0F2729D8793C589A747063E /* WaffleMarket */ = {
+			isa = PBXGroup;
+			children = (
+				55686EE3FA4B87FCD958A870 /* AppDelegate.swift */,
+				7B6E3A229BB0023BBE78CA63 /* Assets.xcassets */,
+				D5D2D2898266DA3B3A8EB4B1 /* Info.plist */,
+				BCAC14FE50B0C879FCAFE718 /* LaunchScreen.storyboard */,
+				A32C6F3F9D53CDFD2494D7B2 /* SceneDelegate.swift */,
+				280A1F212D70F871C39D6D8F /* WaffleMarket.xcdatamodeld */,
+				49A3EFE6FF1C9ACBCA747CB8 /* Controller */,
+				94CE5A6D0AFC2DF02F543E7F /* Network */,
+			);
+			path = WaffleMarket;
+			sourceTree = "<group>";
+		};
+		C2C9CF52D955BEF722C74730 /* Pods */ = {
+			isa = PBXGroup;
+			children = (
+				659D0A7263DE6F064C32B9CE /* Pods-WaffleMarket.debug.xcconfig */,
+				B5A95F3D028194E8FA13D5CD /* Pods-WaffleMarket.release.xcconfig */,
 			);
 			path = Pods;
 			sourceTree = "<group>";
@@ -134,15 +134,15 @@
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
-		B74730AD274E8B4800F7EC3B /* WaffleMarket */ = {
+		C1D77C94502547E06FD0FAC9 /* WaffleMarket */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = B74730C5274E8B4900F7EC3B /* Build configuration list for PBXNativeTarget "WaffleMarket" */;
+			buildConfigurationList = E1AAD4D696F154EA4A554910 /* Build configuration list for PBXNativeTarget "WaffleMarket" */;
 			buildPhases = (
-				F3657AC4AB9D503848525233 /* [CP] Check Pods Manifest.lock */,
-				B74730AA274E8B4800F7EC3B /* Sources */,
-				B74730AB274E8B4800F7EC3B /* Frameworks */,
-				B74730AC274E8B4800F7EC3B /* Resources */,
-				B542D9EC49A9942571176685 /* [CP] Embed Pods Frameworks */,
+				BB9CC1DB66CB7AE165C21AEF /* [CP] Check Pods Manifest.lock */,
+				6819EEA5D14A0D61B6A1A706 /* Sources */,
+				93CB8D1CAA76E418883AE2E7 /* Resources */,
+				ED75435C831BAB0A0EC38B7A /* Frameworks */,
+				DAF1C8DA15D3245624EA98F8 /* [CP] Embed Pods Frameworks */,
 			);
 			buildRules = (
 			);
@@ -150,73 +150,49 @@
 			);
 			name = WaffleMarket;
 			productName = WaffleMarket;
-			productReference = B74730AE274E8B4800F7EC3B /* WaffleMarket.app */;
+			productReference = A588F132C78D1862FAE18182 /* WaffleMarket.app */;
 			productType = "com.apple.product-type.application";
 		};
 /* End PBXNativeTarget section */
 
 /* Begin PBXProject section */
-		B74730A6274E8B4800F7EC3B /* Project object */ = {
+		E53F36E88AD1AACA8464DEC9 /* Project object */ = {
 			isa = PBXProject;
 			attributes = {
-				BuildIndependentTargetsInParallel = 1;
-				LastSwiftUpdateCheck = 1310;
-				LastUpgradeCheck = 1310;
-				TargetAttributes = {
-					B74730AD274E8B4800F7EC3B = {
-						CreatedOnToolsVersion = 13.1;
-					};
-				};
+				LastUpgradeCheck = 1200;
 			};
-			buildConfigurationList = B74730A9274E8B4800F7EC3B /* Build configuration list for PBXProject "WaffleMarket" */;
-			compatibilityVersion = "Xcode 13.0";
+			buildConfigurationList = 811B99B733E184581A641992 /* Build configuration list for PBXProject "WaffleMarket" */;
+			compatibilityVersion = "Xcode 10.0";
 			developmentRegion = en;
 			hasScannedForEncodings = 0;
 			knownRegions = (
-				en,
 				Base,
+				en,
 			);
-			mainGroup = B74730A5274E8B4800F7EC3B;
-			productRefGroup = B74730AF274E8B4800F7EC3B /* Products */;
+			mainGroup = 66EABF05EDB6A7607B100D13;
+			productRefGroup = 52B34C458847E5DCB9E0B6E4 /* Products */;
 			projectDirPath = "";
 			projectRoot = "";
 			targets = (
-				B74730AD274E8B4800F7EC3B /* WaffleMarket */,
+				C1D77C94502547E06FD0FAC9 /* WaffleMarket */,
 			);
 		};
 /* End PBXProject section */
 
 /* Begin PBXResourcesBuildPhase section */
-		B74730AC274E8B4800F7EC3B /* Resources */ = {
+		93CB8D1CAA76E418883AE2E7 /* Resources */ = {
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				B74730C1274E8B4900F7EC3B /* LaunchScreen.storyboard in Resources */,
-				B74730BE274E8B4900F7EC3B /* Assets.xcassets in Resources */,
+				BE470F19D5F715A63F0C9645 /* Assets.xcassets in Resources */,
+				779021A4094BEFA4732009D9 /* LaunchScreen.storyboard in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXResourcesBuildPhase section */
 
 /* Begin PBXShellScriptBuildPhase section */
-		B542D9EC49A9942571176685 /* [CP] Embed Pods Frameworks */ = {
-			isa = PBXShellScriptBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			inputFileListPaths = (
-				"${PODS_ROOT}/Target Support Files/Pods-WaffleMarket/Pods-WaffleMarket-frameworks-${CONFIGURATION}-input-files.xcfilelist",
-			);
-			name = "[CP] Embed Pods Frameworks";
-			outputFileListPaths = (
-				"${PODS_ROOT}/Target Support Files/Pods-WaffleMarket/Pods-WaffleMarket-frameworks-${CONFIGURATION}-output-files.xcfilelist",
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-			shellPath = /bin/sh;
-			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-WaffleMarket/Pods-WaffleMarket-frameworks.sh\"\n";
-			showEnvVarsInLog = 0;
-		};
-		F3657AC4AB9D503848525233 /* [CP] Check Pods Manifest.lock */ = {
+		BB9CC1DB66CB7AE165C21AEF /* [CP] Check Pods Manifest.lock */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
@@ -238,35 +214,52 @@
 			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n# This output is used by Xcode 'outputs' to avoid re-running this script phase.\necho \"SUCCESS\" > \"${SCRIPT_OUTPUT_FILE_0}\"\n";
 			showEnvVarsInLog = 0;
 		};
+		DAF1C8DA15D3245624EA98F8 /* [CP] Embed Pods Frameworks */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+				"${PODS_ROOT}/Target Support Files/Pods-WaffleMarket/Pods-WaffleMarket-frameworks-${CONFIGURATION}-input-files.xcfilelist",
+			);
+			name = "[CP] Embed Pods Frameworks";
+			outputFileListPaths = (
+				"${PODS_ROOT}/Target Support Files/Pods-WaffleMarket/Pods-WaffleMarket-frameworks-${CONFIGURATION}-output-files.xcfilelist",
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-WaffleMarket/Pods-WaffleMarket-frameworks.sh\"\n";
+			showEnvVarsInLog = 0;
+		};
 /* End PBXShellScriptBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
-		B74730AA274E8B4800F7EC3B /* Sources */ = {
+		6819EEA5D14A0D61B6A1A706 /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				B7B90D8F2751D86F0024DD41 /* LoginViewController.swift in Sources */,
-				B7B90D922751DB4B0024DD41 /* WaffleAPI.swift in Sources */,
-				B744C15F274E8F290083A74C /* HomeViewController.swift in Sources */,
-				B74730B2274E8B4800F7EC3B /* AppDelegate.swift in Sources */,
-				B7B90D8D2751D7290024DD41 /* MainTabBarController.swift in Sources */,
-				B74730BC274E8B4800F7EC3B /* WaffleMarket.xcdatamodeld in Sources */,
-				AF465EAE27608A290017A360 /* SignUpViewController.swift in Sources */,
-				B744C161274E95360083A74C /* ChatRoomListViewController.swift in Sources */,
-				AF9B205D276F04EB00D3E13C /* SetProfileViewController.swift in Sources */,
-				B74730B4274E8B4800F7EC3B /* SceneDelegate.swift in Sources */,
-				AF9B205F276F066700D3E13C /* SetLocationViewController.swift in Sources */,
-				B787A8B5275B3CBE003B5A5E /* GoogleSignInAuthenticator.swift in Sources */,
+				FF50611FBB851A766B91F170 /* AppDelegate.swift in Sources */,
+				D7F0A35144A7F148777B39AB /* ChatRoomListViewController.swift in Sources */,
+				E8203F036BC2565A4C3971FE /* GoogleSignInAuthenticator.swift in Sources */,
+				B1A9028A5B23A3F6C742DC73 /* HomeViewController.swift in Sources */,
+				27AC754067F66D60005BE1D8 /* LoginViewController.swift in Sources */,
+				3A45C64B2B073E8CD9C148DF /* MainTabBarController.swift in Sources */,
+				C8EB81716AC18DBAEE12D1AF /* SceneDelegate.swift in Sources */,
+				0585797C66B2DE437455B244 /* SetLocationViewController.swift in Sources */,
+				BE839680F6A8A67CF105BD47 /* SetProfileViewController.swift in Sources */,
+				4AFDD516B860D86E176CB16B /* SignUpViewController.swift in Sources */,
+				70671B4EA2909B7F12B4B897 /* WaffleAPI.swift in Sources */,
+				7F22C89D97D83B18158EC94F /* WaffleMarket.xcdatamodeld in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXSourcesBuildPhase section */
 
 /* Begin PBXVariantGroup section */
-		B74730BF274E8B4900F7EC3B /* LaunchScreen.storyboard */ = {
+		BCAC14FE50B0C879FCAFE718 /* LaunchScreen.storyboard */ = {
 			isa = PBXVariantGroup;
 			children = (
-				B74730C0274E8B4900F7EC3B /* Base */,
+				1C74D63C0BEFEAA5EDF08FA0 /* Base */,
 			);
 			name = LaunchScreen.storyboard;
 			sourceTree = "<group>";
@@ -274,13 +267,13 @@
 /* End PBXVariantGroup section */
 
 /* Begin XCBuildConfiguration section */
-		B74730C3274E8B4900F7EC3B /* Debug */ = {
+		6A2D55D37D88504578F365FD /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
 				CLANG_ANALYZER_NONNULL = YES;
 				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
-				CLANG_CXX_LANGUAGE_STANDARD = "gnu++17";
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
 				CLANG_CXX_LIBRARY = "libc++";
 				CLANG_ENABLE_MODULES = YES;
 				CLANG_ENABLE_OBJC_ARC = YES;
@@ -316,8 +309,8 @@
 				GCC_NO_COMMON_BLOCKS = YES;
 				GCC_OPTIMIZATION_LEVEL = 0;
 				GCC_PREPROCESSOR_DEFINITIONS = (
-					"DEBUG=1",
 					"$(inherited)",
+					"DEBUG=1",
 				);
 				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
 				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
@@ -329,19 +322,41 @@
 				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
 				MTL_FAST_MATH = YES;
 				ONLY_ACTIVE_ARCH = YES;
+				PRODUCT_NAME = "$(TARGET_NAME)";
 				SDKROOT = iphoneos;
 				SWIFT_ACTIVE_COMPILATION_CONDITIONS = DEBUG;
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+				SWIFT_VERSION = 5.0;
 			};
 			name = Debug;
 		};
-		B74730C4274E8B4900F7EC3B /* Release */ = {
+		7498D1DB1BFAFD47E30F335A /* Release */ = {
+			isa = XCBuildConfiguration;
+			baseConfigurationReference = B5A95F3D028194E8FA13D5CD /* Pods-WaffleMarket.release.xcconfig */;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CODE_SIGN_IDENTITY = "iPhone Developer";
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = "";
+				INFOPLIST_FILE = WaffleMarket/Info.plist;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.wafflestudio.team8.wafflemarket;
+				SDKROOT = iphoneos;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Release;
+		};
+		8990B80F86C863E21983A6B9 /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
 				CLANG_ANALYZER_NONNULL = YES;
 				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
-				CLANG_CXX_LANGUAGE_STANDARD = "gnu++17";
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
 				CLANG_CXX_LIBRARY = "libc++";
 				CLANG_ENABLE_MODULES = YES;
 				CLANG_ENABLE_OBJC_ARC = YES;
@@ -383,106 +398,69 @@
 				IPHONEOS_DEPLOYMENT_TARGET = 15.0;
 				MTL_ENABLE_DEBUG_INFO = NO;
 				MTL_FAST_MATH = YES;
+				PRODUCT_NAME = "$(TARGET_NAME)";
 				SDKROOT = iphoneos;
 				SWIFT_COMPILATION_MODE = wholemodule;
 				SWIFT_OPTIMIZATION_LEVEL = "-O";
-				VALIDATE_PRODUCT = YES;
+				SWIFT_VERSION = 5.0;
 			};
 			name = Release;
 		};
-		B74730C6274E8B4900F7EC3B /* Debug */ = {
+		94D32D55C59DFCD0DD101E5B /* Debug */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 91C77851C5293D0690223C46 /* Pods-WaffleMarket.debug.xcconfig */;
+			baseConfigurationReference = 659D0A7263DE6F064C32B9CE /* Pods-WaffleMarket.debug.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
-				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
-				CODE_SIGN_STYLE = Automatic;
+				CODE_SIGN_IDENTITY = "iPhone Developer";
 				CURRENT_PROJECT_VERSION = 1;
-				DEVELOPMENT_TEAM = 99K458V69X;
-				GENERATE_INFOPLIST_FILE = YES;
+				DEVELOPMENT_TEAM = "";
 				INFOPLIST_FILE = WaffleMarket/Info.plist;
-				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
-				INFOPLIST_KEY_UILaunchStoryboardName = LaunchScreen;
-				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
-				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
-				IPHONEOS_DEPLOYMENT_TARGET = 15.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
 				MARKETING_VERSION = 1.0;
-				PRODUCT_BUNDLE_IDENTIFIER = com.wafflestudio.team8.WaffleMarket;
-				PRODUCT_NAME = "$(TARGET_NAME)";
-				SWIFT_EMIT_LOC_STRINGS = YES;
-				SWIFT_VERSION = 5.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.wafflestudio.team8.wafflemarket;
+				SDKROOT = iphoneos;
 				TARGETED_DEVICE_FAMILY = "1,2";
 			};
 			name = Debug;
 		};
-		B74730C7274E8B4900F7EC3B /* Release */ = {
-			isa = XCBuildConfiguration;
-			baseConfigurationReference = 96529C4EC7DA091653C7631D /* Pods-WaffleMarket.release.xcconfig */;
-			buildSettings = {
-				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
-				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
-				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 1;
-				DEVELOPMENT_TEAM = 99K458V69X;
-				GENERATE_INFOPLIST_FILE = YES;
-				INFOPLIST_FILE = WaffleMarket/Info.plist;
-				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
-				INFOPLIST_KEY_UILaunchStoryboardName = LaunchScreen;
-				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
-				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
-				IPHONEOS_DEPLOYMENT_TARGET = 15.0;
-				LD_RUNPATH_SEARCH_PATHS = (
-					"$(inherited)",
-					"@executable_path/Frameworks",
-				);
-				MARKETING_VERSION = 1.0;
-				PRODUCT_BUNDLE_IDENTIFIER = com.wafflestudio.team8.WaffleMarket;
-				PRODUCT_NAME = "$(TARGET_NAME)";
-				SWIFT_EMIT_LOC_STRINGS = YES;
-				SWIFT_VERSION = 5.0;
-				TARGETED_DEVICE_FAMILY = "1,2";
-			};
-			name = Release;
-		};
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
-		B74730A9274E8B4800F7EC3B /* Build configuration list for PBXProject "WaffleMarket" */ = {
+		811B99B733E184581A641992 /* Build configuration list for PBXProject "WaffleMarket" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
-				B74730C3274E8B4900F7EC3B /* Debug */,
-				B74730C4274E8B4900F7EC3B /* Release */,
+				6A2D55D37D88504578F365FD /* Debug */,
+				8990B80F86C863E21983A6B9 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
-			defaultConfigurationName = Release;
+			defaultConfigurationName = Debug;
 		};
-		B74730C5274E8B4900F7EC3B /* Build configuration list for PBXNativeTarget "WaffleMarket" */ = {
+		E1AAD4D696F154EA4A554910 /* Build configuration list for PBXNativeTarget "WaffleMarket" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
-				B74730C6274E8B4900F7EC3B /* Debug */,
-				B74730C7274E8B4900F7EC3B /* Release */,
+				94D32D55C59DFCD0DD101E5B /* Debug */,
+				7498D1DB1BFAFD47E30F335A /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
-			defaultConfigurationName = Release;
+			defaultConfigurationName = Debug;
 		};
 /* End XCConfigurationList section */
 
 /* Begin XCVersionGroup section */
-		B74730BA274E8B4800F7EC3B /* WaffleMarket.xcdatamodeld */ = {
+		280A1F212D70F871C39D6D8F /* WaffleMarket.xcdatamodeld */ = {
 			isa = XCVersionGroup;
 			children = (
-				B74730BB274E8B4800F7EC3B /* WaffleMarket.xcdatamodel */,
+				1F3EE813B0AC0A5E73214EAA /* WaffleMarket.xcdatamodel */,
 			);
-			currentVersion = B74730BB274E8B4800F7EC3B /* WaffleMarket.xcdatamodel */;
+			currentVersion = 1F3EE813B0AC0A5E73214EAA /* WaffleMarket.xcdatamodel */;
 			path = WaffleMarket.xcdatamodeld;
 			sourceTree = "<group>";
 			versionGroupType = wrapper.xcdatamodel;
 		};
 /* End XCVersionGroup section */
 	};
-	rootObject = B74730A6274E8B4800F7EC3B /* Project object */;
+	rootObject = E53F36E88AD1AACA8464DEC9 /* Project object */;
 }
