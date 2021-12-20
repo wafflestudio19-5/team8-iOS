@@ -35,7 +35,7 @@ class LoginViewController: UIViewController {
         
         
 
-        
+
         
         
         self.view.addSubview(waffleLogoLabel)
@@ -156,7 +156,7 @@ class LoginViewController: UIViewController {
         signUpBtn.setTitle("회원가입하기", for: .normal)
         
         signUpBtn.rx.tap.bind{
-            self.present(SignUpViewController(), animated:true, completion: nil)
+            self.present(UINavigationController(rootViewController: SignUpViewController()), animated: true)
         }.disposed(by: disposeBag)
     }
     

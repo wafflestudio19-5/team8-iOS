@@ -88,7 +88,7 @@ class SignUpViewController: UIViewController {
         signUpBtn.layer.cornerRadius = 10
         
         signUpBtn.rx.tap.bind{
-            self.present(SetProfileViewController(), animated:true, completion: nil)
+            self.navigationController?.pushViewController(SetProfileViewController(), animated:true)
         }.disposed(by: disposeBag)
     }
     
