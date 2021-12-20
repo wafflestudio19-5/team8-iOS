@@ -11,5 +11,8 @@ targets:
     sources:
       - path: WaffleMarket
     settings:
+      CODE_SIGN_STYLE: Automatic
       INFOPLIST_FILE: WaffleMarket/Info.plist
-      PRODUCT_BUNDLE_IDENTIFIER: com.wafflestudio.team8.wafflemarket
+      PRODUCT_BUNDLE_IDENTIFIER: com.wafflestudio.team8.WaffleMarket
+
+      

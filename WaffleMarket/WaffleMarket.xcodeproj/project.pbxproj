@@ -9,6 +9,7 @@
 /* Begin PBXBuildFile section */
 		0585797C66B2DE437455B244 /* SetLocationViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 58012C6F7296CEB25981DEF1 /* SetLocationViewController.swift */; };
 		27AC754067F66D60005BE1D8 /* LoginViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = E65EF2B3CB0A85B25C689546 /* LoginViewController.swift */; };
+		2B0CC6B2FF5CE4A1B183A65F /* Pods_WaffleMarket.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1F2B286D3B44DF2CA1A96296 /* Pods_WaffleMarket.framework */; };
 		3A45C64B2B073E8CD9C148DF /* MainTabBarController.swift in Sources */ = {isa = PBXBuildFile; fileRef = D9C5C3DE19B9A45030F8ED35 /* MainTabBarController.swift */; };
 		4AFDD516B860D86E176CB16B /* SignUpViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8FB4F1ACE05049E7194BDE8B /* SignUpViewController.swift */; };
 		70671B4EA2909B7F12B4B897 /* WaffleAPI.swift in Sources */ = {isa = PBXBuildFile; fileRef = FBE14F4CECB7681A5A000922 /* WaffleAPI.swift */; };
@@ -19,7 +20,6 @@
 		BE839680F6A8A67CF105BD47 /* SetProfileViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = D8293840FFED5AA4A7FA3D02 /* SetProfileViewController.swift */; };
 		C8EB81716AC18DBAEE12D1AF /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = A32C6F3F9D53CDFD2494D7B2 /* SceneDelegate.swift */; };
 		D7F0A35144A7F148777B39AB /* ChatRoomListViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3FF473DA1AEF2B8E04B38129 /* ChatRoomListViewController.swift */; };
-		DE2673B123605932A0F54D3D /* Pods_WaffleMarket.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C2364BC6A615BDB612E14B83 /* Pods_WaffleMarket.framework */; };
 		E8203F036BC2565A4C3971FE /* GoogleSignInAuthenticator.swift in Sources */ = {isa = PBXBuildFile; fileRef = FBA84C212B8792717579522A /* GoogleSignInAuthenticator.swift */; };
 		FF50611FBB851A766B91F170 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 55686EE3FA4B87FCD958A870 /* AppDelegate.swift */; };
 /* End PBXBuildFile section */
@@ -27,17 +27,17 @@
 /* Begin PBXFileReference section */
 		1A531933021175C92772E579 /* HomeViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeViewController.swift; sourceTree = "<group>"; };
 		1C74D63C0BEFEAA5EDF08FA0 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
+		1F2B286D3B44DF2CA1A96296 /* Pods_WaffleMarket.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_WaffleMarket.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		1F3EE813B0AC0A5E73214EAA /* WaffleMarket.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = WaffleMarket.xcdatamodel; sourceTree = "<group>"; };
+		394E0645EBB5029E51FCFBD0 /* Pods-WaffleMarket.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-WaffleMarket.release.xcconfig"; path = "Target Support Files/Pods-WaffleMarket/Pods-WaffleMarket.release.xcconfig"; sourceTree = "<group>"; };
 		3FF473DA1AEF2B8E04B38129 /* ChatRoomListViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChatRoomListViewController.swift; sourceTree = "<group>"; };
 		55686EE3FA4B87FCD958A870 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		58012C6F7296CEB25981DEF1 /* SetLocationViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SetLocationViewController.swift; sourceTree = "<group>"; };
-		659D0A7263DE6F064C32B9CE /* Pods-WaffleMarket.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-WaffleMarket.debug.xcconfig"; path = "Target Support Files/Pods-WaffleMarket/Pods-WaffleMarket.debug.xcconfig"; sourceTree = "<group>"; };
 		7B6E3A229BB0023BBE78CA63 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		8FB4F1ACE05049E7194BDE8B /* SignUpViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SignUpViewController.swift; sourceTree = "<group>"; };
+		903566A9B2DAA2D972FF1BED /* Pods-WaffleMarket.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-WaffleMarket.debug.xcconfig"; path = "Target Support Files/Pods-WaffleMarket/Pods-WaffleMarket.debug.xcconfig"; sourceTree = "<group>"; };
 		A32C6F3F9D53CDFD2494D7B2 /* SceneDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SceneDelegate.swift; sourceTree = "<group>"; };
-		A588F132C78D1862FAE18182 /* WaffleMarket.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = WaffleMarket.app; sourceTree = BUILT_PRODUCTS_DIR; };
-		B5A95F3D028194E8FA13D5CD /* Pods-WaffleMarket.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-WaffleMarket.release.xcconfig"; path = "Target Support Files/Pods-WaffleMarket/Pods-WaffleMarket.release.xcconfig"; sourceTree = "<group>"; };
-		C2364BC6A615BDB612E14B83 /* Pods_WaffleMarket.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_WaffleMarket.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		A588F132C78D1862FAE18182 /* WaffleMarket.app */ = {isa = PBXFileReference; includeInIndex = 0; lastKnownFileType = wrapper.application; path = WaffleMarket.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		D5D2D2898266DA3B3A8EB4B1 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = Info.plist; sourceTree = "<group>"; };
 		D8293840FFED5AA4A7FA3D02 /* SetProfileViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SetProfileViewController.swift; sourceTree = "<group>"; };
 		D9C5C3DE19B9A45030F8ED35 /* MainTabBarController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MainTabBarController.swift; sourceTree = "<group>"; };
@@ -47,17 +47,27 @@
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
-		ED75435C831BAB0A0EC38B7A /* Frameworks */ = {
+		5B9AE0BD3161203092DFE1A1 /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				DE2673B123605932A0F54D3D /* Pods_WaffleMarket.framework in Frameworks */,
+				2B0CC6B2FF5CE4A1B183A65F /* Pods_WaffleMarket.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		203FCFCDBEE9944C998C96F0 /* Pods */ = {
+			isa = PBXGroup;
+			children = (
+				903566A9B2DAA2D972FF1BED /* Pods-WaffleMarket.debug.xcconfig */,
+				394E0645EBB5029E51FCFBD0 /* Pods-WaffleMarket.release.xcconfig */,
+			);
+			name = Pods;
+			path = Pods;
+			sourceTree = "<group>";
+		};
 		49A3EFE6FF1C9ACBCA747CB8 /* Controller */ = {
 			isa = PBXGroup;
 			children = (
@@ -85,8 +95,8 @@
 			children = (
 				C0F2729D8793C589A747063E /* WaffleMarket */,
 				52B34C458847E5DCB9E0B6E4 /* Products */,
-				C2C9CF52D955BEF722C74730 /* Pods */,
-				BD782C488CEFFE46A43BD281 /* Frameworks */,
+				203FCFCDBEE9944C998C96F0 /* Pods */,
+				BED38BF1A7D0B8280948F21C /* Frameworks */,
 			);
 			sourceTree = "<group>";
 		};
@@ -99,10 +109,10 @@
 			path = Network;
 			sourceTree = "<group>";
 		};
-		BD782C488CEFFE46A43BD281 /* Frameworks */ = {
+		BED38BF1A7D0B8280948F21C /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
-				C2364BC6A615BDB612E14B83 /* Pods_WaffleMarket.framework */,
+				1F2B286D3B44DF2CA1A96296 /* Pods_WaffleMarket.framework */,
 			);
 			name = Frameworks;
 			sourceTree = "<group>";
@@ -122,15 +132,6 @@
 			path = WaffleMarket;
 			sourceTree = "<group>";
 		};
-		C2C9CF52D955BEF722C74730 /* Pods */ = {
-			isa = PBXGroup;
-			children = (
-				659D0A7263DE6F064C32B9CE /* Pods-WaffleMarket.debug.xcconfig */,
-				B5A95F3D028194E8FA13D5CD /* Pods-WaffleMarket.release.xcconfig */,
-			);
-			path = Pods;
-			sourceTree = "<group>";
-		};
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
@@ -138,11 +139,11 @@
 			isa = PBXNativeTarget;
 			buildConfigurationList = E1AAD4D696F154EA4A554910 /* Build configuration list for PBXNativeTarget "WaffleMarket" */;
 			buildPhases = (
-				BB9CC1DB66CB7AE165C21AEF /* [CP] Check Pods Manifest.lock */,
+				BC0C5C609CE7A3C52359435A /* [CP] Check Pods Manifest.lock */,
 				6819EEA5D14A0D61B6A1A706 /* Sources */,
 				93CB8D1CAA76E418883AE2E7 /* Resources */,
-				ED75435C831BAB0A0EC38B7A /* Frameworks */,
-				DAF1C8DA15D3245624EA98F8 /* [CP] Embed Pods Frameworks */,
+				5B9AE0BD3161203092DFE1A1 /* Frameworks */,
+				E3A52A9E4A0A403CF38C2FA2 /* [CP] Embed Pods Frameworks */,
 			);
 			buildRules = (
 			);
@@ -160,6 +161,11 @@
 			isa = PBXProject;
 			attributes = {
 				LastUpgradeCheck = 1200;
+				TargetAttributes = {
+					C1D77C94502547E06FD0FAC9 = {
+						ProvisioningStyle = Automatic;
+					};
+				};
 			};
 			buildConfigurationList = 811B99B733E184581A641992 /* Build configuration list for PBXProject "WaffleMarket" */;
 			compatibilityVersion = "Xcode 10.0";
@@ -192,7 +198,7 @@
 /* End PBXResourcesBuildPhase section */
 
 /* Begin PBXShellScriptBuildPhase section */
-		BB9CC1DB66CB7AE165C21AEF /* [CP] Check Pods Manifest.lock */ = {
+		BC0C5C609CE7A3C52359435A /* [CP] Check Pods Manifest.lock */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
@@ -214,7 +220,7 @@
 			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n# This output is used by Xcode 'outputs' to avoid re-running this script phase.\necho \"SUCCESS\" > \"${SCRIPT_OUTPUT_FILE_0}\"\n";
 			showEnvVarsInLog = 0;
 		};
-		DAF1C8DA15D3245624EA98F8 /* [CP] Embed Pods Frameworks */ = {
+		E3A52A9E4A0A403CF38C2FA2 /* [CP] Embed Pods Frameworks */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
@@ -332,19 +338,17 @@
 		};
 		7498D1DB1BFAFD47E30F335A /* Release */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = B5A95F3D028194E8FA13D5CD /* Pods-WaffleMarket.release.xcconfig */;
+			baseConfigurationReference = 394E0645EBB5029E51FCFBD0 /* Pods-WaffleMarket.release.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
-				CURRENT_PROJECT_VERSION = 1;
-				DEVELOPMENT_TEAM = "";
+				CODE_SIGN_STYLE = Automatic;
 				INFOPLIST_FILE = WaffleMarket/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MARKETING_VERSION = 1.0;
-				PRODUCT_BUNDLE_IDENTIFIER = com.wafflestudio.team8.wafflemarket;
+				PRODUCT_BUNDLE_IDENTIFIER = com.wafflestudio.team8.WaffleMarket;
 				SDKROOT = iphoneos;
 				TARGETED_DEVICE_FAMILY = "1,2";
 			};
@@ -408,19 +412,17 @@
 		};
 		94D32D55C59DFCD0DD101E5B /* Debug */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 659D0A7263DE6F064C32B9CE /* Pods-WaffleMarket.debug.xcconfig */;
+			baseConfigurationReference = 903566A9B2DAA2D972FF1BED /* Pods-WaffleMarket.debug.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
-				CURRENT_PROJECT_VERSION = 1;
-				DEVELOPMENT_TEAM = "";
+				CODE_SIGN_STYLE = Automatic;
 				INFOPLIST_FILE = WaffleMarket/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MARKETING_VERSION = 1.0;
-				PRODUCT_BUNDLE_IDENTIFIER = com.wafflestudio.team8.wafflemarket;
+				PRODUCT_BUNDLE_IDENTIFIER = com.wafflestudio.team8.WaffleMarket;
 				SDKROOT = iphoneos;
 				TARGETED_DEVICE_FAMILY = "1,2";
 			};
