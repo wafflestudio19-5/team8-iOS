@@ -15,7 +15,7 @@ enum WaffleService{
 }
 extension WaffleService: TargetType{
     var baseURL: URL {
-        URL(string: "http://ec2-54-180-144-124.ap-northeast-2.compute.amazonaws.com/api/v1")! //54.180.144.124
+        URL(string: "http://www.wafflemarket.shop/api/v1")! //54.180.144.124
     }
     
     var path: String {
