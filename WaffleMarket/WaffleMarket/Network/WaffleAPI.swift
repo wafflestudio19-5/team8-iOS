@@ -52,7 +52,7 @@ extension WaffleService: TargetType{
 }
 
 class WaffleAPI{
-    static var provider = MoyaProvider<WaffleService>()
+    private static var provider = MoyaProvider<WaffleService>()
 
     static func ping() -> Single<Response> {
         return provider.rx.request(.ping)

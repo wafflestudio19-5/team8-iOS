@@ -55,7 +55,7 @@ class LoginViewController: UIViewController {
         self.view.addSubview(signUpBtn)
         setSignUpBtn()
         
-        mapTestBtn.setTitle("지도 테스트", for: .normal)
+        mapTestBtn.setTitle("Location 테스트", for: .normal)
         mapTestBtn.translatesAutoresizingMaskIntoConstraints = false
         mapTestBtn.centerXAnchor.constraint(equalTo: self.view.centerXAnchor).isActive = true
         mapTestBtn.topAnchor.constraint(equalTo: self.view.topAnchor, constant: 100).isActive = true

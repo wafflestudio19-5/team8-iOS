@@ -2,22 +2,29 @@
 //  SetLocationViewController.swift
 //  WaffleMarket
 //
-//  Created by Chaemin Lee on 2021/12/19.
+//  Created by 안재우 on 2021/12/22.
 //
 
+import Foundation
 import UIKit
-import NMapsMap
+import RxSwift
 import CoreLocation
 class SetLocationViewController: UIViewController, CLLocationManagerDelegate {
     let locationManager = CLLocationManager()
-    var mapView: NMFNaverMapView!
-    let addressField = UITextField()
-    let mapViewContainer = UIView()
+    let searchBar = UISearchBar()
+    let findNearbyBtn = UIButton(type:.system)
+    let searchResultTableView = UITableView()
+    let disposeBag = DisposeBag()
     override func viewDidLoad() {
         super.viewDidLoad()
         self.view.backgroundColor = .white
         
-        
+        self.view.addSubview(searchBar)
+        self.view.addSubview(findNearbyBtn)
+        self.view.addSubview(searchResultTableView)
+        setSearchBar()
+        setFindNearbyBtn()
+        setSearchResultTableView()
         locationManager.delegate = self
         switch locationManager.authorizationStatus {
             case .authorizedAlways, .authorizedWhenInUse:
@@ -30,62 +37,78 @@ class SetLocationViewController: UIViewController, CLLocationManagerDelegate {
             print("default")
                 return
         }
-        mapViewContainer.frame = self.view.frame
-        self.view.addSubview(mapViewContainer)
-        self.view.addSubview(addressField)
+    }
+    
+    private func setSearchBar(){
+        searchBar.translatesAutoresizingMaskIntoConstraints = false
+        searchBar.topAnchor.constraint(equalTo: self.view.safeAreaLayoutGuide.topAnchor, constant: 20).isActive = true
+        searchBar.leadingAnchor.constraint(equalTo: self.view.safeAreaLayoutGuide.leadingAnchor).isActive = true
+        searchBar.trailingAnchor.constraint(equalTo: self.view.safeAreaLayoutGuide.trailingAnchor).isActive = true
+        searchBar.heightAnchor.constraint(equalToConstant: 50).isActive = true
+        searchBar.placeholder = "Search by neighborhood"
         
-        setAddressField()
+        searchBar.rx.text.orEmpty.throttle(.milliseconds(800), latest: true, scheduler: MainScheduler.instance).subscribe { changedText in
+            print(changedText)
+            NaverMapAPI.geocode(query: changedText).subscribe { response in
+                let decoder = JSONDecoder()
+            
+                if let decoded = try? decoder.decode(GeocodeResponse.self, from: response.data) {
+                    let addresses = decoded.addresses
+                    if addresses.isEmpty {
+                        print("empty")
+                    }
+                    for address in addresses {
+                        print(address.roadAddress)
+                    }
+                    print("")
+                }
+            } onFailure: { error in
+                
+            } onDisposed: {
+                
+            }.disposed(by: self.disposeBag)
 
-        
-        // Do any additional setup after loading the view.
+        } onError: { error in
+            
+        } onCompleted: {
+            
+        } onDisposed: {
+            
+        }.disposed(by: disposeBag)
+
     }
-    private func setAddressField(){
-        addressField.translatesAutoresizingMaskIntoConstraints = false
-        addressField.topAnchor.constraint(equalTo: self.view.topAnchor, constant: 100).isActive = true
-        addressField.leadingAnchor.constraint(equalTo: self.view.leadingAnchor, constant: 20).isActive = true
-        addressField.trailingAnchor.constraint(equalTo: self.view.trailingAnchor, constant: -20).isActive = true
-        addressField.centerXAnchor.constraint(equalTo: self.view.centerXAnchor).isActive = true
-        addressField.heightAnchor.constraint(equalToConstant: 50).isActive = true
-        addressField.borderStyle = .none
-        addressField.layer.cornerRadius = 8
-        addressField.layer.borderWidth = 0.25
-        addressField.layer.borderColor = UIColor.white.cgColor
-        //addressField.bounds = addressField.frame.insetBy(dx: 10.0, dy: 10.0)
-        addressField.backgroundColor = .white
-        addressField.dropShadow()
+    
+    private func setFindNearbyBtn(){
+        findNearbyBtn.translatesAutoresizingMaskIntoConstraints = false
+        findNearbyBtn.topAnchor.constraint(equalTo: searchBar.bottomAnchor, constant: 10).isActive = true
+        findNearbyBtn.leadingAnchor.constraint(equalTo: self.view.safeAreaLayoutGuide.leadingAnchor, constant: 10).isActive = true
+        findNearbyBtn.trailingAnchor.constraint(equalTo: self.view.safeAreaLayoutGuide.trailingAnchor, constant: -10).isActive = true
+        findNearbyBtn.heightAnchor.constraint(equalToConstant: 50).isActive = true
+        findNearbyBtn.backgroundColor = .orange
+        findNearbyBtn.setTitle("Find nearby neighborhoods", for: .normal)
+        findNearbyBtn.setTitleColor(.white, for: .normal)
+        findNearbyBtn.layer.cornerRadius = 10
+        
+        findNearbyBtn.rx.tap.bind{
+            
+        }.disposed(by: disposeBag)
+    }
+    
+    private func setSearchResultTableView(){
+        searchResultTableView.translatesAutoresizingMaskIntoConstraints = false
+        searchResultTableView.topAnchor.constraint(equalTo: findNearbyBtn.bottomAnchor, constant: 10).isActive = true
+        searchResultTableView.leadingAnchor.constraint(equalTo: self.view.safeAreaLayoutGuide.leadingAnchor).isActive = true
+        searchResultTableView.trailingAnchor.constraint(equalTo: self.view.safeAreaLayoutGuide.trailingAnchor).isActive = true
         
     }
     
-    
-    private func setNaverMap(){
-        mapView = NMFNaverMapView(frame: mapViewContainer.frame)
-        mapView.positionMode = .direction
-        mapView.showLocationButton = true
-        mapView.showZoomControls = true
-        mapView.showCompass = true
-        mapView.showScaleBar = true
-        mapViewContainer.addSubview(mapView)
-    }
-    override func viewWillAppear(_ animated: Bool) {
-        
-    }
     func locationManagerDidChangeAuthorization(_ manager: CLLocationManager) {
         print("change")
         if manager.authorizationStatus == .authorizedWhenInUse || manager.authorizationStatus == .authorizedAlways {
-            setNaverMap()
+            
+            
         }
         
+        
     }
-    
-
-    /*
-    // MARK: - Navigation
-
-    // In a storyboard-based application, you will often want to do a little preparation before navigation
-    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
-        // Get the new view controller using segue.destination.
-        // Pass the selected object to the new view controller.
-    }
-    */
-
 }
