@@ -26,7 +26,8 @@ class LoginViewController: UIViewController {
     let isPwValid = BehaviorSubject(value: false)
     var loginBtn = UIButton(type: .system)
     var signUpBtn = UIButton(type: .system)
-
+    
+    let mapTestBtn = UIButton(type: .system)
     let disposeBag = DisposeBag()
     
     override func viewDidLoad() {
@@ -37,6 +38,7 @@ class LoginViewController: UIViewController {
 
 
         
+        self.view.addSubview(mapTestBtn)
         
         self.view.addSubview(waffleLogoLabel)
         setWaffleLogoLabel()
@@ -52,6 +54,16 @@ class LoginViewController: UIViewController {
         setGoogleLoginBtn()
         self.view.addSubview(signUpBtn)
         setSignUpBtn()
+        
+        mapTestBtn.setTitle("지도 테스트", for: .normal)
+        mapTestBtn.translatesAutoresizingMaskIntoConstraints = false
+        mapTestBtn.centerXAnchor.constraint(equalTo: self.view.centerXAnchor).isActive = true
+        mapTestBtn.topAnchor.constraint(equalTo: self.view.topAnchor, constant: 100).isActive = true
+        mapTestBtn.heightAnchor.constraint(equalToConstant: 30).isActive = true
+        mapTestBtn.rx.tap.bind{
+            self.navigationController?.pushViewController(SetLocationViewController(), animated: true)
+        }
+    
         
         Observable.combineLatest(isIdValid, isPwValid, resultSelector: {$0 && $1})
             .subscribe { value in
