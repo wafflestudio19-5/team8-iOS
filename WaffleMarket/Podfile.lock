@@ -20,6 +20,7 @@ PODS:
   - Moya/RxSwift (15.0.0):
     - Moya/Core
     - RxSwift (~> 6.0)
+  - NMapsMap (3.10.0)
   - RxAlamofire (6.1.1):
     - RxAlamofire/Core (= 6.1.1)
   - RxAlamofire/Core (6.1.1):
@@ -43,6 +44,7 @@ DEPENDENCIES:
   - GoogleSignIn
   - Kingfisher (~> 7.1)
   - Moya/RxSwift (~> 15.0)
+  - NMapsMap
   - RxAlamofire (~> 6.1)
   - RxCocoa (~> 6.2)
   - RxDataSources (~> 5.0)
@@ -60,6 +62,7 @@ SPEC REPOS:
     - GTMSessionFetcher
     - Kingfisher
     - Moya
+    - NMapsMap
     - RxAlamofire
     - RxCocoa
     - RxDataSources
@@ -76,6 +79,7 @@ SPEC CHECKSUMS:
   GTMSessionFetcher: 43748f93435c2aa068b1cbe39655aaf600652e91
   Kingfisher: f738f9c4a3415823b8e2985d10aa2d6a9f37bc4d
   Moya: 138f0573e53411fb3dc17016add0b748dfbd78ee
+  NMapsMap: 17caab4af9a3fc5c25b79858de18bdeab1eaff87
   RxAlamofire: beb75a1c452d0de225651db4903f5d29d034a620
   RxCocoa: 4baf94bb35f2c0ab31bc0cb9f1900155f646ba42
   RxDataSources: aa47cc1ed6c500fa0dfecac5c979b723542d79cf
@@ -83,6 +87,6 @@ SPEC CHECKSUMS:
   RxRelay: e72dbfd157807478401ef1982e1c61c945c94b2f
   RxSwift: d356ab7bee873611322f134c5f9ef379fa183d8f
 
-PODFILE CHECKSUM: dfc6b12e9c243eaff8846120c63f4f6915da8f76
+PODFILE CHECKSUM: 8ea0c5c3871ce53bb9796e612ba35200d396e37e
 
 COCOAPODS: 1.11.2
