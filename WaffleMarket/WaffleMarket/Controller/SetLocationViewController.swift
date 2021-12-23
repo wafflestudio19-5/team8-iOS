@@ -42,12 +42,7 @@ class SetLocationViewController: UIViewController, CLLocationManagerDelegate {
                 return
         }
     }
-    private func findNearbyNeighborhoods(code: String){
-        WaffleAPI.findNearbyNeighborhoods(code: code).subscribe { response in
-            // MARK: add data to tableView
-        } onFailure: { error in
-        }.disposed(by: self.disposeBag)
-    }
+
     private func sendLocation(code: String){
         WaffleAPI.postLocation(code: code).subscribe { response in
             if response.statusCode == 200 {
@@ -120,7 +115,7 @@ class SetLocationViewController: UIViewController, CLLocationManagerDelegate {
                 .subscribe { response in
                     let decoder = JSONDecoder()
                     if let decoded = try? decoder.decode(ReverseGeocodeResponse.self, from: response.data) {
-                        self.findNearbyNeighborhoods(code: decoded.results[0].id)
+                        self.viewModel.fetchNearbyAddresses(code: decoded.results[0].id)
                     }
                 } onFailure: { error in
                     

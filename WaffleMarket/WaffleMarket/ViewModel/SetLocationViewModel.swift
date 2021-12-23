@@ -12,7 +12,8 @@ class SetLocationViewModel {
     let addressDataSubject: BehaviorRelay<[Address]> = BehaviorRelay(value: [
     ])
     
-    func fetchNearbyAddresses(){
+    func fetchNearbyAddresses(code: String){
+        // MARK: implement
         
     }
     
