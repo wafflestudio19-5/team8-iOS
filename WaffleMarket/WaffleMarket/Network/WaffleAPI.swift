@@ -12,6 +12,7 @@ import Moya
 enum WaffleService{
     case ping
     case googleLogin(idToken: [String: String])
+    case postLocation(code: Int)
 }
 extension WaffleService: TargetType{
     var baseURL: URL {
@@ -24,7 +25,10 @@ extension WaffleService: TargetType{
             return "/ping"
         case .googleLogin(_):
             return "/google-login-test/" // MARK: change later
+        case .postLocation:
+            return "/location/"
         }
+        
     }
     
     var method: Moya.Method {
@@ -32,6 +36,8 @@ extension WaffleService: TargetType{
         case .ping:
             return .get
         case .googleLogin:
+            return .post
+        case .postLocation:
             return .post
         }
     }
@@ -43,6 +49,8 @@ extension WaffleService: TargetType{
             return .requestPlain
         case let .googleLogin(idToken):
             return .requestJSONEncodable(idToken)
+        case let .postLocation(code):
+            return .requestJSONEncodable(["code": code])
         }
     }
     
@@ -60,6 +68,10 @@ class WaffleAPI{
     
     static func googleLogin(idToken: String) -> Single<Response> {
         return provider.rx.request(.googleLogin(idToken: ["token": idToken]))
+    }
+    
+    static func postLocation(code: Int) -> Single<Response> {
+        return provider.rx.request(.postLocation(code: code))
     }
 }
 

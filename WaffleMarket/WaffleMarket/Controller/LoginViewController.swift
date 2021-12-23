@@ -62,7 +62,7 @@ class LoginViewController: UIViewController {
         mapTestBtn.heightAnchor.constraint(equalToConstant: 30).isActive = true
         mapTestBtn.rx.tap.bind{
             self.navigationController?.pushViewController(SetLocationViewController(), animated: true)
-        }
+        }.disposed(by: disposeBag)
     
         
         Observable.combineLatest(isIdValid, isPwValid, resultSelector: {$0 && $1})

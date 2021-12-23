@@ -8,23 +8,27 @@
 import Foundation
 import UIKit
 import RxSwift
+
 import CoreLocation
+
+
 class SetLocationViewController: UIViewController, CLLocationManagerDelegate {
     let locationManager = CLLocationManager()
     let searchBar = UISearchBar()
     let findNearbyBtn = UIButton(type:.system)
-    let searchResultTableView = UITableView()
+    let addressTableView = UITableView()
     let disposeBag = DisposeBag()
+    let viewModel = SetLocationViewModel()
     override func viewDidLoad() {
         super.viewDidLoad()
         self.view.backgroundColor = .white
         
         self.view.addSubview(searchBar)
         self.view.addSubview(findNearbyBtn)
-        self.view.addSubview(searchResultTableView)
+        self.view.addSubview(addressTableView)
         setSearchBar()
         setFindNearbyBtn()
-        setSearchResultTableView()
+        setAddressTableView()
         locationManager.delegate = self
         switch locationManager.authorizationStatus {
             case .authorizedAlways, .authorizedWhenInUse:
@@ -37,6 +41,22 @@ class SetLocationViewController: UIViewController, CLLocationManagerDelegate {
             print("default")
                 return
         }
+    }
+    
+    private func sendLocation(code: Int){
+        WaffleAPI.postLocation(code: code).subscribe { response in
+            if response.statusCode == 200 {
+                let sceneDelegate = UIApplication.shared.connectedScenes.first?.delegate as? SceneDelegate
+                sceneDelegate?.changeRootViewController(MainTabBarController())
+            } else {
+                print("postLocation:", response)
+            }
+        } onFailure: { error in
+            
+        } onDisposed: {
+            
+        }.disposed(by: disposeBag)
+
     }
     
     private func setSearchBar(){
@@ -94,21 +114,48 @@ class SetLocationViewController: UIViewController, CLLocationManagerDelegate {
         }.disposed(by: disposeBag)
     }
     
-    private func setSearchResultTableView(){
-        searchResultTableView.translatesAutoresizingMaskIntoConstraints = false
-        searchResultTableView.topAnchor.constraint(equalTo: findNearbyBtn.bottomAnchor, constant: 10).isActive = true
-        searchResultTableView.leadingAnchor.constraint(equalTo: self.view.safeAreaLayoutGuide.leadingAnchor).isActive = true
-        searchResultTableView.trailingAnchor.constraint(equalTo: self.view.safeAreaLayoutGuide.trailingAnchor).isActive = true
+    private func setAddressTableView(){
+        addressTableView.translatesAutoresizingMaskIntoConstraints = false
+        addressTableView.topAnchor.constraint(equalTo: findNearbyBtn.bottomAnchor, constant: 10).isActive = true
+        addressTableView.leadingAnchor.constraint(equalTo: self.view.safeAreaLayoutGuide.leadingAnchor).isActive = true
+        addressTableView.trailingAnchor.constraint(equalTo: self.view.safeAreaLayoutGuide.trailingAnchor).isActive = true
+        addressTableView.bottomAnchor.constraint(equalTo: self.view.safeAreaLayoutGuide.bottomAnchor).isActive = true
+        addressTableView.register(AddressTableViewCell.self, forCellReuseIdentifier: "addressCell")
+        addressTableView.rx.setDelegate(self).disposed(by: disposeBag)
+    
         
+        addressTableView.rx.itemSelected.subscribe { indexPath in
+            guard let item = indexPath.element?.item else {return}
+            let address = self.viewModel.addressDataSubject.value[item]
+            self.sendLocation(code: address.code)
+        }.disposed(by: disposeBag)
+        let query = searchBar.rx.text.orEmpty.throttle(.milliseconds(800), latest: true, scheduler: MainScheduler.instance).distinctUntilChanged()
+        self.viewModel
+            .filterByQuery(query: query)
+            .bind(to: self.addressTableView.rx.items(cellIdentifier: "addressCell", cellType: AddressTableViewCell.self)) {
+                index, element, cell in
+                cell.setData(address: element)
+            }.disposed(by: disposeBag)
+        
+        
+        self.viewModel.test_fetchDummyData()
     }
     
     func locationManagerDidChangeAuthorization(_ manager: CLLocationManager) {
-        print("change")
         if manager.authorizationStatus == .authorizedWhenInUse || manager.authorizationStatus == .authorizedAlways {
             
             
         }
         
         
+    }
+}
+
+extension SetLocationViewController: UITableViewDelegate {
+    func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
+        return 50
+    }
+    func tableView(_ tableView: UITableView, shouldHighlightRowAt indexPath: IndexPath) -> Bool {
+        return true
     }
 }
