@@ -18,11 +18,11 @@ class SetLocationViewController: UIViewController, CLLocationManagerDelegate {
     let findNearbyBtn = UIButton(type:.system)
     let addressTableView = UITableView()
     let disposeBag = DisposeBag()
-    let viewModel = SetLocationViewModel()
+    var viewModel: SetLocationViewModel!
     override func viewDidLoad() {
         super.viewDidLoad()
         self.view.backgroundColor = .white
-        
+        viewModel = SetLocationViewModel(disposeBag: disposeBag)
         self.view.addSubview(searchBar)
         self.view.addSubview(findNearbyBtn)
         self.view.addSubview(addressTableView)
@@ -44,6 +44,7 @@ class SetLocationViewController: UIViewController, CLLocationManagerDelegate {
     }
 
     private func sendLocation(code: String){
+        
         WaffleAPI.postLocation(code: code).subscribe { response in
             if response.statusCode == 200 {
                 let sceneDelegate = UIApplication.shared.connectedScenes.first?.delegate as? SceneDelegate
@@ -66,36 +67,6 @@ class SetLocationViewController: UIViewController, CLLocationManagerDelegate {
         searchBar.trailingAnchor.constraint(equalTo: self.view.safeAreaLayoutGuide.trailingAnchor).isActive = true
         searchBar.heightAnchor.constraint(equalToConstant: 50).isActive = true
         searchBar.placeholder = "Search by neighborhood"
-        
-        searchBar.rx.text.orEmpty.throttle(.milliseconds(800), latest: true, scheduler: MainScheduler.instance).subscribe { changedText in
-            print(changedText)
-            NaverMapAPI.geocode(query: changedText).subscribe { response in
-                let decoder = JSONDecoder()
-            
-                if let decoded = try? decoder.decode(GeocodeResponse.self, from: response.data) {
-                    let addresses = decoded.addresses
-                    if addresses.isEmpty {
-                        print("empty")
-                    }
-                    for address in addresses {
-                        print(address.roadAddress)
-                    }
-                    print("")
-                }
-            } onFailure: { error in
-                
-            } onDisposed: {
-                
-            }.disposed(by: self.disposeBag)
-
-        } onError: { error in
-            
-        } onCompleted: {
-            
-        } onDisposed: {
-            
-        }.disposed(by: disposeBag)
-
     }
     
     private func setFindNearbyBtn(){
@@ -111,15 +82,7 @@ class SetLocationViewController: UIViewController, CLLocationManagerDelegate {
         
         findNearbyBtn.rx.tap.bind{
             guard let location = self.locationManager.location else {return}
-            NaverMapAPI.reverseGeocode(longitude: location.coordinate.longitude, latitude: location.coordinate.latitude)
-                .subscribe { response in
-                    let decoder = JSONDecoder()
-                    if let decoded = try? decoder.decode(ReverseGeocodeResponse.self, from: response.data) {
-                        self.viewModel.fetchNearbyAddresses(code: decoded.results[0].id)
-                    }
-                } onFailure: { error in
-                    
-                }.disposed(by: self.disposeBag)
+            self.viewModel.findNearbyBtnClicked(longitude: location.coordinate.longitude, latitude: location.coordinate.latitude)
         }.disposed(by: disposeBag)
     }
     
@@ -134,11 +97,13 @@ class SetLocationViewController: UIViewController, CLLocationManagerDelegate {
     
         
         addressTableView.rx.itemSelected.subscribe { indexPath in
-            guard let item = indexPath.element?.item else {return}
-            let address = self.viewModel.addressDataSubject.value[item]
+            guard let address = self.viewModel.getAddressAt(indexPath) else {return}
             self.sendLocation(code: address.code)
         }.disposed(by: disposeBag)
+        
+        
         let query = searchBar.rx.text.orEmpty.throttle(.milliseconds(800), latest: true, scheduler: MainScheduler.instance).distinctUntilChanged()
+        
         self.viewModel
             .filterByQuery(query: query)
             .bind(to: self.addressTableView.rx.items(cellIdentifier: "addressCell", cellType: AddressTableViewCell.self)) {
@@ -155,8 +120,6 @@ class SetLocationViewController: UIViewController, CLLocationManagerDelegate {
             
             
         }
-        
-        
     }
 }
 

@@ -6,11 +6,15 @@
 //
 
 import Foundation
-class Address {
+class Address: CustomStringConvertible {
     let code: String
     let name: String
     init(_ code: String, _ name: String){
         self.code = code
         self.name = name
+    }
+    
+    var description: String {
+        return "{code: \(self.code), name: \(self.name)}"
     }
 }

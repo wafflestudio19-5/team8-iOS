@@ -8,9 +8,28 @@
 import Foundation
 import RxSwift
 import RxRelay
+import CoreLocation
+import Moya
+import RxCocoa
+
 class SetLocationViewModel {
+    let disposeBag: DisposeBag
+    
     let addressDataSubject: BehaviorRelay<[Address]> = BehaviorRelay(value: [
     ])
+    
+    var longitude: CLLocationDegrees = 0
+    var latitude: CLLocationDegrees = 0
+    
+    init(disposeBag: DisposeBag){
+        self.disposeBag = disposeBag
+    }
+    
+    func getAddressAt(_ index: Event<ControlEvent<IndexPath>.Element>) -> Address?{
+        guard let item = index.element?.item else {return nil}
+        let address = self.addressDataSubject.value[item]
+        return address
+    }
     
     func fetchNearbyAddresses(code: String){
         // MARK: implement
@@ -36,6 +55,18 @@ class SetLocationViewModel {
                     .contains(query.decomposeHangul().filter{!$0.isWhitespace})
             }
         }
+    }
+   
+    func findNearbyBtnClicked(longitude: CLLocationDegrees, latitude: CLLocationDegrees) {
+        NaverMapAPI.reverseGeocode(longitude: longitude, latitude: latitude)
+            .subscribe { response in
+                let decoder = JSONDecoder()
+                if let decoded = try? decoder.decode(ReverseGeocodeResponse.self, from: response.data) {
+                    self.fetchNearbyAddresses(code: decoded.results[0].id)
+                }
+            } onFailure: { error in
+                
+            }.disposed(by: self.disposeBag)
     }
 
 }
