@@ -42,8 +42,13 @@ class SetLocationViewController: UIViewController, CLLocationManagerDelegate {
                 return
         }
     }
-    
-    private func sendLocation(code: Int){
+    private func findNearbyNeighborhoods(code: String){
+        WaffleAPI.findNearbyNeighborhoods(code: code).subscribe { response in
+            // MARK: add data to tableView
+        } onFailure: { error in
+        }.disposed(by: self.disposeBag)
+    }
+    private func sendLocation(code: String){
         WaffleAPI.postLocation(code: code).subscribe { response in
             if response.statusCode == 200 {
                 let sceneDelegate = UIApplication.shared.connectedScenes.first?.delegate as? SceneDelegate
@@ -110,7 +115,16 @@ class SetLocationViewController: UIViewController, CLLocationManagerDelegate {
         findNearbyBtn.layer.cornerRadius = 10
         
         findNearbyBtn.rx.tap.bind{
-            
+            guard let location = self.locationManager.location else {return}
+            NaverMapAPI.reverseGeocode(longitude: location.coordinate.longitude, latitude: location.coordinate.latitude)
+                .subscribe { response in
+                    let decoder = JSONDecoder()
+                    if let decoded = try? decoder.decode(ReverseGeocodeResponse.self, from: response.data) {
+                        self.findNearbyNeighborhoods(code: decoded.results[0].id)
+                    }
+                } onFailure: { error in
+                    
+                }.disposed(by: self.disposeBag)
         }.disposed(by: disposeBag)
     }
     

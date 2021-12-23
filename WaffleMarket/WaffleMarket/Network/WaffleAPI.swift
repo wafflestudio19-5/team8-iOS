@@ -12,7 +12,8 @@ import Moya
 enum WaffleService{
     case ping
     case googleLogin(idToken: [String: String])
-    case postLocation(code: Int)
+    case postLocation(code: String)
+    case findNearbyNeighborhoods(code: String)
 }
 extension WaffleService: TargetType{
     var baseURL: URL {
@@ -27,6 +28,8 @@ extension WaffleService: TargetType{
             return "/google-login-test/" // MARK: change later
         case .postLocation:
             return "/location/"
+        case .findNearbyNeighborhoods:
+            return "/location/nearby" // MARK: change later
         }
         
     }
@@ -39,6 +42,8 @@ extension WaffleService: TargetType{
             return .post
         case .postLocation:
             return .post
+        case .findNearbyNeighborhoods:
+            return .get
         }
     }
     
@@ -50,7 +55,9 @@ extension WaffleService: TargetType{
         case let .googleLogin(idToken):
             return .requestJSONEncodable(idToken)
         case let .postLocation(code):
-            return .requestJSONEncodable(["code": code])
+            return .requestJSONEncodable(["code": code]) // MARK: change "code" later
+        case let .findNearbyNeighborhoods(code):
+            return .requestParameters(parameters: ["code": code], encoding: URLEncoding.queryString) // MARK: change "code" later
         }
     }
     
@@ -70,8 +77,12 @@ class WaffleAPI{
         return provider.rx.request(.googleLogin(idToken: ["token": idToken]))
     }
     
-    static func postLocation(code: Int) -> Single<Response> {
+    static func postLocation(code: String) -> Single<Response> {
         return provider.rx.request(.postLocation(code: code))
+    }
+    
+    static func findNearbyNeighborhoods(code: String) -> Single<Response> {
+        return provider.rx.request(.findNearbyNeighborhoods(code: code))
     }
 }
 

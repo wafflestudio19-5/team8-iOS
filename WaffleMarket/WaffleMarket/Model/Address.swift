@@ -7,9 +7,9 @@
 
 import Foundation
 class Address {
-    let code: Int
+    let code: String
     let name: String
-    init(_ code: Int, _ name: String){
+    init(_ code: String, _ name: String){
         self.code = code
         self.name = name
     }

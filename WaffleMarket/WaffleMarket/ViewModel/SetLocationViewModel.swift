@@ -18,9 +18,9 @@ class SetLocationViewModel {
     
     func test_fetchDummyData(){
         addressDataSubject.accept([
-            Address(111111, "서울특별시 관악구"),
-            Address(222222, "서울특별시 도봉구"),
-            Address(333333, "서울특별시 노원구")
+            Address("111111", "서울특별시 관악구"),
+            Address("222222", "서울특별시 도봉구"),
+            Address("333333", "서울특별시 노원구")
         ])
     }
     
