@@ -18,6 +18,7 @@ class SetProfileViewController: UIViewController {
     var profileSaveBtn: UIButton = UIButton()
     
     let disposeBag = DisposeBag()
+    let saveProfile = SaveProfile()
 
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -48,13 +49,14 @@ class SetProfileViewController: UIViewController {
         picSelectBtn.translatesAutoresizingMaskIntoConstraints = false
         picSelectBtn.centerXAnchor.constraint(equalTo: self.view.centerXAnchor).isActive = true
         picSelectBtn.topAnchor.constraint(equalTo: profileImage.bottomAnchor, constant: 20).isActive = true
-        picSelectBtn.heightAnchor.constraint(equalToConstant: 40).isActive = true
+        picSelectBtn.heightAnchor.constraint(equalToConstant: 30).isActive = true
         picSelectBtn.widthAnchor.constraint(equalToConstant: 100).isActive = true
         
         picSelectBtn.setTitle("사진 선택", for: .normal)
         picSelectBtn.backgroundColor = .gray
         picSelectBtn.setTitleColor(.white, for: .normal)
         picSelectBtn.layer.cornerRadius = 10
+        picSelectBtn.titleLabel?.font = .systemFont(ofSize: 13)
     }
         
 //        picSelectBtn.rx.tap.bind{
@@ -87,6 +89,9 @@ class SetProfileViewController: UIViewController {
         
         nameField.backgroundColor = .white
         nameField.placeholder = "닉네임을 입력하세요"
+        nameField.autocapitalizationType = .none
+        nameField.autocorrectionType = .no
+        nameField.rx.text.orEmpty.bind(to: saveProfile.nameTfChanged).disposed(by: disposeBag)
     }
     
     private func setProfileSaveBtn(){
@@ -101,6 +106,9 @@ class SetProfileViewController: UIViewController {
         profileSaveBtn.backgroundColor = .orange
         profileSaveBtn.setTitleColor(.white, for: .normal)
         profileSaveBtn.layer.cornerRadius = 10
+        profileSaveBtn.titleLabel?.font = .systemFont(ofSize: 14)
+        
+        profileSaveBtn.rx.tap.bind(to: saveProfile.saveBtnTouched).disposed(by: disposeBag)
         
         profileSaveBtn.rx.tap.bind{
             self.present(SetLocationViewController(), animated:true, completion: nil)

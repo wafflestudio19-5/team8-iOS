@@ -21,6 +21,7 @@ class LoginViewController: UIViewController {
     var idField: UITextField = UITextField()
     let idText = BehaviorSubject(value: "")
     let isIdValid = BehaviorSubject(value: false)
+    var idValidateBtn: UIButton = UIButton()
     var pwField: UITextField = UITextField()
     let pwText = BehaviorSubject(value: "")
     let isPwValid = BehaviorSubject(value: false)
@@ -28,6 +29,7 @@ class LoginViewController: UIViewController {
     var signUpBtn = UIButton(type: .system)
 
     let disposeBag = DisposeBag()
+    let phoneNumAuthenticator = PhoneNumAuthenticator()
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -44,6 +46,9 @@ class LoginViewController: UIViewController {
         setWelcomeLabel()
         self.view.addSubview(idField)
         setIdField()
+        idField.becomeFirstResponder()
+        self.view.addSubview(idValidateBtn)
+        setIdValidateBtn()
         self.view.addSubview(pwField)
         setPwField()
         self.view.addSubview(loginBtn)
@@ -63,7 +68,6 @@ class LoginViewController: UIViewController {
                 }
                 self.loginBtn.isEnabled = element
             }.disposed(by: disposeBag)
-
         
         // Do any additional setup after loading the view.
     }
@@ -90,15 +94,31 @@ class LoginViewController: UIViewController {
         idField.centerXAnchor.constraint(equalTo: self.view.centerXAnchor).isActive = true
         idField.topAnchor.constraint(equalTo: welcomeLabel.bottomAnchor, constant: 100).isActive = true
         idField.leadingAnchor.constraint(equalTo: self.view.leadingAnchor, constant: 50).isActive = true
-        idField.trailingAnchor.constraint(equalTo: self.view.trailingAnchor, constant: -50).isActive = true
+        idField.trailingAnchor.constraint(equalTo: self.view.trailingAnchor, constant: -100).isActive = true
         idField.heightAnchor.constraint(equalToConstant: 50).isActive = true
         
         idField.backgroundColor = .white
-        idField.placeholder = "id"
+        idField.placeholder = "휴대폰 번호를 입력하세요"
         idField.autocapitalizationType = .none
         idField.autocorrectionType = .no
         idField.rx.text.orEmpty.bind(to: idText).disposed(by: disposeBag)
+        idField.rx.text.orEmpty.bind(to: phoneNumAuthenticator.idTfChanged).disposed(by: disposeBag)
         idText.map(validateID(_:)).bind(to: isIdValid).disposed(by: disposeBag)
+    }
+    
+    private func setIdValidateBtn(){
+        idValidateBtn.translatesAutoresizingMaskIntoConstraints = false
+        idValidateBtn.centerXAnchor.constraint(equalTo: self.view.centerXAnchor).isActive = true
+        idValidateBtn.topAnchor.constraint(equalTo: idField.topAnchor, constant: 10).isActive = true
+        idValidateBtn.leadingAnchor.constraint(equalTo: idField.leadingAnchor, constant: 230).isActive = true
+        idValidateBtn.trailingAnchor.constraint(equalTo: self.view.trailingAnchor, constant: -50).isActive = true
+        idValidateBtn.heightAnchor.constraint(equalTo: idField.heightAnchor, constant: -20).isActive = true
+        
+        idValidateBtn.setTitle("인증하기", for: .normal)
+        idValidateBtn.backgroundColor = .gray
+        idValidateBtn.setTitleColor(.white, for: .normal)
+        idValidateBtn.layer.cornerRadius = 10
+        idValidateBtn.titleLabel?.font = .systemFont(ofSize: 13)
     }
     
     private func setPwField(){
@@ -106,15 +126,16 @@ class LoginViewController: UIViewController {
         pwField.centerXAnchor.constraint(equalTo: self.view.centerXAnchor).isActive = true
         pwField.topAnchor.constraint(equalTo: idField.bottomAnchor, constant: 20).isActive = true
         pwField.leadingAnchor.constraint(equalTo: idField.leadingAnchor).isActive = true
-        pwField.trailingAnchor.constraint(equalTo: idField.trailingAnchor).isActive = true
+        pwField.trailingAnchor.constraint(equalTo: idValidateBtn.trailingAnchor).isActive = true
         pwField.heightAnchor.constraint(equalTo: idField.heightAnchor).isActive = true
         
         pwField.backgroundColor = .white
-        pwField.placeholder = "pw"
+        pwField.placeholder = "인증번호를 입력하세요"
         pwField.isSecureTextEntry = true
         pwField.autocapitalizationType = .none
         pwField.autocorrectionType = .no
         pwField.rx.text.orEmpty.bind(to: pwText).disposed(by: disposeBag)
+        pwField.rx.text.orEmpty.bind(to: phoneNumAuthenticator.pwTfChanged).disposed(by: disposeBag)
         pwText.map(validatePassword(_:)).bind(to: isPwValid).disposed(by: disposeBag)
     }
     
@@ -131,6 +152,8 @@ class LoginViewController: UIViewController {
         loginBtn.backgroundColor = .orange
         loginBtn.setTitleColor(.white, for: .normal)
         loginBtn.layer.cornerRadius = 10
+        
+        loginBtn.rx.tap.bind(to: phoneNumAuthenticator.loginBtnTouched).disposed(by: disposeBag)
     }
     
     private func setGoogleLoginBtn(){
@@ -156,17 +179,23 @@ class LoginViewController: UIViewController {
         signUpBtn.setTitle("회원가입하기", for: .normal)
         
         signUpBtn.rx.tap.bind{
+            
             self.present(UINavigationController(rootViewController: SignUpViewController()), animated: true)
         }.disposed(by: disposeBag)
     }
     
     private func validateID(_ id: String)->Bool{
-        
         return !id.isEmpty
     }
     
     private func validatePassword(_ pw: String)->Bool{
         return !pw.isEmpty
+    }
+    
+    private func moveToHome() {
+        
+        self.present(UINavigationController(rootViewController: HomeViewController()), animated: true)
+    
     }
 
     /*
