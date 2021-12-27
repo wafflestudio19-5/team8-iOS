@@ -10,6 +10,12 @@ import RxSwift
 import RxCocoa
 import RxAlamofire
 
+
+class SetProfileViewModel {
+    let name = PublishRelay<String>()
+    let saveBtnTouched = PublishRelay<Void>()
+}
+
 class SetProfileViewController: UIViewController {
     
     var profileImage: UIImageView = UIImageView()
@@ -18,7 +24,9 @@ class SetProfileViewController: UIViewController {
     var profileSaveBtn: UIButton = UIButton()
     
     let disposeBag = DisposeBag()
-    let saveProfile = SaveProfile()
+    
+    
+    let viewModel = SetProfileViewModel()
 
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -91,7 +99,7 @@ class SetProfileViewController: UIViewController {
         nameField.placeholder = "닉네임을 입력하세요"
         nameField.autocapitalizationType = .none
         nameField.autocorrectionType = .no
-        nameField.rx.text.orEmpty.bind(to: saveProfile.nameTfChanged).disposed(by: disposeBag)
+        nameField.rx.text.orEmpty.bind(to: viewModel.name).disposed(by: disposeBag)
     }
     
     private func setProfileSaveBtn(){
@@ -108,7 +116,7 @@ class SetProfileViewController: UIViewController {
         profileSaveBtn.layer.cornerRadius = 10
         profileSaveBtn.titleLabel?.font = .systemFont(ofSize: 14)
         
-        profileSaveBtn.rx.tap.bind(to: saveProfile.saveBtnTouched).disposed(by: disposeBag)
+        profileSaveBtn.rx.tap.bind(to: viewModel.saveBtnTouched).disposed(by: disposeBag)
         
         profileSaveBtn.rx.tap.bind{
             self.present(SetLocationViewController(), animated:true, completion: nil)
