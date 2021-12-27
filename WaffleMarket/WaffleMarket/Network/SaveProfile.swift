@@ -22,10 +22,6 @@ struct Profile {
 
 class SaveProfile {
     
-    let nameTfChanged = PublishRelay<String>()
-    let imageTfChanged = PublishRelay<UIImageView>()
-    let saveBtnTouched = PublishRelay<Void>()
-    
     public func signUp (name: String, image: UIImageView) {
         
     }

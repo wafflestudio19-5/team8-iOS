@@ -10,6 +10,14 @@ import RxSwift
 import RxCocoa
 import RxAlamofire
 
+class SignUpViewModel {
+    
+    let id = PublishRelay<String>()
+    let pw = PublishRelay<String>()
+    let signUpBtnTouched = PublishRelay<Void>()
+    
+}
+
 class SignUpViewController: UIViewController {
     
     var idField: UITextField = UITextField()
@@ -22,7 +30,7 @@ class SignUpViewController: UIViewController {
     var signUpBtn: UIButton = UIButton()
     
     let disposeBag = DisposeBag()
-    let phoneNumAuthenticator = PhoneNumAuthenticator()
+    let signUpViewModel = SignUpViewModel()
 
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -64,7 +72,7 @@ class SignUpViewController: UIViewController {
         idField.autocapitalizationType = .none
         idField.autocorrectionType = .no
         idField.rx.text.orEmpty.bind(to: idText).disposed(by: disposeBag)
-        idField.rx.text.orEmpty.bind(to: phoneNumAuthenticator.idTfChanged).disposed(by: disposeBag)
+        idField.rx.text.orEmpty.bind(to: signUpViewModel.id).disposed(by: disposeBag)
         idText.map(validateID(_:)).bind(to: isIdValid).disposed(by: disposeBag)
     }
     
@@ -97,7 +105,7 @@ class SignUpViewController: UIViewController {
         pwField.autocapitalizationType = .none
         pwField.autocorrectionType = .no
         pwField.rx.text.orEmpty.bind(to: pwText).disposed(by: disposeBag)
-        pwField.rx.text.orEmpty.bind(to: phoneNumAuthenticator.pwTfChanged).disposed(by: disposeBag)
+        pwField.rx.text.orEmpty.bind(to: signUpViewModel.pw).disposed(by: disposeBag)
         pwText.map(validatePassword(_:)).bind(to: isPwValid).disposed(by: disposeBag)
     }
     
@@ -115,7 +123,7 @@ class SignUpViewController: UIViewController {
         signUpBtn.layer.cornerRadius = 10
         signUpBtn.titleLabel?.font = .systemFont(ofSize: 14)
         
-        signUpBtn.rx.tap.bind(to: phoneNumAuthenticator.loginBtnTouched).disposed(by: disposeBag)
+        signUpBtn.rx.tap.bind(to: signUpViewModel.signUpBtnTouched).disposed(by: disposeBag)
         
         signUpBtn.rx.tap.bind{
             self.navigationController?.pushViewController(SetProfileViewController(), animated:true)

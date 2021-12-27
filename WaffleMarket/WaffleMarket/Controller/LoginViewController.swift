@@ -11,6 +11,14 @@ import RxCocoa
 import RxAlamofire
 import GoogleSignIn
 
+class LoginViewModel {
+    
+    let id = PublishRelay<String>()
+    let pw = PublishRelay<String>()
+    let loginBtnTouched = PublishRelay<Void>()
+    
+}
+
 class LoginViewController: UIViewController {
 
     var googleLoginBtn = GIDSignInButton()
@@ -29,7 +37,7 @@ class LoginViewController: UIViewController {
     var signUpBtn = UIButton(type: .system)
 
     let disposeBag = DisposeBag()
-    let phoneNumAuthenticator = PhoneNumAuthenticator()
+    let loginViewModel = LoginViewModel()
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -102,7 +110,7 @@ class LoginViewController: UIViewController {
         idField.autocapitalizationType = .none
         idField.autocorrectionType = .no
         idField.rx.text.orEmpty.bind(to: idText).disposed(by: disposeBag)
-        idField.rx.text.orEmpty.bind(to: phoneNumAuthenticator.idTfChanged).disposed(by: disposeBag)
+        idField.rx.text.orEmpty.bind(to: loginViewModel.id).disposed(by: disposeBag)
         idText.map(validateID(_:)).bind(to: isIdValid).disposed(by: disposeBag)
     }
     
@@ -135,7 +143,7 @@ class LoginViewController: UIViewController {
         pwField.autocapitalizationType = .none
         pwField.autocorrectionType = .no
         pwField.rx.text.orEmpty.bind(to: pwText).disposed(by: disposeBag)
-        pwField.rx.text.orEmpty.bind(to: phoneNumAuthenticator.pwTfChanged).disposed(by: disposeBag)
+        pwField.rx.text.orEmpty.bind(to: loginViewModel.pw).disposed(by: disposeBag)
         pwText.map(validatePassword(_:)).bind(to: isPwValid).disposed(by: disposeBag)
     }
     
@@ -153,7 +161,7 @@ class LoginViewController: UIViewController {
         loginBtn.setTitleColor(.white, for: .normal)
         loginBtn.layer.cornerRadius = 10
         
-        loginBtn.rx.tap.bind(to: phoneNumAuthenticator.loginBtnTouched).disposed(by: disposeBag)
+        loginBtn.rx.tap.bind(to: loginViewModel.loginBtnTouched).disposed(by: disposeBag)
     }
     
     private func setGoogleLoginBtn(){
@@ -194,7 +202,8 @@ class LoginViewController: UIViewController {
     
     private func moveToHome() {
         
-        self.present(UINavigationController(rootViewController: HomeViewController()), animated: true)
+        let sceneDelegate = UIApplication.shared.connectedScenes.first?.delegate as? SceneDelegate
+        sceneDelegate?.changeRootViewController(MainTabBarController())
     
     }
 
