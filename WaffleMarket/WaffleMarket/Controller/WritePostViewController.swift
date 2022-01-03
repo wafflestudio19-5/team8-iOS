@@ -8,19 +8,44 @@
 import Foundation
 import UIKit
 import RxSwift
+import RxCocoa
+import RxRelay
+import YPImagePicker
+
+
 class WritePostViewController: UIViewController {
     let textSize: CGFloat = 18
     let scrollView = UIScrollView()
     let scrollContentView = UIView()
     let stackView = UIStackView()
-    let addPhotoBtn = UIButton()
-    let countPhotoLabel = UILabel()
+    let imageContainerView = UIStackView()
+    let addImageBtn = UIButton()
+    let selectedImageCollectionView: UICollectionView = {
+        
+        let layout = UICollectionViewFlowLayout()
+        layout.minimumLineSpacing = 10
+        
+        
+        layout.scrollDirection = .horizontal
+        layout.sectionInset = UIEdgeInsets(top: 0, left: 0, bottom: 0, right: 0)
+       
+        let cv = UICollectionView(frame: .zero, collectionViewLayout: layout)
+        
+        return cv
+    }()
+    let countImageLabel = UILabel()
     
     let titleField = UITextField()
     let categoryPicker = UIPickerView()
     let categoryBtn = UIButton(type:.system)
     let priceField = UITextField()
     let contentField = UITextView()
+    
+    
+    let selectedImages = BehaviorRelay<[UIImage]>(value: [])
+    let maxImageNumber = 10
+    let imageCount = 0
+    
     
     let completeBtn = UIBarButtonItem()
     
@@ -32,7 +57,7 @@ class WritePostViewController: UIViewController {
         self.view.addSubview(scrollView)
         setScrollView()
         
-        stackView.addArrangedSubview(addPhotoBtn)
+        stackView.addArrangedSubview(imageContainerView)
         divider()
         stackView.addArrangedSubview(titleField)
         divider()
@@ -42,13 +67,15 @@ class WritePostViewController: UIViewController {
         divider()
         stackView.addArrangedSubview(contentField)
         
-        setAddPhotoBtn()
+        setImageContainerView()
+        setSelectedImageCollectionView()
         setTitleField()
         setCategoryBtn()
         setPriceField()
         setContentField()
         
         setCompleteBtn()
+        bindSelectedImages()
         self.navigationItem.rightBarButtonItem = completeBtn
     }
     private func divider(){
@@ -89,53 +116,90 @@ class WritePostViewController: UIViewController {
         stackView.distribution = .fill
         stackView.alignment = .leading
     }
-    private func setAddPhotoBtn(){
-        addPhotoBtn.rx.tap.bind{
-            print("add photo")
+    private func setImageContainerView(){
+        addImageBtn.rx.tap.bind{
+            var config = YPImagePickerConfiguration()
+            config.library.maxNumberOfItems = self.maxImageNumber - self.imageCount
+            config.library.preSelectItemOnMultipleSelection = false
+            config.library.defaultMultipleSelection = true
+            config.library.mediaType = .photo
+            config.library.isSquareByDefault = false
+            config.onlySquareImagesFromCamera = false
+            config.hidesCancelButton = false
+            
+            config.startOnScreen = .library
+            
+            let imagePicker = YPImagePicker(configuration: config)
+            imagePicker.didFinishPicking{[unowned imagePicker] items, _ in
+                var newImages:[UIImage] = []
+                
+                for item in items {
+                    switch item{
+                    case .photo(let photo):
+                        newImages += [photo.image]
+                    case .video:
+                        print("video is not allowed")
+                    }
+                    
+                }
+                self.selectedImages.accept(self.selectedImages.value+newImages)
+                imagePicker.dismiss(animated: true)
+            }
+            imagePicker.view.backgroundColor = .white
+            self.present(imagePicker, animated: true)
         }.disposed(by: disposeBag)
         
         let btnImage = UIImageView()
         btnImage.isUserInteractionEnabled = false
-        addPhotoBtn.translatesAutoresizingMaskIntoConstraints = false
+        addImageBtn.translatesAutoresizingMaskIntoConstraints = false
         btnImage.translatesAutoresizingMaskIntoConstraints = false
-        countPhotoLabel.translatesAutoresizingMaskIntoConstraints = false
-        let containerView = UIStackView()
-        containerView.isUserInteractionEnabled = false
-        addPhotoBtn.addSubview(containerView)
+        countImageLabel.translatesAutoresizingMaskIntoConstraints = false
+        let btnContainerView = UIStackView()
+        btnContainerView.isUserInteractionEnabled = false
+        addImageBtn.addSubview(btnContainerView)
         NSLayoutConstraint.activate([
-            addPhotoBtn.heightAnchor.constraint(equalToConstant: 60),
-            addPhotoBtn.widthAnchor.constraint(equalToConstant: 60),
-            containerView.topAnchor.constraint(greaterThanOrEqualTo: addPhotoBtn.topAnchor),
-            containerView.bottomAnchor.constraint(lessThanOrEqualTo: addPhotoBtn.bottomAnchor),
-            containerView.leadingAnchor.constraint(equalTo: addPhotoBtn.leadingAnchor),
-            containerView.trailingAnchor.constraint(equalTo: addPhotoBtn.trailingAnchor),
-            containerView.centerYAnchor.constraint(equalTo: addPhotoBtn.centerYAnchor),
+            addImageBtn.heightAnchor.constraint(equalToConstant: 60),
+            addImageBtn.widthAnchor.constraint(equalToConstant: 60),
+            btnContainerView.topAnchor.constraint(greaterThanOrEqualTo: addImageBtn.topAnchor),
+            btnContainerView.bottomAnchor.constraint(lessThanOrEqualTo: addImageBtn.bottomAnchor),
+            btnContainerView.leadingAnchor.constraint(equalTo: addImageBtn.leadingAnchor),
+            btnContainerView.trailingAnchor.constraint(equalTo: addImageBtn.trailingAnchor),
+            btnContainerView.centerYAnchor.constraint(equalTo: addImageBtn.centerYAnchor),
         ])
+        btnContainerView.axis = .vertical
+        btnContainerView.spacing = 1
+        btnContainerView.translatesAutoresizingMaskIntoConstraints = false
+        btnContainerView.alignment = .center
+        btnContainerView.addArrangedSubview(btnImage)
+        btnContainerView.addArrangedSubview(countImageLabel)
         
         
-        containerView.axis = .vertical
-        containerView.spacing = 1
-        containerView.translatesAutoresizingMaskIntoConstraints = false
-        containerView.alignment = .center
-        
-        containerView.alignment = .center
-        containerView.addArrangedSubview(btnImage)
-        containerView.addArrangedSubview(countPhotoLabel)
-        
-        
-        addPhotoBtn.layer.borderColor = UIColor.gray.cgColor
-        addPhotoBtn.layer.borderWidth = 0.2
-        addPhotoBtn.layer.cornerRadius = 8
+        addImageBtn.layer.borderColor = UIColor.gray.cgColor
+        addImageBtn.layer.borderWidth = 0.2
+        addImageBtn.layer.cornerRadius = 8
         btnImage.tintColor = .gray
         btnImage.image = UIImage(systemName: "camera.fill")
         btnImage.contentMode = .scaleAspectFit
         
-        countPhotoLabel.isUserInteractionEnabled = false
-        countPhotoLabel.textAlignment = .center
-        countPhotoLabel.numberOfLines = 1
-        countPhotoLabel.text="0/10"
-        countPhotoLabel.font = UIFont.systemFont(ofSize: 16)
-        countPhotoLabel.textColor = .gray
+        countImageLabel.isUserInteractionEnabled = false
+        countImageLabel.textAlignment = .center
+        countImageLabel.numberOfLines = 1
+        countImageLabel.text="0/10"
+        countImageLabel.font = UIFont.systemFont(ofSize: 16)
+        countImageLabel.textColor = .gray
+        
+        imageContainerView.axis = .horizontal
+        imageContainerView.spacing = 10
+        imageContainerView.translatesAutoresizingMaskIntoConstraints = false
+        imageContainerView.addArrangedSubview(addImageBtn)
+        imageContainerView.addArrangedSubview(selectedImageCollectionView)
+        imageContainerView.widthAnchor.constraint(equalTo: stackView.widthAnchor).isActive = true
+        
+    }
+    
+    private func setSelectedImageCollectionView(){
+        selectedImageCollectionView.translatesAutoresizingMaskIntoConstraints = false
+        
     }
     
     private func setTitleField(){
@@ -171,6 +235,7 @@ class WritePostViewController: UIViewController {
         priceField.heightAnchor.constraint(equalToConstant: 60).isActive = true
         priceField.placeholder = "가격"
         priceField.font = UIFont.systemFont(ofSize: textSize)
+        priceField.keyboardType = .numberPad
     }
     
     private func setContentField(){
@@ -196,4 +261,15 @@ class WritePostViewController: UIViewController {
             
         }.disposed(by: disposeBag)
     }
+    
+    private func bindSelectedImages(){
+        print("bindselectedimages")
+        selectedImageCollectionView.register(SelectedImageCollectionViewCell.self, forCellWithReuseIdentifier: "imageCell")
+        selectedImages.bind(to: selectedImageCollectionView.rx.items(cellIdentifier: "imageCell", cellType: SelectedImageCollectionViewCell.self)) { index, image, cell in
+            cell.setImage(image)
+            
+        }.disposed(by: disposeBag)
+    }
 }
+
+
