@@ -13,7 +13,8 @@ class SelectedImageCollectionViewCell: UICollectionViewCell{
     var imageView = UIImageView()
     var removeBtn = UIButton(type:.custom)
     let disposeBag = DisposeBag()
-    
+    var didPressDelete: PublishSubject<Int>!
+    var index: Int!
     override init(frame: CGRect) {
         super.init(frame: frame)
         
@@ -37,7 +38,7 @@ class SelectedImageCollectionViewCell: UICollectionViewCell{
         removeBtn.heightAnchor.constraint(equalToConstant: 20).isActive = true
         
         removeBtn.rx.tap.bind{
-            // MARK: implement
+            self.didPressDelete.onNext(self.index)
         }.disposed(by: disposeBag)
         
     }
@@ -45,8 +46,9 @@ class SelectedImageCollectionViewCell: UICollectionViewCell{
     required init?(coder: NSCoder) {
         super.init(coder: coder)
     }
-    func setImage(_ image: UIImage){
+    func setData(image: UIImage, index: Int){
+        self.index = index
         imageView.image = image
-        print("setimage")
+        self.didPressDelete = PublishSubject<Int>()
     }
 }

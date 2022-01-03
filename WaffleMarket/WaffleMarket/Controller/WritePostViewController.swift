@@ -44,7 +44,7 @@ class WritePostViewController: UIViewController {
     
     let selectedImages = BehaviorRelay<[UIImage]>(value: [])
     let maxImageNumber = 10
-    let imageCount = 0
+    var imageCount = 0
     
     
     let completeBtn = UIBarButtonItem()
@@ -184,7 +184,7 @@ class WritePostViewController: UIViewController {
         countImageLabel.isUserInteractionEnabled = false
         countImageLabel.textAlignment = .center
         countImageLabel.numberOfLines = 1
-        countImageLabel.text="0/10"
+        
         countImageLabel.font = UIFont.systemFont(ofSize: 16)
         countImageLabel.textColor = .gray
         
@@ -263,11 +263,19 @@ class WritePostViewController: UIViewController {
     }
     
     private func bindSelectedImages(){
-        print("bindselectedimages")
         selectedImageCollectionView.register(SelectedImageCollectionViewCell.self, forCellWithReuseIdentifier: "imageCell")
         selectedImages.bind(to: selectedImageCollectionView.rx.items(cellIdentifier: "imageCell", cellType: SelectedImageCollectionViewCell.self)) { index, image, cell in
-            cell.setImage(image)
+            cell.setData(image: image, index: index)
+            cell.didPressDelete.bind{ index in
+                var original = self.selectedImages.value
+                original.remove(at: index)
+                self.selectedImages.accept(original)
+            }.disposed(by: self.disposeBag)
             
+        }.disposed(by: disposeBag)
+        selectedImages.bind{value in
+            self.imageCount = value.count
+            self.countImageLabel.text = "\(self.imageCount)/\(self.maxImageNumber)"
         }.disposed(by: disposeBag)
     }
 }
