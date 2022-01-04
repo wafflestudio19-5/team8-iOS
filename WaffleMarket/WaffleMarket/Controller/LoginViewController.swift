@@ -15,6 +15,7 @@ class LoginViewModel {
     
     let id = PublishRelay<String>()
     let pw = PublishRelay<String>()
+    
     let loginBtnTouched = PublishRelay<Void>()
     
 }
@@ -38,6 +39,7 @@ class LoginViewController: UIViewController {
 
     let disposeBag = DisposeBag()
     let loginViewModel = LoginViewModel()
+    var authPhoneNumber = ""
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -127,6 +129,20 @@ class LoginViewController: UIViewController {
         idValidateBtn.setTitleColor(.white, for: .normal)
         idValidateBtn.layer.cornerRadius = 10
         idValidateBtn.titleLabel?.font = .systemFont(ofSize: 13)
+        
+        idValidateBtn.rx.tap.bind{ // MARK: apply MVVM
+            guard let phoneNumber = self.idField.text else { return }
+            self.authPhoneNumber = phoneNumber
+            WaffleAPI.startAuth(phoneNumber: phoneNumber).subscribe { response in
+                
+            } onFailure: { error in
+                
+            } onDisposed: {
+                
+                
+            }.disposed(by: self.disposeBag)
+
+        }.disposed(by: disposeBag)
     }
     
     private func setPwField(){
@@ -161,7 +177,23 @@ class LoginViewController: UIViewController {
         loginBtn.setTitleColor(.white, for: .normal)
         loginBtn.layer.cornerRadius = 10
         
-        loginBtn.rx.tap.bind(to: loginViewModel.loginBtnTouched).disposed(by: disposeBag)
+        // loginBtn.rx.tap.bind(to: loginViewModel.loginBtnTouched).disposed(by: disposeBag)
+        
+        loginBtn.rx.tap.bind{
+            guard let authNumber = self.pwField.text else { return }
+            WaffleAPI.completeAuth(phoneNumber: self.authPhoneNumber, authNumber: authNumber).subscribe { response in
+                print(response.data)
+                let decoder = JSONDecoder()
+                if let decoded = try? decoder.decode(LoginResponse.self, from:response.data) {
+                    print(decoded.token)
+                }
+            } onFailure: { error in
+                
+            } onDisposed: {
+                
+            }.disposed(by: self.disposeBag)
+
+        }.disposed(by: disposeBag)
     }
     
     private func setGoogleLoginBtn(){

@@ -31,7 +31,7 @@ class SignUpViewController: UIViewController {
     
     let disposeBag = DisposeBag()
     let viewModel = SignUpViewModel()
-
+    var authPhoneNumber = ""
     override func viewDidLoad() {
         super.viewDidLoad()
         self.view.backgroundColor = .white
@@ -89,6 +89,20 @@ class SignUpViewController: UIViewController {
         idValidateBtn.setTitleColor(.white, for: .normal)
         idValidateBtn.layer.cornerRadius = 10
         idValidateBtn.titleLabel?.font = .systemFont(ofSize: 13)
+        
+        idValidateBtn.rx.tap.bind{ // MARK: apply MVVM
+            guard let phoneNumber = self.idField.text else { return }
+            self.authPhoneNumber = phoneNumber
+            WaffleAPI.startAuth(phoneNumber: phoneNumber).subscribe { response in
+                
+            } onFailure: { error in
+                
+            } onDisposed: {
+                
+                
+            }.disposed(by: self.disposeBag)
+            
+        }.disposed(by: disposeBag)
     }
     
     private func setPwField(){
@@ -125,8 +139,24 @@ class SignUpViewController: UIViewController {
         
         signUpBtn.rx.tap.bind(to: viewModel.signUpBtnTouched).disposed(by: disposeBag)
         
-        signUpBtn.rx.tap.bind{
-            self.navigationController?.pushViewController(SetProfileViewController(), animated:true)
+        signUpBtn.rx.tap.bind{ // MARK: apply MVVM
+            guard let authNumber = self.pwField.text else { return }
+            WaffleAPI.completeAuth(phoneNumber: self.authPhoneNumber, authNumber: authNumber).subscribe { response in
+                if response.statusCode == 200 {
+                    let decoder = JSONDecoder()
+                    if let decoded = try? decoder.decode(AuthResponse.self, from:response.data) {
+                        print(decoded.authenticated)
+                        if decoded.authenticated {
+                            self.navigationController?.pushViewController(SetProfileViewController(), animated:true)
+                        }
+                    }
+                }
+            } onFailure: { error in
+                
+            } onDisposed: {
+                
+            }.disposed(by: self.disposeBag)
+            
         }.disposed(by: disposeBag)
     }
     
