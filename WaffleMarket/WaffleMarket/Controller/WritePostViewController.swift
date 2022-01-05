@@ -19,6 +19,7 @@ class WritePostViewController: UIViewController {
     let scrollContentView = UIView()
     let stackView = UIStackView()
     let imageContainerView = UIStackView()
+    let priceContainerView = UIView()
     let addImageBtn = UIButton()
     let selectedImageCollectionView: UICollectionView = {
         
@@ -36,11 +37,11 @@ class WritePostViewController: UIViewController {
     let countImageLabel = UILabel()
     
     let titleField = UITextField()
-    let categoryPicker = UIPickerView()
+    
     let categoryBtn = UIButton(type:.system)
+    var selectedCategory: String?
     let priceField = UITextField()
     let contentField = UITextView()
-    
     
     let selectedImages = BehaviorRelay<[UIImage]>(value: [])
     let maxImageNumber = 10
@@ -48,12 +49,38 @@ class WritePostViewController: UIViewController {
     
     
     let completeBtn = UIBarButtonItem()
-    
+    var originalViewHeight: CGFloat = 0
     let disposeBag = DisposeBag()
+    @objc func keyboardWillShow(notification: NSNotification) {
+        print("kwillshow")
+        guard let keyboardSize = (notification.userInfo?[UIResponder.keyboardFrameEndUserInfoKey] as? NSValue)?.cgRectValue else {
+           // if keyboard size is not available for some reason, dont do anything
+           return
+        }
+        
+      
+      // move the root view up by the distance of keyboard height
+        self.view.frame.size.height = originalViewHeight - ((self.view.frame.origin.y + originalViewHeight) - keyboardSize.origin.y)
+        self.scrollView.contentInset = UIEdgeInsets(top: 0, left: 0, bottom: (self.view.frame.origin.y + self.view.frame.size.height) - keyboardSize.origin.y, right: 0)
+        print(self.view.frame.size.height)
+        
+    }
+    @objc func keyboardWillHide(notification: NSNotification) {
+        print("kwillhide")
+      
+      // move the root view up by the distance of keyboard height
+        
+        self.view.frame.size.height = originalViewHeight
+        self.scrollView.contentInset = UIEdgeInsets(top: 0, left: 0, bottom: 0, right: 0)
+        print(self.view.frame.size.height)
+    }
     override func viewDidLoad() {
         super.viewDidLoad()
         self.view.backgroundColor = .white
-        
+        originalViewHeight = self.view.frame.size.height
+        NotificationCenter.default.addObserver(self, selector: #selector(self.keyboardWillShow), name: UIResponder.keyboardWillShowNotification, object: nil)
+        NotificationCenter.default.addObserver(self, selector: #selector(self.keyboardWillHide), name: UIResponder.keyboardWillHideNotification, object: nil)
+
         self.view.addSubview(scrollView)
         setScrollView()
         
@@ -63,7 +90,7 @@ class WritePostViewController: UIViewController {
         divider()
         stackView.addArrangedSubview(categoryBtn)
         divider()
-        stackView.addArrangedSubview(priceField)
+        stackView.addArrangedSubview(priceContainerView)
         divider()
         stackView.addArrangedSubview(contentField)
         
@@ -71,7 +98,7 @@ class WritePostViewController: UIViewController {
         setSelectedImageCollectionView()
         setTitleField()
         setCategoryBtn()
-        setPriceField()
+        setPriceContainerView()
         setContentField()
         
         setCompleteBtn()
@@ -222,20 +249,68 @@ class WritePostViewController: UIViewController {
         categoryBtn.setTitleColor(.black, for: .normal)
         categoryBtn.setTitle("카테고리", for: .normal)
         
-        // MARK: show picker view
-        Observable.just(["디지털기기", "생활가전", "가구/인테리어", "유아동", "생활/가공식품", "유아도서", "스포츠/레저", "여성잡화", "여성의류", "남성패션/잡화", "게임/취미", "뷰티/미용", "반려동물용품", "도서/티켓/음반", "식물", "기타 중고물품", "삽니다"]).bind(to: categoryPicker.rx.itemTitles) {
-            _, item in
-            return "\(item)"
+        categoryBtn.rx.tap.bind{
+            let vc = CategoryPickerModalViewController()
+            weak var didSelect = vc.didSelect
+            didSelect?.bind(onNext: { value in
+                self.selectedCategory = value
+                self.categoryBtn.setTitle(value, for: .normal)
+            }).disposed(by: self.disposeBag)
+            self.present(vc, animated: true)
         }.disposed(by: disposeBag)
+        
+        
     }
     
-    private func setPriceField(){
+    private func setPriceContainerView(){
+        let currencyField = UITextField()
+        
+        priceContainerView.translatesAutoresizingMaskIntoConstraints = false
+        priceContainerView.widthAnchor.constraint(equalTo: stackView.widthAnchor).isActive = true
+        priceContainerView.heightAnchor.constraint(equalToConstant: 60).isActive = true
+        priceContainerView.addSubview(currencyField)
+        priceContainerView.addSubview(priceField)
+        
+        
+        currencyField.translatesAutoresizingMaskIntoConstraints = false
+        currencyField.widthAnchor.constraint(equalToConstant: 15).isActive = true
+        currencyField.topAnchor.constraint(equalTo: priceContainerView.topAnchor).isActive = true
+        currencyField.bottomAnchor.constraint(equalTo: priceContainerView.bottomAnchor).isActive = true
+        currencyField.leadingAnchor.constraint(equalTo: priceContainerView.leadingAnchor).isActive = true
+        currencyField.placeholder = "₩"
         priceField.translatesAutoresizingMaskIntoConstraints = false
-        priceField.widthAnchor.constraint(equalTo: stackView.widthAnchor).isActive = true
-        priceField.heightAnchor.constraint(equalToConstant: 60).isActive = true
-        priceField.placeholder = "가격"
+        priceField.topAnchor.constraint(equalTo:priceContainerView.topAnchor).isActive = true
+        priceField.bottomAnchor.constraint(equalTo: priceContainerView.bottomAnchor).isActive = true
+        priceField.leadingAnchor.constraint(equalTo: currencyField.trailingAnchor, constant: 5).isActive = true
+        priceField.trailingAnchor.constraint(equalTo: priceContainerView.trailingAnchor).isActive = true
+        priceField.placeholder = "가격 (선택사항)"
         priceField.font = UIFont.systemFont(ofSize: textSize)
         priceField.keyboardType = .numberPad
+        
+        priceField.rx.text.orEmpty.bind { _ in
+            currencyField.textColor = .black
+            self.priceField.textColor = .black
+            self.priceField.text = self.priceField.text?.trimmingCharacters(in: CharacterSet(charactersIn: "0123456789").inverted)
+            
+            let value = self.priceField.text ?? ""
+            if value.isEmpty {
+                currencyField.text = ""
+                currencyField.placeholder = "₩"
+            } else {
+                currencyField.placeholder = ""
+                currencyField.text = "₩"
+                let number = Double(value) ?? 0
+                if number == 0{
+                    self.priceField.text = "0"
+                    currencyField.textColor = .orange
+                    self.priceField.textColor = .orange
+                } else if value.starts(with: "0") && value.count >= 2{
+                    self.priceField.text = String(value.dropFirst())
+                }
+            }
+            
+            
+        }.disposed(by: disposeBag)
     }
     
     private func setContentField(){
@@ -248,6 +323,34 @@ class WritePostViewController: UIViewController {
         contentField.isEditable = true
         contentField.textContainerInset = .zero
         contentField.font = UIFont.systemFont(ofSize: textSize)
+        contentField.textColor = .lightGray
+        contentField.text = "내용을 입력해주세요"
+        contentField.rx.didBeginEditing.bind{
+            if self.contentField.textColor == .lightGray {
+                self.contentField.text = nil
+                self.contentField.textColor = .black
+            }
+        }.disposed(by: disposeBag)
+        contentField.rx.didEndEditing.bind{
+            if self.contentField.text.isEmpty {
+                self.contentField.text = "내용을 입력해주세요"
+                self.contentField.textColor = .lightGray
+            }
+        }.disposed(by: disposeBag)
+        //MARK: 충분히 개선 후 사용할 것
+//        contentField.rx.didChangeSelection.bind{
+//            print("changesel")
+//            guard let selRange = self.contentField.selectedTextRange else { return }
+//            let caret = self.contentField.caretRect(for: selRange.start)
+//            print(self.scrollView.contentOffset.y)
+//            var caretY = caret.origin.y
+//            if caretY.isInfinite {
+//                caretY = self.contentField.frame.origin.y + self.contentField.frame.size.height
+//            } else {
+//                caretY = self.contentField.frame.origin.y + caret.origin.y
+//            }
+//            self.scrollView.scrollRectToVisible(CGRect(x: 0, y: caretY, width: 10, height: 80), animated: true)
+//        }.disposed(by: disposeBag)
         
     }
     
@@ -257,6 +360,8 @@ class WritePostViewController: UIViewController {
             let title = self.titleField.text ?? ""
             let price = self.priceField.text ?? ""
             let content = self.contentField.text ?? ""
+            let category = self.selectedCategory ?? ""
+            
             // MARK: request to backend
             
         }.disposed(by: disposeBag)
@@ -281,3 +386,63 @@ class WritePostViewController: UIViewController {
 }
 
 
+class CategoryPickerModalViewController: UIViewController {
+    deinit{
+        print("deinit!")
+    }
+    let categoryPicker = UIPickerView()
+    let disposeBag = DisposeBag()
+    let confirmBtn = UIButton(type: .system)
+    let navigationBar = UINavigationBar()
+    let didSelect = PublishRelay<String>()
+    let items = ["디지털기기", "생활가전", "가구/인테리어", "유아동", "생활/가공식품", "유아도서", "스포츠/레저", "여성잡화", "여성의류", "남성패션/잡화", "게임/취미", "뷰티/미용", "반려동물용품", "도서/티켓/음반", "식물", "기타 중고물품", "삽니다"]
+    override func viewDidLoad() {
+        super.viewDidLoad()
+        self.view.backgroundColor = .white
+        
+        
+        Observable.just(items).bind(to: categoryPicker.rx.itemTitles) {
+            _, item in
+            return "\(item)"
+        }.disposed(by: disposeBag)
+        self.view.addSubview(navigationBar)
+        self.view.addSubview(categoryPicker)
+        self.view.addSubview(confirmBtn)
+        navigationBar.translatesAutoresizingMaskIntoConstraints = false
+        navigationBar.topAnchor.constraint(equalTo: self.view.safeAreaLayoutGuide.topAnchor).isActive = true
+        navigationBar.leadingAnchor.constraint(equalTo: self.view.safeAreaLayoutGuide.leadingAnchor).isActive = true
+        navigationBar.trailingAnchor.constraint(equalTo: self.view.safeAreaLayoutGuide.trailingAnchor).isActive = true
+        navigationBar.heightAnchor.constraint(equalToConstant: 50).isActive = true
+        
+        confirmBtn.translatesAutoresizingMaskIntoConstraints = false
+        confirmBtn.bottomAnchor.constraint(equalTo: self.view.safeAreaLayoutGuide.bottomAnchor, constant: -50).isActive = true
+        confirmBtn.centerXAnchor.constraint(equalTo: self.view.safeAreaLayoutGuide.centerXAnchor).isActive = true
+        confirmBtn.widthAnchor.constraint(equalToConstant: 200).isActive = true
+        confirmBtn.heightAnchor.constraint(equalToConstant: 50).isActive = true
+        
+        categoryPicker.translatesAutoresizingMaskIntoConstraints = false
+        categoryPicker.topAnchor.constraint(equalTo: self.navigationBar.bottomAnchor).isActive = true
+        categoryPicker.bottomAnchor.constraint(equalTo: self.confirmBtn.topAnchor).isActive = true
+        categoryPicker.leadingAnchor.constraint(equalTo: self.view.safeAreaLayoutGuide.leadingAnchor).isActive = true
+        categoryPicker.trailingAnchor.constraint(equalTo: self.view.safeAreaLayoutGuide.trailingAnchor).isActive = true
+        categoryPicker.frame = self.view.frame
+        
+        
+        confirmBtn.backgroundColor = .orange
+        confirmBtn.setTitleColor(.white, for: .normal)
+        confirmBtn.layer.cornerRadius = 10
+        confirmBtn.setTitle("완료", for: .normal)
+        confirmBtn.rx.tap.bind{
+            self.dismiss(animated: true)
+        }.disposed(by: disposeBag)
+
+        let navigationItem = UINavigationItem()
+        navigationItem.title = "카테고리 선택"
+        navigationBar.items = [navigationItem]
+        
+    }
+    override func viewWillDisappear(_ animated: Bool) {
+        print(items[categoryPicker.selectedRow(inComponent: 0)])
+        didSelect.accept(items[categoryPicker.selectedRow(inComponent: 0)])
+    }
+}
