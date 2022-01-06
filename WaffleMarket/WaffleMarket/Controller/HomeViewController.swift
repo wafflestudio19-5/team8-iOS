@@ -30,7 +30,7 @@ class ArticleCell: UICollectionViewCell {
     }
     
     required init?(coder: NSCoder) {
-        fatalError("오류가 발생했습니다")
+        super.init(coder: coder)
     }
     
     var titleLabel: UILabel = UILabel()
