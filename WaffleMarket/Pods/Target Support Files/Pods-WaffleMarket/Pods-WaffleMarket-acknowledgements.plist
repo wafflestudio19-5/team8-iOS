@@ -985,7 +985,6 @@ SOFTWARE.
 		</dict>
 		<dict>
 			<key>FooterText</key>
-<<<<<<< HEAD
 			<string>Copyright © 2018 NAVER Corp.
 All rights reserved.
 </string>
@@ -993,7 +992,11 @@ All rights reserved.
 			<string>APACHE</string>
 			<key>Title</key>
 			<string>NMapsMap</string>
-=======
+			<key>Type</key>
+			<string>PSGroupSpecifier</string>
+		</dict>
+		<dict>
+			<key>FooterText</key>
 			<string>MIT License
 
 Copyright (c) 2017 Prynt
@@ -1020,7 +1023,6 @@ SOFTWARE.
 			<string>MIT</string>
 			<key>Title</key>
 			<string>PryntTrimmerView</string>
->>>>>>> master
 			<key>Type</key>
 			<string>PSGroupSpecifier</string>
 		</dict>
