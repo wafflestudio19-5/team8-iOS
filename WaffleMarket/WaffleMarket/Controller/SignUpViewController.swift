@@ -32,11 +32,57 @@ class SignUpViewController: UIViewController {
     let disposeBag = DisposeBag()
     let viewModel = SignUpViewModel()
     var authPhoneNumber = ""
+    var originalViewY: CGFloat = 0
+    
+    @objc func keyboardWillShow(notification: NSNotification) {
+        print("kwillshow")
+        guard let keyboardSize = (notification.userInfo?[UIResponder.keyboardFrameEndUserInfoKey] as? NSValue)?.cgRectValue else {
+           // if keyboard size is not available for some reason, dont do anything
+           return
+        }
+        
+      
+      // move the root view up by the distance of keyboard height
+        let screenRect = UIScreen.main.bounds
+        let screenHeight = screenRect.size.height
+        let viewOffset = screenHeight - self.view.frame.size.height
+        let delta = ((self.signUpBtn.frame.origin.y + self.signUpBtn.frame.size.height + 10 + viewOffset) - keyboardSize.origin.y)
+        if delta > 0 {
+            self.view.frame.origin.y = originalViewY - delta
+        }
+    }
+    @objc func keyboardWillHide(notification: NSNotification) {
+        print("kwillhide")
+      
+      // move the root view up by the distance of keyboard height
+        
+        self.view.frame.origin.y = originalViewY
+    }
+    private func addObserver(){
+        NotificationCenter.default.addObserver(self, selector: #selector(self.keyboardWillShow), name: UIResponder.keyboardWillShowNotification, object: nil)
+        NotificationCenter.default.addObserver(self, selector: #selector(self.keyboardWillHide), name: UIResponder.keyboardWillHideNotification, object: nil)
+    }
+    private func removeObserver(){
+        NotificationCenter.default.removeObserver(self, name: UIResponder.keyboardWillShowNotification, object: nil)
+        NotificationCenter.default.removeObserver(self, name: UIResponder.keyboardWillHideNotification, object: nil)
+    }
+    @objc func dismissKeyboard() {
+        //Causes the view (or one of its embedded text fields) to resign the first responder status.
+        view.endEditing(true)
+    }
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        addObserver()
+    }
+    override func viewWillDisappear(_ animated: Bool) {
+        super.viewWillDisappear(animated)
+        removeObserver()
+    }
     override func viewDidLoad() {
         super.viewDidLoad()
         self.view.backgroundColor = .white
         // Do any additional setup after loading the view.
-        
+        originalViewY = self.view.frame.origin.y
         self.view.addSubview(idField)
         setIdField()
         idField.becomeFirstResponder()
@@ -145,7 +191,7 @@ class SignUpViewController: UIViewController {
         signUpBtn.topAnchor.constraint(equalTo: pwField.bottomAnchor, constant: 50).isActive = true
         signUpBtn.leadingAnchor.constraint(equalTo: pwField.leadingAnchor).isActive = true
         signUpBtn.trailingAnchor.constraint(equalTo: idValidateBtn.trailingAnchor).isActive = true
-        signUpBtn.heightAnchor.constraint(equalTo: pwField.heightAnchor).isActive = true
+        signUpBtn.heightAnchor.constraint(equalToConstant: 50).isActive = true
         
         signUpBtn.setTitle("회원가입", for: .normal)
         signUpBtn.backgroundColor = .orange

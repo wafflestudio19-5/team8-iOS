@@ -90,7 +90,7 @@ class LoginViewController: UIViewController {
         let tap = UITapGestureRecognizer(target: self, action: #selector(UIInputViewController.dismissKeyboard))
 
        //Uncomment the line below if you want the tap not not interfere and cancel other interactions.
-       //tap.cancelsTouchesInView = false
+        tap.cancelsTouchesInView = false
 
         view.addGestureRecognizer(tap)
         if AccountManager.tryAutologin() {
@@ -135,8 +135,8 @@ class LoginViewController: UIViewController {
     private func setWaffleLogoLabel(){
         waffleLogoLabel.translatesAutoresizingMaskIntoConstraints = false
         waffleLogoLabel.centerXAnchor.constraint(equalTo: self.view.centerXAnchor).isActive = true
-        waffleLogoLabel.topAnchor.constraint(equalTo: self.view.topAnchor, constant: 200).isActive = true
-        
+        waffleLogoLabel.topAnchor.constraint(lessThanOrEqualTo: self.view.safeAreaLayoutGuide.topAnchor, constant: 200).isActive = true
+        waffleLogoLabel.topAnchor.constraint(greaterThanOrEqualTo: self.view.safeAreaLayoutGuide.topAnchor).isActive = true
         waffleLogoLabel.text = "🧇"
         waffleLogoLabel.font = .systemFont(ofSize: 100)
     }
@@ -151,10 +151,11 @@ class LoginViewController: UIViewController {
     
     private func setIdField(){
         idField.translatesAutoresizingMaskIntoConstraints = false
-        idField.centerXAnchor.constraint(equalTo: self.view.centerXAnchor).isActive = true
-        idField.topAnchor.constraint(equalTo: welcomeLabel.bottomAnchor, constant: 100).isActive = true
+        
+        idField.topAnchor.constraint(lessThanOrEqualTo: welcomeLabel.bottomAnchor, constant: 100).isActive = true
+        idField.topAnchor.constraint(greaterThanOrEqualTo: welcomeLabel.bottomAnchor, constant: 10).isActive = true
         idField.leadingAnchor.constraint(equalTo: self.view.leadingAnchor, constant: 50).isActive = true
-        idField.trailingAnchor.constraint(equalTo: self.view.trailingAnchor, constant: -100).isActive = true
+        idField.trailingAnchor.constraint(lessThanOrEqualTo: self.view.trailingAnchor, constant: -100).isActive = true
         idField.heightAnchor.constraint(equalToConstant: 50).isActive = true
         
         idField.backgroundColor = .white
@@ -168,10 +169,11 @@ class LoginViewController: UIViewController {
     
     private func setIdValidateBtn(){
         idValidateBtn.translatesAutoresizingMaskIntoConstraints = false
-        idValidateBtn.centerXAnchor.constraint(equalTo: self.view.centerXAnchor).isActive = true
+        
         idValidateBtn.topAnchor.constraint(equalTo: idField.topAnchor, constant: 10).isActive = true
-        idValidateBtn.leadingAnchor.constraint(equalTo: idField.leadingAnchor, constant: 230).isActive = true
-        idValidateBtn.trailingAnchor.constraint(equalTo: self.view.trailingAnchor, constant: -50).isActive = true
+        idValidateBtn.leadingAnchor.constraint(equalTo: idField.trailingAnchor).isActive = true
+        idValidateBtn.trailingAnchor.constraint(greaterThanOrEqualTo: self.view.safeAreaLayoutGuide.trailingAnchor, constant: -10).isActive = true
+        idValidateBtn.widthAnchor.constraint(equalToConstant: 50).isActive = true
         idValidateBtn.heightAnchor.constraint(equalTo: idField.heightAnchor, constant: -20).isActive = true
         
         idValidateBtn.setTitle("인증하기", for: .normal)
@@ -301,6 +303,7 @@ class LoginViewController: UIViewController {
         googleLoginBtn.heightAnchor.constraint(equalTo: loginBtn.heightAnchor).isActive = true
       
         googleLoginBtn.rx.controlEvent(.touchUpInside).bind{
+            print("gcli")
             GoogleSignInAuthenticator.sharedInstance.signIn(presenting: self, disposeBag: self.disposeBag) {
                 print("success")
             }
@@ -311,11 +314,11 @@ class LoginViewController: UIViewController {
         signUpBtn.translatesAutoresizingMaskIntoConstraints = false
         signUpBtn.centerXAnchor.constraint(equalTo: self.view.centerXAnchor).isActive = true
         signUpBtn.topAnchor.constraint(equalTo: googleLoginBtn.bottomAnchor, constant: 20).isActive = true
-        
+        signUpBtn.bottomAnchor.constraint(lessThanOrEqualTo: self.view.safeAreaLayoutGuide.bottomAnchor, constant: -40).isActive = true
         signUpBtn.setTitle("회원가입하기", for: .normal)
         
         signUpBtn.rx.tap.bind{
-            
+            print("click")
             self.present(UINavigationController(rootViewController: SignUpViewController()), animated: true)
         }.disposed(by: disposeBag)
     }
