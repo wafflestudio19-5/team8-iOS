@@ -21,6 +21,7 @@ PODS:
     - Moya/Core
     - RxSwift (~> 6.0)
   - NMapsMap (3.14.0)
+  - PryntTrimmerView (4.0.2)
   - RxAlamofire (6.1.1):
     - RxAlamofire/Core (= 6.1.1)
   - RxAlamofire/Core (6.1.1):
@@ -44,6 +45,10 @@ PODS:
   - RxRelay (6.2.0):
     - RxSwift (= 6.2.0)
   - RxSwift (6.2.0)
+  - SteviaLayout (4.7.3)
+  - YPImagePicker (5.0.0):
+    - PryntTrimmerView (= 4.0.2)
+    - SteviaLayout (= 4.7.3)
 
 DEPENDENCIES:
   - GoogleSignIn
@@ -57,6 +62,7 @@ DEPENDENCIES:
   - RxGesture (~> 4.0)
   - RxRelay (~> 6.2)
   - RxSwift (~> 6.2)
+  - YPImagePicker
 
 SPEC REPOS:
   trunk:
@@ -69,6 +75,7 @@ SPEC REPOS:
     - Kingfisher
     - Moya
     - NMapsMap
+    - PryntTrimmerView
     - RxAlamofire
     - RxCocoa
     - RxCoreLocation
@@ -76,6 +83,8 @@ SPEC REPOS:
     - RxGesture
     - RxRelay
     - RxSwift
+    - SteviaLayout
+    - YPImagePicker
 
 SPEC CHECKSUMS:
   Alamofire: 1c4fb5369c3fe93d2857c780d8bbe09f06f97e7c
@@ -87,6 +96,7 @@ SPEC CHECKSUMS:
   Kingfisher: 44ed6a8504763f27bab46163adfac83f5deb240c
   Moya: 138f0573e53411fb3dc17016add0b748dfbd78ee
   NMapsMap: 61c2abfc409bbcdc91583ccc455a5b6f64c7414e
+  PryntTrimmerView: 6a43cc90df5d99addeabd33d4ba09b1365322130
   RxAlamofire: beb75a1c452d0de225651db4903f5d29d034a620
   RxCocoa: 4baf94bb35f2c0ab31bc0cb9f1900155f646ba42
   RxCoreLocation: a78f4cbf32a4c6c47ecccbe22d41ff93b7e8c099
@@ -94,7 +104,9 @@ SPEC CHECKSUMS:
   RxGesture: abadd243fc36db74df43dfc893829ddde94f1a3d
   RxRelay: e72dbfd157807478401ef1982e1c61c945c94b2f
   RxSwift: d356ab7bee873611322f134c5f9ef379fa183d8f
+  SteviaLayout: c2ecdcff57d44e38fd2f65e54ad52aeae28ca0c4
+  YPImagePicker: 1463a19a36244e209dcb03c30e63559c5afa9602
 
-PODFILE CHECKSUM: bf386c46f480bb03aa7f9a6126413e36166d85a7
+PODFILE CHECKSUM: 5474aff0f72df00fa8986c08cda9a0bee2a35f0a
 
 COCOAPODS: 1.11.2

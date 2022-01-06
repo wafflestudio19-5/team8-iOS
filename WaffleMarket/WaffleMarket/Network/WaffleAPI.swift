@@ -11,19 +11,28 @@ import RxAlamofire
 import Moya
 enum WaffleService{
     case ping
+    case startAuth(phoneNumber: String)
+    case completeAuth(phoneNumber: String, authNumber: String)
+    case signup(phoneNumber: String, userName: String)
     case googleLogin(idToken: [String: String])
     case postLocation(code: String)
     case findNearbyNeighborhoods(code: String)
 }
 extension WaffleService: TargetType{
     var baseURL: URL {
-        URL(string: "http://ec2-54-180-144-124.ap-northeast-2.compute.amazonaws.com/api/v1")! //54.180.144.124
+        URL(string: APIConstants.BASE_URL)! //54.180.144.124
     }
     
     var path: String {
         switch self {
         case .ping:
             return "/ping"
+        case .startAuth:
+            return "/authenticate/"
+        case .completeAuth:
+            return "/authenticate/"
+        case .signup:
+            return "/signup/"
         case .googleLogin(_):
             return "/google-login-test/" // MARK: change later
         case .postLocation:
@@ -38,12 +47,19 @@ extension WaffleService: TargetType{
         switch self {
         case .ping:
             return .get
+        case .startAuth:
+            return .post
+        case .completeAuth:
+            return .put
+        case .signup:
+            return .post
         case .googleLogin:
             return .post
         case .postLocation:
             return .post
         case .findNearbyNeighborhoods:
             return .get
+
         }
     }
     
@@ -52,6 +68,12 @@ extension WaffleService: TargetType{
         switch self {
         case .ping:
             return .requestPlain
+        case let .startAuth(phoneNumber):
+            return .requestJSONEncodable(["phone_number": phoneNumber])
+        case let .completeAuth(phoneNumber, authNumber):
+            return .requestJSONEncodable(["phone_number": phoneNumber, "auth_number": authNumber])
+        case let .signup(phoneNumber, userName):
+            return .requestJSONEncodable(["phone_number": phoneNumber, "username": userName])
         case let .googleLogin(idToken):
             return .requestJSONEncodable(idToken)
         case let .postLocation(code):
@@ -66,11 +88,43 @@ extension WaffleService: TargetType{
     }
 }
 
+struct LoginResponse: Codable {
+    var username: String
+    var phone_number: String
+    var logined: Bool?
+    var first_login: Bool?
+    
+    var token: String
+    var location_exists: Bool
+}
+
+struct StartAuthResponse: Codable{
+    var phone_number: String
+    var auth_number: Int?
+}
+
+struct CompleteAuthResponse: Codable {
+    var authenticated: Bool
+}
+
+
+
 class WaffleAPI{
     private static var provider = MoyaProvider<WaffleService>()
 
     static func ping() -> Single<Response> {
         return provider.rx.request(.ping)
+    }
+    static func startAuth(phoneNumber: String) -> Single<Response>{
+        return provider.rx.request(.startAuth(phoneNumber: phoneNumber))
+    }
+    
+    static func completeAuth(phoneNumber: String, authNumber: String) -> Single<Response> {
+        return provider.rx.request(.completeAuth(phoneNumber: phoneNumber, authNumber: authNumber))
+    }
+    
+    static func signup(phoneNumber: String, userName: String) -> Single<Response> {
+        return provider.rx.request(.signup(phoneNumber: phoneNumber, userName: userName))
     }
     
     static func googleLogin(idToken: String) -> Single<Response> {
