@@ -15,7 +15,7 @@ import RxCocoa
 class SetLocationViewModel {
     let disposeBag: DisposeBag
     
-    let addressDataSubject: BehaviorRelay<[Address]> = BehaviorRelay(value: [
+    let addressRelay: BehaviorRelay<[Address]> = BehaviorRelay(value: [
     ])
     
     var longitude: CLLocationDegrees = 0
@@ -27,17 +27,38 @@ class SetLocationViewModel {
     
     func getAddressAt(_ index: Event<ControlEvent<IndexPath>.Element>) -> Address?{
         guard let item = index.element?.item else {return nil}
-        let address = self.addressDataSubject.value[item]
+        let address = self.addressRelay.value[item]
         return address
     }
     
-    func fetchNearbyAddresses(code: String){
-        // MARK: implement
+    private func fetchNearbyAddresses(code: String){
+        print(AccountManager.token)
+        LocationAPI.findNearbyNeighborhoods(code: code).subscribe { response in
+            print(String(decoding: response.data, as: UTF8.self))
+            if response.statusCode == 200 {
+                let decoder = JSONDecoder()
+                if let decoded = try? decoder.decode(NeighborhoodResponse.self, from: response.data) {
+                    var addresses: [Address] = []
+                    for loc in decoded.neighborhoods {
+                        let address = Address(loc.code, loc.place_name)
+                        addresses.append(address)
+                    }
+                    self.addressRelay.accept(addresses)
+                }
+            } else {
+                print("fetchNearbyAddresses Failed!", response.statusCode)
+            }
+        } onFailure: { error in
+            
+        } onDisposed: {
+            
+        }.disposed(by: disposeBag)
+
         
     }
     
     func test_fetchDummyData(){
-        addressDataSubject.accept([
+        addressRelay.accept([
             Address("111111", "서울특별시 관악구"),
             Address("222222", "서울특별시 도봉구"),
             Address("333333", "서울특별시 노원구")
@@ -45,7 +66,7 @@ class SetLocationViewModel {
     }
     
     func filterByQuery(query: Observable<String>) -> Observable<[Address]> {
-        Observable.combineLatest(self.addressDataSubject, query){ (items, query) -> [Address] in
+        Observable.combineLatest(self.addressRelay, query){ (items, query) -> [Address] in
             return items.filter { address in
                 
                 if query.isEmpty {
@@ -57,7 +78,7 @@ class SetLocationViewModel {
         }
     }
    
-    func findNearbyBtnClicked(longitude: CLLocationDegrees, latitude: CLLocationDegrees) {
+    func fetchNeighborhoodByLocation(longitude: CLLocationDegrees, latitude: CLLocationDegrees) {
         NaverMapAPI.reverseGeocode(longitude: longitude, latitude: latitude)
             .subscribe { response in
                 let decoder = JSONDecoder()

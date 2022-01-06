@@ -41,11 +41,16 @@ class SetLocationViewController: UIViewController, CLLocationManagerDelegate {
             print("default")
                 return
         }
+        
+        if let location = self.locationManager.location {
+            self.viewModel.fetchNeighborhoodByLocation(longitude: location.coordinate.longitude, latitude: location.coordinate.latitude)
+        }
     }
 
     private func sendLocation(code: String){
         
-        WaffleAPI.postLocation(code: code).subscribe { response in
+        LocationAPI.postLocation(code: code).subscribe { response in
+            print(String(decoding: response.data, as: UTF8.self))
             if response.statusCode == 200 {
                 let sceneDelegate = UIApplication.shared.connectedScenes.first?.delegate as? SceneDelegate
                 sceneDelegate?.changeRootViewController(MainTabBarController())
@@ -82,7 +87,7 @@ class SetLocationViewController: UIViewController, CLLocationManagerDelegate {
         
         findNearbyBtn.rx.tap.bind{
             guard let location = self.locationManager.location else {return}
-            self.viewModel.findNearbyBtnClicked(longitude: location.coordinate.longitude, latitude: location.coordinate.latitude)
+            self.viewModel.fetchNeighborhoodByLocation(longitude: location.coordinate.longitude, latitude: location.coordinate.latitude)
         }.disposed(by: disposeBag)
     }
     
@@ -111,8 +116,8 @@ class SetLocationViewController: UIViewController, CLLocationManagerDelegate {
                 cell.setData(address: element)
             }.disposed(by: disposeBag)
         
-        
-        self.viewModel.test_fetchDummyData()
+    
+        // self.viewModel.test_fetchDummyData()
     }
     
     func locationManagerDidChangeAuthorization(_ manager: CLLocationManager) {
