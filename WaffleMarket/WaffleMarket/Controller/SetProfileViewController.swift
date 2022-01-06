@@ -9,32 +9,47 @@ import UIKit
 import RxSwift
 import RxCocoa
 import RxAlamofire
-
+import YPImagePicker
 
 class SetProfileViewModel {
     let name = PublishRelay<String>()
     let saveBtnTouched = PublishRelay<Void>()
 }
+enum AccountType {
+    case social
+    case standalone
+}
 
 class SetProfileViewController: UIViewController {
     
-    var profileImage: UIImageView = UIImageView()
+    var profileImage: UIImage?
+    var profileImageView: UIImageView = UIImageView()
     var picSelectBtn: UIButton = UIButton()
     var nameField: UITextField = UITextField()
     var profileSaveBtn: UIButton = UIButton()
     
     let disposeBag = DisposeBag()
-    
+    var accountType: AccountType = .standalone
+    var userId: String?
     
     let viewModel = SetProfileViewModel()
 
+    init(accountType: AccountType, userId: String){
+        super.init(nibName: nil, bundle: nil)
+        self.accountType = accountType
+        self.userId = userId
+    }
+    
+    required init?(coder: NSCoder) {
+        super.init(coder: coder)
+    }
     override func viewDidLoad() {
         super.viewDidLoad()
         self.navigationItem.hidesBackButton = true;
         self.view.backgroundColor = .white
         // Do any additional setup after loading the view.
         
-        self.view.addSubview(profileImage)
+        self.view.addSubview(profileImageView)
         setProfileImage()
         self.view.addSubview(picSelectBtn)
         setPicSelectBtn()
@@ -45,18 +60,18 @@ class SetProfileViewController: UIViewController {
     }
     
     private func setProfileImage(){
-        profileImage.translatesAutoresizingMaskIntoConstraints = false
-        profileImage.centerXAnchor.constraint(equalTo: self.view.centerXAnchor).isActive = true
-        profileImage.topAnchor.constraint(equalTo: self.view.topAnchor, constant: 200).isActive = true
-        profileImage.heightAnchor.constraint(equalToConstant: 150).isActive = true
-        profileImage.widthAnchor.constraint(equalToConstant: 150).isActive = true
+        profileImageView.translatesAutoresizingMaskIntoConstraints = false
+        profileImageView.centerXAnchor.constraint(equalTo: self.view.centerXAnchor).isActive = true
+        profileImageView.topAnchor.constraint(equalTo: self.view.topAnchor, constant: 200).isActive = true
+        profileImageView.heightAnchor.constraint(equalToConstant: 150).isActive = true
+        profileImageView.widthAnchor.constraint(equalToConstant: 150).isActive = true
         
     }
     
     private func setPicSelectBtn(){
         picSelectBtn.translatesAutoresizingMaskIntoConstraints = false
         picSelectBtn.centerXAnchor.constraint(equalTo: self.view.centerXAnchor).isActive = true
-        picSelectBtn.topAnchor.constraint(equalTo: profileImage.bottomAnchor, constant: 20).isActive = true
+        picSelectBtn.topAnchor.constraint(equalTo: profileImageView.bottomAnchor, constant: 20).isActive = true
         picSelectBtn.heightAnchor.constraint(equalToConstant: 30).isActive = true
         picSelectBtn.widthAnchor.constraint(equalToConstant: 100).isActive = true
         
@@ -65,6 +80,27 @@ class SetProfileViewController: UIViewController {
         picSelectBtn.setTitleColor(.white, for: .normal)
         picSelectBtn.layer.cornerRadius = 10
         picSelectBtn.titleLabel?.font = .systemFont(ofSize: 13)
+        
+        picSelectBtn.rx.tap.bind{
+            var config = YPImagePickerConfiguration()
+            config.library.maxNumberOfItems = 1
+            config.library.preSelectItemOnMultipleSelection = false
+            config.library.mediaType = .photo
+            config.library.isSquareByDefault = true
+            config.onlySquareImagesFromCamera = true
+            config.hidesCancelButton = false
+            config.startOnScreen = .library
+            let imagePicker = YPImagePicker(configuration: config)
+            imagePicker.view.backgroundColor = .white
+            imagePicker.didFinishPicking {[unowned imagePicker] items, cancelled in
+                if let photo = items.singlePhoto {
+                    self.profileImage = photo.image
+                    self.profileImageView.image = self.profileImage
+                }
+                imagePicker.dismiss(animated: true)
+            }
+            self.present(imagePicker, animated: true)
+        }.disposed(by: disposeBag)
     }
         
 //        picSelectBtn.rx.tap.bind{
@@ -110,7 +146,7 @@ class SetProfileViewController: UIViewController {
         profileSaveBtn.leadingAnchor.constraint(equalTo: nameField.leadingAnchor).isActive = true
         profileSaveBtn.trailingAnchor.constraint(equalTo: nameField.trailingAnchor).isActive = true
         
-        profileSaveBtn.setTitle("프로필 저장", for: .normal)
+        profileSaveBtn.setTitle("가입 완료", for: .normal)
         profileSaveBtn.backgroundColor = .orange
         profileSaveBtn.setTitleColor(.white, for: .normal)
         profileSaveBtn.layer.cornerRadius = 10
@@ -119,7 +155,32 @@ class SetProfileViewController: UIViewController {
         profileSaveBtn.rx.tap.bind(to: viewModel.saveBtnTouched).disposed(by: disposeBag)
         
         profileSaveBtn.rx.tap.bind{
-            self.present(SetLocationViewController(), animated:true, completion: nil)
+            guard let username = self.nameField.text else { return }
+            // MARK: upload profile image
+            WaffleAPI.signup(phoneNumber: self.userId!, userName: username).subscribe { response in
+                if (response.statusCode / 100) == 2 {
+                    let decoder = JSONDecoder()
+                    if let decoded = try? decoder.decode(LoginResponse.self, from: response.data) {
+                        print(decoded)
+                        AccountManager.login(decoded)
+                        if decoded.location_exists {
+                            let sceneDelegate = UIApplication.shared.connectedScenes.first?.delegate as? SceneDelegate
+                            sceneDelegate?.changeRootViewController(MainTabBarController())
+                        } else {
+                            self.navigationController?.pushViewController(SetLocationViewController(), animated:true)
+                        }
+                        return
+                    }
+                }
+                self.toast("오류가 발생했어요")
+                
+            } onFailure: { error in
+                
+            } onDisposed: {
+                
+            }.disposed(by: self.disposeBag)
+
+            
         }.disposed(by: disposeBag)
     }
     
