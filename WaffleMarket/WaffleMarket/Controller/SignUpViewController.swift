@@ -96,20 +96,20 @@ class SignUpViewController: UIViewController {
             WaffleAPI.startAuth(phoneNumber: phoneNumber).subscribe { response in
                 let decoder = JSONDecoder()
                 if (response.statusCode / 100) == 4 {
-                    self.toast("전화번호가 올바르지 않아요")
+                    self.toast("전화번호가 올바르지 않아요", y: self.signUpBtn.frame.origin.y)
                     return
                 }
                 if let decoded = try? decoder.decode(StartAuthResponse.self, from: response.data) {
                     if let authnumber = decoded.auth_number {
-                        self.toast("테스트용 인증번호: \(authnumber)")
+                        self.toast("테스트용 인증번호: \(authnumber)", y: self.signUpBtn.frame.origin.y)
                         
                     } else {
-                        self.toast("인증번호가 전송되었어요")
+                        self.toast("인증번호가 전송되었어요", y: self.signUpBtn.frame.origin.y)
                     }
                     
                     print(decoded.auth_number ?? "no auth_number")
                 } else {
-                    self.toast("오류가 발생했어요")
+                    self.toast("오류가 발생했어요", y: self.signUpBtn.frame.origin.y)
                     print("failed to decode StartAuthResponse")
                 }
             } onFailure: { error in
@@ -159,7 +159,7 @@ class SignUpViewController: UIViewController {
             guard let authNumber = self.pwField.text else { return }
             WaffleAPI.completeAuth(phoneNumber: self.authPhoneNumber, authNumber: authNumber).subscribe { response in
                 if (response.statusCode / 100) == 4 {
-                    self.toast("인증번호가 올바르지 않아요")
+                    self.toast("인증번호가 올바르지 않아요", y: self.signUpBtn.frame.origin.y)
                     return
                 }
                 if response.statusCode == 200 {

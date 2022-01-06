@@ -40,11 +40,59 @@ class LoginViewController: UIViewController {
     let disposeBag = DisposeBag()
     let loginViewModel = LoginViewModel()
     var authPhoneNumber = ""
-    
+    var originalViewY: CGFloat = 0
+    @objc func keyboardWillShow(notification: NSNotification) {
+        print("kwillshow")
+        guard let keyboardSize = (notification.userInfo?[UIResponder.keyboardFrameEndUserInfoKey] as? NSValue)?.cgRectValue else {
+           // if keyboard size is not available for some reason, dont do anything
+           return
+        }
+        
+      
+      // move the root view up by the distance of keyboard height
+        let delta = ((self.loginBtn.frame.origin.y + self.loginBtn.frame.size.height + 10) - keyboardSize.origin.y)
+        if delta > 0 {
+            self.view.frame.origin.y = originalViewY - delta
+        }
+        
+    }
+    @objc func keyboardWillHide(notification: NSNotification) {
+        print("kwillhide")
+      
+      // move the root view up by the distance of keyboard height
+        
+        self.view.frame.origin.y = originalViewY
+    }
+    private func addObserver(){
+        NotificationCenter.default.addObserver(self, selector: #selector(self.keyboardWillShow), name: UIResponder.keyboardWillShowNotification, object: nil)
+        NotificationCenter.default.addObserver(self, selector: #selector(self.keyboardWillHide), name: UIResponder.keyboardWillHideNotification, object: nil)
+    }
+    private func removeObserver(){
+        NotificationCenter.default.removeObserver(self, name: UIResponder.keyboardWillShowNotification, object: nil)
+        NotificationCenter.default.removeObserver(self, name: UIResponder.keyboardWillHideNotification, object: nil)
+    }
+    @objc func dismissKeyboard() {
+        //Causes the view (or one of its embedded text fields) to resign the first responder status.
+        view.endEditing(true)
+    }
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        addObserver()
+    }
+    override func viewWillDisappear(_ animated: Bool) {
+        super.viewWillDisappear(animated)
+        removeObserver()
+    }
     override func viewDidLoad() {
         super.viewDidLoad()
         self.view.backgroundColor = .white
-        
+        originalViewY = self.view.frame.origin.y
+        let tap = UITapGestureRecognizer(target: self, action: #selector(UIInputViewController.dismissKeyboard))
+
+       //Uncomment the line below if you want the tap not not interfere and cancel other interactions.
+       //tap.cancelsTouchesInView = false
+
+        view.addGestureRecognizer(tap)
         if AccountManager.tryAutologin() {
             let sceneDelegate = UIApplication.shared.connectedScenes.first?.delegate as? SceneDelegate
             sceneDelegate?.changeRootViewController(MainTabBarController())
@@ -138,20 +186,21 @@ class LoginViewController: UIViewController {
             WaffleAPI.startAuth(phoneNumber: phoneNumber).subscribe { response in
                 let decoder = JSONDecoder()
                 if (response.statusCode / 100) == 4 {
-                    self.toast("전화번호가 올바르지 않아요")
+                    self.toast("전화번호가 올바르지 않아요", y: self.loginBtn.frame.origin.y)
                     return
                 }
                 if let decoded = try? decoder.decode(StartAuthResponse.self, from: response.data) {
+                    self.pwField.becomeFirstResponder()
                     if let authnumber = decoded.auth_number {
-                        self.toast("테스트용 인증번호: \(authnumber)")
+                        self.toast("테스트용 인증번호: \(authnumber)", y: self.loginBtn.frame.origin.y)
                         
                     } else {
-                        self.toast("인증번호가 전송되었어요")
+                        self.toast("인증번호가 전송되었어요", y: self.loginBtn.frame.origin.y)
                     }
                     
                     print(decoded.auth_number ?? "no auth_number")
                 } else {
-                    self.toast("오류가 발생했어요")
+                    self.toast("오류가 발생했어요", y: self.loginBtn.frame.origin.y)
                     print("failed to decode StartAuthResponse")
                 }
             } onFailure: { error in
@@ -232,7 +281,7 @@ class LoginViewController: UIViewController {
                         self.present(alert, animated: true)
                     }
                 } else {
-                    self.toast("오류가 발생했어요")
+                    self.toast("오류가 발생했어요", y: self.loginBtn.frame.origin.y)
                 }
             } onFailure: { error in
                 

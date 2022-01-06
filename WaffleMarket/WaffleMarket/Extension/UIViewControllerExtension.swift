@@ -8,8 +8,9 @@
 import Foundation
 import UIKit
 extension UIViewController {
-    func toast(_ message: Any){
-        let toastLabel = UILabel(frame: CGRect(x: 10, y: self.view.frame.size.height-100, width: self.view.frame.size.width - 20, height: 35))
+    func toast(_ message: Any, y: CGFloat = -999){
+        let ypos = y == -999 ? self.view.frame.size.height-100 : y
+        let toastLabel = UILabel(frame: CGRect(x: 10, y: ypos, width: self.view.frame.size.width - 20, height: 35))
         toastLabel.backgroundColor = UIColor.black.withAlphaComponent(0.6)
         toastLabel.textColor = UIColor.white
         
