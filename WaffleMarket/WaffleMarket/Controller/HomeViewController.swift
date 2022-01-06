@@ -41,6 +41,7 @@ class HomeViewController: UIViewController {
         signOutBtn.topAnchor.constraint(equalTo: self.helloWorldLabel.bottomAnchor).isActive = true
         signOutBtn.rx.tap.bind{
             GoogleSignInAuthenticator.sharedInstance.signOut()
+            AccountManager.logout()
             let sceneDelegate = UIApplication.shared.connectedScenes.first?.delegate as? SceneDelegate
             sceneDelegate?.changeRootViewController(LoginViewController())
             print("signed out!")

@@ -75,12 +75,25 @@ extension WaffleService: TargetType{
 }
 
 struct LoginResponse: Codable {
+    var username: String
+    var phone_number: String
+    var logined: Bool?
+    var first_login: Bool?
+    
     var token: String
+    var location_exists: Bool
 }
 
-struct AuthResponse: Codable {
+struct StartAuthResponse: Codable{
+    var phone_number: String
+    var auth_number: Int?
+}
+
+struct CompleteAuthResponse: Codable {
     var authenticated: Bool
 }
+
+
 
 class WaffleAPI{
     static var provider = MoyaProvider<WaffleService>()

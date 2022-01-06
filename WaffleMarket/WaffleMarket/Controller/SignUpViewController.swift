@@ -94,7 +94,24 @@ class SignUpViewController: UIViewController {
             guard let phoneNumber = self.idField.text else { return }
             self.authPhoneNumber = phoneNumber
             WaffleAPI.startAuth(phoneNumber: phoneNumber).subscribe { response in
-                
+                let decoder = JSONDecoder()
+                if (response.statusCode / 100) == 4 {
+                    self.toast("전화번호가 올바르지 않아요")
+                    return
+                }
+                if let decoded = try? decoder.decode(StartAuthResponse.self, from: response.data) {
+                    if let authnumber = decoded.auth_number {
+                        self.toast("테스트용 인증번호: \(authnumber)")
+                        
+                    } else {
+                        self.toast("인증번호가 전송되었어요")
+                    }
+                    
+                    print(decoded.auth_number ?? "no auth_number")
+                } else {
+                    self.toast("오류가 발생했어요")
+                    print("failed to decode StartAuthResponse")
+                }
             } onFailure: { error in
                 
             } onDisposed: {
@@ -115,7 +132,6 @@ class SignUpViewController: UIViewController {
         
         pwField.backgroundColor = .white
         pwField.placeholder = "인증번호를 입력하세요"
-        pwField.isSecureTextEntry = true
         pwField.autocapitalizationType = .none
         pwField.autocorrectionType = .no
         pwField.rx.text.orEmpty.bind(to: pwText).disposed(by: disposeBag)
@@ -142,12 +158,26 @@ class SignUpViewController: UIViewController {
         signUpBtn.rx.tap.bind{ // MARK: apply MVVM
             guard let authNumber = self.pwField.text else { return }
             WaffleAPI.completeAuth(phoneNumber: self.authPhoneNumber, authNumber: authNumber).subscribe { response in
+                if (response.statusCode / 100) == 4 {
+                    self.toast("인증번호가 올바르지 않아요")
+                    return
+                }
                 if response.statusCode == 200 {
                     let decoder = JSONDecoder()
-                    if let decoded = try? decoder.decode(AuthResponse.self, from:response.data) {
-                        print(decoded.authenticated)
+                    if let decoded = try? decoder.decode(CompleteAuthResponse.self, from:response.data) {
                         if decoded.authenticated {
-                            self.navigationController?.pushViewController(SetProfileViewController(), animated:true)
+                            let vc = SetProfileViewController(accountType: .standalone, userId: self.authPhoneNumber)
+                            self.navigationController?.pushViewController(vc, animated:true)
+                        } else {
+                            
+                        }
+                    } else if let decoded = try? decoder.decode(LoginResponse.self, from: response.data) {
+                        AccountManager.login(decoded)
+                        if decoded.location_exists {
+                            let sceneDelegate = UIApplication.shared.connectedScenes.first?.delegate as? SceneDelegate
+                            sceneDelegate?.changeRootViewController(MainTabBarController())
+                        } else {
+                            self.navigationController?.pushViewController(SetLocationViewController(), animated:true)
                         }
                     }
                 }
