@@ -134,7 +134,7 @@ class LoginViewController: UIViewController {
     
     private func setWaffleLogoLabel(){
         waffleLogoLabel.translatesAutoresizingMaskIntoConstraints = false
-        waffleLogoLabel.centerXAnchor.constraint(equalTo: self.view.centerXAnchor).isActive = true
+        waffleLogoLabel.centerXAnchor.constraint(equalTo: self.view.safeAreaLayoutGuide.centerXAnchor).isActive = true
         waffleLogoLabel.topAnchor.constraint(lessThanOrEqualTo: self.view.safeAreaLayoutGuide.topAnchor, constant: 200).isActive = true
         waffleLogoLabel.topAnchor.constraint(greaterThanOrEqualTo: self.view.safeAreaLayoutGuide.topAnchor).isActive = true
         waffleLogoLabel.text = "🧇"
@@ -143,7 +143,7 @@ class LoginViewController: UIViewController {
     
     private func setWelcomeLabel(){
         welcomeLabel.translatesAutoresizingMaskIntoConstraints = false
-        welcomeLabel.centerXAnchor.constraint(equalTo: self.view.centerXAnchor).isActive = true
+        welcomeLabel.centerXAnchor.constraint(equalTo: self.view.safeAreaLayoutGuide.centerXAnchor).isActive = true
         welcomeLabel.topAnchor.constraint(equalTo: waffleLogoLabel.bottomAnchor, constant: 30).isActive = true
         
         welcomeLabel.text = "당신 근처의 와플마켓을 시작해보세요!"
@@ -154,8 +154,10 @@ class LoginViewController: UIViewController {
         
         idField.topAnchor.constraint(lessThanOrEqualTo: welcomeLabel.bottomAnchor, constant: 100).isActive = true
         idField.topAnchor.constraint(greaterThanOrEqualTo: welcomeLabel.bottomAnchor, constant: 10).isActive = true
-        idField.leadingAnchor.constraint(equalTo: self.view.leadingAnchor, constant: 50).isActive = true
-        idField.trailingAnchor.constraint(lessThanOrEqualTo: self.view.trailingAnchor, constant: -100).isActive = true
+        idField.leadingAnchor.constraint(lessThanOrEqualTo: self.view.safeAreaLayoutGuide.leadingAnchor, constant: 30).isActive = true
+        idField.leadingAnchor.constraint(greaterThanOrEqualTo: self.view.safeAreaLayoutGuide.leadingAnchor, constant: 10).isActive = true
+        
+        
         idField.heightAnchor.constraint(equalToConstant: 50).isActive = true
         
         idField.backgroundColor = .white
@@ -171,8 +173,8 @@ class LoginViewController: UIViewController {
         idValidateBtn.translatesAutoresizingMaskIntoConstraints = false
         
         idValidateBtn.topAnchor.constraint(equalTo: idField.topAnchor, constant: 10).isActive = true
-        idValidateBtn.leadingAnchor.constraint(equalTo: idField.trailingAnchor).isActive = true
-        idValidateBtn.trailingAnchor.constraint(greaterThanOrEqualTo: self.view.safeAreaLayoutGuide.trailingAnchor, constant: -10).isActive = true
+        idValidateBtn.leadingAnchor.constraint(greaterThanOrEqualTo: idField.trailingAnchor).isActive = true
+        idValidateBtn.trailingAnchor.constraint(greaterThanOrEqualTo: self.view.safeAreaLayoutGuide.trailingAnchor, constant: -30).isActive = true
         idValidateBtn.widthAnchor.constraint(equalToConstant: 50).isActive = true
         idValidateBtn.heightAnchor.constraint(equalTo: idField.heightAnchor, constant: -20).isActive = true
         
@@ -217,7 +219,7 @@ class LoginViewController: UIViewController {
     
     private func setPwField(){
         pwField.translatesAutoresizingMaskIntoConstraints = false
-        pwField.centerXAnchor.constraint(equalTo: self.view.centerXAnchor).isActive = true
+        
         pwField.topAnchor.constraint(equalTo: idField.bottomAnchor, constant: 20).isActive = true
         pwField.leadingAnchor.constraint(equalTo: idField.leadingAnchor).isActive = true
         pwField.trailingAnchor.constraint(equalTo: idValidateBtn.trailingAnchor).isActive = true
@@ -235,8 +237,8 @@ class LoginViewController: UIViewController {
     private func setLoginBtn(){
 
         loginBtn.translatesAutoresizingMaskIntoConstraints = false
-        loginBtn.centerXAnchor.constraint(equalTo: self.view.centerXAnchor).isActive = true
-        loginBtn.topAnchor.constraint(equalTo: pwField.bottomAnchor, constant: 50).isActive = true
+        
+        loginBtn.topAnchor.constraint(lessThanOrEqualTo: pwField.bottomAnchor, constant: 50).isActive = true
         loginBtn.leadingAnchor.constraint(equalTo: pwField.leadingAnchor).isActive = true
         loginBtn.trailingAnchor.constraint(equalTo: pwField.trailingAnchor).isActive = true
         loginBtn.heightAnchor.constraint(equalTo: pwField.heightAnchor).isActive = true
@@ -296,7 +298,7 @@ class LoginViewController: UIViewController {
     
     private func setGoogleLoginBtn(){
         googleLoginBtn.translatesAutoresizingMaskIntoConstraints = false
-        googleLoginBtn.centerXAnchor.constraint(equalTo: self.view.centerXAnchor).isActive = true
+        
         googleLoginBtn.topAnchor.constraint(equalTo: loginBtn.bottomAnchor, constant: 20).isActive = true
         googleLoginBtn.leadingAnchor.constraint(equalTo: loginBtn.leadingAnchor).isActive = true
         googleLoginBtn.trailingAnchor.constraint(equalTo: loginBtn.trailingAnchor).isActive = true
@@ -312,7 +314,7 @@ class LoginViewController: UIViewController {
     
     private func setSignUpBtn(){
         signUpBtn.translatesAutoresizingMaskIntoConstraints = false
-        signUpBtn.centerXAnchor.constraint(equalTo: self.view.centerXAnchor).isActive = true
+        signUpBtn.centerXAnchor.constraint(equalTo: self.view.safeAreaLayoutGuide.centerXAnchor).isActive = true
         signUpBtn.topAnchor.constraint(equalTo: googleLoginBtn.bottomAnchor, constant: 20).isActive = true
         signUpBtn.bottomAnchor.constraint(lessThanOrEqualTo: self.view.safeAreaLayoutGuide.bottomAnchor, constant: -40).isActive = true
         signUpBtn.setTitle("회원가입하기", for: .normal)
