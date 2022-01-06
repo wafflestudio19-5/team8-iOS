@@ -16,7 +16,7 @@ class GoogleSignInAuthenticator{
         return GIDConfiguration(clientID: clientID)
     }()
     
-    public func signIn(presenting: UIViewController, disposeBag: DisposeBag, onSuccess: @escaping (()->Void), onFailure: (@escaping (_ error: Error) -> Void) = {_ in }){
+    public func signIn(presenting: UIViewController, disposeBag: DisposeBag, onSuccess: @escaping ((LoginResponse)->Void), onFailure: (@escaping (_ error: Error) -> Void) = {_ in }){
         GIDSignIn.sharedInstance.signIn(with: configuration, presenting: presenting) { googleUser, error in
             guard error == nil else { return }
             guard let googleUser = googleUser else { return }
@@ -31,15 +31,19 @@ class GoogleSignInAuthenticator{
                 guard let authentication = authentication else { return }
                 guard let idToken = authentication.idToken else { return }
                 WaffleAPI.googleLogin(idToken: idToken).subscribe { response in
-                    guard response.statusCode == 200 else {
+                    print(String(decoding: response.data, as: UTF8.self))
+                    guard response.statusCode/100 == 2 else {
                         print("Google Login statusCode:", response.statusCode)
+                        presenting.toast("로그인에 실패했어요")
                         return
                     }
-                    let isTokenValid = true // MARK: get from response
-                    if isTokenValid {
-                        let emailAddress = googleUser.profile?.email
-                        onSuccess()
+                    let decoder = JSONDecoder()
+                    if let decoded = try? decoder.decode(LoginResponse.self, from: response.data) {
+                        onSuccess(decoded)
+                    } else {
+                        presenting.toast("로그인에 실패했어요")
                     }
+                    
                 
                 } onFailure: { error in
                     

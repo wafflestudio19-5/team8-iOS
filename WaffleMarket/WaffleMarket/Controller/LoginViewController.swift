@@ -23,6 +23,7 @@ class LoginViewModel {
 class LoginViewController: UIViewController {
 
     var googleLoginBtn = GIDSignInButton()
+    
 
     
     var waffleLogoLabel: UILabel = UILabel()
@@ -36,7 +37,7 @@ class LoginViewController: UIViewController {
     let isPwValid = BehaviorSubject(value: false)
     var loginBtn = UIButton(type: .system)
     var signUpBtn = UIButton(type: .system)
-
+    
     let disposeBag = DisposeBag()
     let loginViewModel = LoginViewModel()
     var authPhoneNumber = ""
@@ -45,12 +46,7 @@ class LoginViewController: UIViewController {
         super.viewDidLoad()
         self.view.backgroundColor = .white
         
-        if AccountManager.tryAutologin() {
-            let sceneDelegate = UIApplication.shared.connectedScenes.first?.delegate as? SceneDelegate
-            sceneDelegate?.changeRootViewController(MainTabBarController())
-            return
-        }
-        
+
         
         self.view.addSubview(waffleLogoLabel)
         setWaffleLogoLabel()
@@ -69,6 +65,9 @@ class LoginViewController: UIViewController {
         setGoogleLoginBtn()
         self.view.addSubview(signUpBtn)
         setSignUpBtn()
+        
+
+    
         
         Observable.combineLatest(isIdValid, isPwValid, resultSelector: {$0 && $1})
             .subscribe { value in
@@ -208,7 +207,6 @@ class LoginViewController: UIViewController {
                     print(String(decoding:response.data, as: UTF8.self))
                     let decoder = JSONDecoder()
                     if let decoded = try? decoder.decode(LoginResponse.self, from:response.data) {
-                        print(decoded.token)
                         AccountManager.login(decoded)
                         if decoded.location_exists {
                             let sceneDelegate = UIApplication.shared.connectedScenes.first?.delegate as? SceneDelegate
@@ -250,10 +248,17 @@ class LoginViewController: UIViewController {
         googleLoginBtn.leadingAnchor.constraint(equalTo: loginBtn.leadingAnchor).isActive = true
         googleLoginBtn.trailingAnchor.constraint(equalTo: loginBtn.trailingAnchor).isActive = true
         googleLoginBtn.heightAnchor.constraint(equalTo: loginBtn.heightAnchor).isActive = true
-      
+        
+        googleLoginBtn.style = .wide
         googleLoginBtn.rx.controlEvent(.touchUpInside).bind{
-            GoogleSignInAuthenticator.sharedInstance.signIn(presenting: self, disposeBag: self.disposeBag) {
-                print("success")
+            GoogleSignInAuthenticator.sharedInstance.signIn(presenting: self, disposeBag: self.disposeBag) { data in
+                AccountManager.login(data)
+                if data.location_exists {
+                    let sceneDelegate = UIApplication.shared.connectedScenes.first?.delegate as? SceneDelegate
+                    sceneDelegate?.changeRootViewController(MainTabBarController())
+                } else {
+                    self.present(SetLocationViewController(), animated:true)
+                }
             }
         }.disposed(by: disposeBag)
     }

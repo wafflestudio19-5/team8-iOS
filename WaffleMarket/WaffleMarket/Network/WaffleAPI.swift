@@ -32,9 +32,9 @@ extension WaffleService: TargetType{
         case .signup:
             return "/signup/"
         case .googleLogin(_):
-            return "/google-login-test/" // MARK: change later
-            
+            return "/login/google/" // MARK: change later
         }
+        
     }
     
     var method: Moya.Method {
@@ -49,6 +49,7 @@ extension WaffleService: TargetType{
             return .post
         case .googleLogin:
             return .post
+
 
         }
     }
@@ -66,6 +67,7 @@ extension WaffleService: TargetType{
             return .requestJSONEncodable(["phone_number": phoneNumber, "username": userName])
         case let .googleLogin(idToken):
             return .requestJSONEncodable(idToken)
+
         }
     }
     
@@ -75,8 +77,8 @@ extension WaffleService: TargetType{
 }
 
 struct LoginResponse: Codable {
-    var username: String
-    var phone_number: String
+    var username: String?
+    var phone_number: String?
     var logined: Bool?
     var first_login: Bool?
     
@@ -96,7 +98,7 @@ struct CompleteAuthResponse: Codable {
 
 
 class WaffleAPI{
-    static var provider = MoyaProvider<WaffleService>()
+    private static var provider = MoyaProvider<WaffleService>()
 
     static func ping() -> Single<Response> {
         return provider.rx.request(.ping)
@@ -116,6 +118,8 @@ class WaffleAPI{
     static func googleLogin(idToken: String) -> Single<Response> {
         return provider.rx.request(.googleLogin(idToken: ["token": idToken]))
     }
+    
+
 }
 
 
