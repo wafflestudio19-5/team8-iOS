@@ -380,6 +380,10 @@ class WritePostViewController: UIViewController {
             // MARK: request to backend
             
         }.disposed(by: disposeBag)
+        
+        completeBtn.rx.tap.bind{
+            self.navigationController?.pushViewController(HomeViewController(), animated:true)
+        }.disposed(by: disposeBag)
     }
     
     private func bindSelectedImages(){
