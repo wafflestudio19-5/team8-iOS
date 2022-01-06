@@ -42,9 +42,7 @@ class SetLocationViewController: UIViewController, CLLocationManagerDelegate {
                 return
         }
         
-        if let location = self.locationManager.location {
-            self.viewModel.fetchNeighborhoodByLocation(longitude: location.coordinate.longitude, latitude: location.coordinate.latitude)
-        }
+        
     }
 
     private func sendLocation(code: String){
@@ -71,7 +69,7 @@ class SetLocationViewController: UIViewController, CLLocationManagerDelegate {
         searchBar.leadingAnchor.constraint(equalTo: self.view.safeAreaLayoutGuide.leadingAnchor).isActive = true
         searchBar.trailingAnchor.constraint(equalTo: self.view.safeAreaLayoutGuide.trailingAnchor).isActive = true
         searchBar.heightAnchor.constraint(equalToConstant: 50).isActive = true
-        searchBar.placeholder = "Search by neighborhood"
+        searchBar.placeholder = "검색"
     }
     
     private func setFindNearbyBtn(){
@@ -81,7 +79,7 @@ class SetLocationViewController: UIViewController, CLLocationManagerDelegate {
         findNearbyBtn.trailingAnchor.constraint(equalTo: self.view.safeAreaLayoutGuide.trailingAnchor, constant: -10).isActive = true
         findNearbyBtn.heightAnchor.constraint(equalToConstant: 50).isActive = true
         findNearbyBtn.backgroundColor = .orange
-        findNearbyBtn.setTitle("Find nearby neighborhoods", for: .normal)
+        findNearbyBtn.setTitle("주변 동네 찾기", for: .normal)
         findNearbyBtn.setTitleColor(.white, for: .normal)
         findNearbyBtn.layer.cornerRadius = 10
         
@@ -122,8 +120,10 @@ class SetLocationViewController: UIViewController, CLLocationManagerDelegate {
     
     func locationManagerDidChangeAuthorization(_ manager: CLLocationManager) {
         if manager.authorizationStatus == .authorizedWhenInUse || manager.authorizationStatus == .authorizedAlways {
-            
-            
+            print("location permission authorized")
+            if let location = self.locationManager.location {
+                self.viewModel.fetchNeighborhoodByLocation(longitude: location.coordinate.longitude, latitude: location.coordinate.latitude)
+            }
         }
     }
 }
