@@ -72,7 +72,19 @@ class HomeViewController: UIViewController, UIScrollViewDelegate, UICollectionVi
     let textSize: CGFloat = 16
     let scrollView = UIScrollView()
     let writePostBtn = UIButton(type:.custom)
-    let articleCollectionView = UICollectionView()
+    let articleCollectionView: UICollectionView = {
+        
+        let layout = UICollectionViewFlowLayout()
+        layout.minimumLineSpacing = 10
+        
+        
+        layout.scrollDirection = .vertical
+        layout.sectionInset = UIEdgeInsets(top: 0, left: 0, bottom: 0, right: 0)
+       
+        let cv = UICollectionView(frame: .zero, collectionViewLayout: layout)
+        
+        return cv
+    }()
     let searchField = UISearchTextField()
     let categoryBtn = UIButton()
     var selectedCategory: String?
