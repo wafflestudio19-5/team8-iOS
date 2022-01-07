@@ -10,7 +10,7 @@ import Moya
 import RxAlamofire
 import RxSwift
 enum ArticleService {
-    case create(title: String, price: String, content: String, category: String)
+    case create(title: String, price: String, content: String, category: String, productImage: UIImage)
 }
 extension ArticleService: TargetType {
     var baseURL: URL {
@@ -33,15 +33,22 @@ extension ArticleService: TargetType {
     
     var task: Task {
         switch self {
-        case let .create(title, price, content, category):
-            return .requestJSONEncodable(["title": title, "price": price, "content": content, "category": category])
+        case let .create(title, price, content, category, productImage):
+            let imageData = MultipartFormData(provider: .data(productImage.pngData()!), name: "product_image", fileName: "product_image\(Date().timeIntervalSince1970).png", mimeType: "image/png")
+            let titleData = MultipartFormData(provider: .data(title.data(using: .utf8)!), name: "title")
+            let priceData = MultipartFormData(provider: .data(price.data(using: .utf8)!), name: "price")
+            let contentData = MultipartFormData(provider: .data(content.data(using: .utf8)!), name: "content")
+            let categoryData = MultipartFormData(provider: .data(category.data(using: .utf8)!), name: "category")
+
+            let multipart = [titleData, priceData, contentData, categoryData, imageData]
+            return .uploadMultipart(multipart)
         }
     }
     
     var headers: [String : String]? {
         switch self {
         case .create:
-            return ["Content-type": "application/json"]
+            return ["Content-type": "multipart/form-data"]
         }
     }
     
@@ -50,7 +57,7 @@ extension ArticleService: TargetType {
 class ArticleAPI {
     private static var authPlugin = AuthPlugin()
     private static var provider = MoyaProvider<ArticleService>(plugins: [authPlugin])
-    static func create(title: String, price: String, content: String, category: String) -> Single<Response> {
-        return provider.rx.request(.create(title: title, price: price, content: content, category: category))
+    static func create(title: String, price: String, content: String, category: String, productImage: UIImage) -> Observable<ProgressResponse> {
+        return provider.rx.requestWithProgress(.create(title: title, price: price, content: content, category: category, productImage: productImage))
     }
 }
