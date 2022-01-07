@@ -12,9 +12,31 @@ class ArticleViewModel: ObservableObject {
     
     var articles = [Article]()
     let articleList = BehaviorSubject<[Article]>(value: [])
-    
+    let disposeBag = DisposeBag()
     func getArticleList(page:Int) {
         // 백엔드와 연결시 API 호출
+        ArticleAPI.list(page: 1).subscribe { response in
+            let decoder = JSONDecoder()
+            if let decoded = try? decoder.decode([ArticleResponse].self, from: response.data){
+                for articleResponse in decoded {
+                    var article = Article(
+                        title: articleResponse.title,
+                        category: articleResponse.category,
+                        price: articleResponse.price,
+                        content: articleResponse.content,
+                        productImages: articleResponse.product_images.map({ it in
+                            it.url
+                        })
+                    )
+                    
+                    
+                }
+            }
+        } onFailure: { error in
+            
+        } onDisposed: {
+            
+        }.disposed(by: disposeBag)
     }
     
     func getCategoryList(category: String, page: Int) {
@@ -24,8 +46,8 @@ class ArticleViewModel: ObservableObject {
     func test_fetchDummyData(){
         print("fetchDummyData")
         let articles = [
-            Article(title: "맥북 에어 미개봉", category: "디지털기기", price: 1000000, content: "맥북 에어 미개봉 팝니다", productImageUrl: "https://store.storeimages.cdn-apple.com/8756/as-images.apple.com/is/macbook-air-space-gray-select-201810?wid=904&hei=840&fmt=jpeg&qlt=80&.v=1633027804000"),
-            Article(title: "아이폰 13", category: "디지털기기", price: 700000, content: "아이폰 13입니다. 사용감 거의 없습니다!", productImageUrl: "https://store.storeimages.cdn-apple.com/8756/as-images.apple.com/is/iphone-13-family-select-2021?wid=940&hei=1112&fmt=jpeg&qlt=80&.v=1629842667000")
+            Article(title: "맥북 에어 미개봉", category: "디지털기기", price: 1000000, content: "맥북 에어 미개봉 팝니다", productImages: ["https://store.storeimages.cdn-apple.com/8756/as-images.apple.com/is/macbook-air-space-gray-select-201810?wid=904&hei=840&fmt=jpeg&qlt=80&.v=1633027804000"]),
+            Article(title: "아이폰 13", category: "디지털기기", price: 700000, content: "아이폰 13입니다. 사용감 거의 없습니다!", productImages: ["https://store.storeimages.cdn-apple.com/8756/as-images.apple.com/is/iphone-13-family-select-2021?wid=940&hei=1112&fmt=jpeg&qlt=80&.v=1629842667000"])
         
         ]
         articleList.onNext(articles)
@@ -250,11 +272,12 @@ class HomeViewController: UIViewController, UIScrollViewDelegate, UITableViewDel
     }
     
     private func bindTableArticleData() {
+        
         viewModel.articleList.bind(to: articleTableView.rx.items(cellIdentifier: reuseIdentifier, cellType: ArticleCell.self)) { row,  model, cell in
             print(model)
             cell.titleLabel.text = model.title
             cell.priceLabel.text = String(model.title)
-            cell.productImage.image = self.getArticleImage(urlString: model.productImageUrl)
+            cell.productImage.image = self.getArticleImage(urlString: model.productImages[0])
         }.disposed(by: disposeBag)
         
 //        articleCollectionView.rx.modelSelected(Article.self).bind{_ in
@@ -265,7 +288,7 @@ class HomeViewController: UIViewController, UIScrollViewDelegate, UITableViewDel
             
             let controller = ArticleViewController()
             
-            controller.articleSelected = Article(title: article.title, category: article.category, price: article.price, content: article.content, productImageUrl: article.productImageUrl)
+            controller.articleSelected = article
                 
             self.navigationController?.pushViewController(controller, animated: true)
             
