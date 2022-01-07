@@ -84,7 +84,9 @@ extension WaffleService: TargetType{
         
     }
 }
-
+struct NonFieldErrorsResponse: Codable {
+    var non_field_errors: [String]
+}
 struct LoginResponse: Codable {
     var username: String
     var phone_number: String?
