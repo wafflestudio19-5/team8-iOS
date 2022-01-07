@@ -50,7 +50,7 @@ extension UserService: TargetType {
     var task: Task {
         switch self {
         case let .setProfile(profile):
-            return .requestJSONEncodable(["name": profile.name]) // location? image?
+            return .requestJSONEncodable(["name": profile.userName]) // location? image?
         case let .setCategory(category, enabled):
             return .requestJSONEncodable(SetCategoryRequest(category: category, enabled: enabled))
         case .getCategory:

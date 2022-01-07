@@ -156,8 +156,13 @@ class SetProfileViewController: UIViewController {
         
         profileSaveBtn.rx.tap.bind{
             guard let username = self.nameField.text else { return }
+            guard let profileImage = self.profileImage else {
+                self.toast("프로필 이미지를 선택하세요")
+                return
+            }
             // MARK: upload profile image
-            WaffleAPI.signup(phoneNumber: self.userId!, userName: username).subscribe { response in
+            let profile = Profile(phoneNumber: self.userId!, userName: username, profileImage: profileImage)
+            WaffleAPI.signup(profile: profile).subscribe { response in
                 let decoder = JSONDecoder()
                 if (response.statusCode / 100) == 2 {
                     

@@ -9,10 +9,9 @@ import Foundation
 import UIKit
 
 struct Profile {
-    
-    var name: String
-    var id: String // phone number or google email
+    var phoneNumber: String?
+    var userName: String?
     var profileImage: UIImage
-    var location: String
+    var location: String?
     
 }
