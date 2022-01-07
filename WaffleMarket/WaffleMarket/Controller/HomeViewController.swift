@@ -54,6 +54,15 @@ class ArticleCell: UITableViewCell {
         priceLabel.text = nil
     }
     
+    override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
+        super.init(style: style, reuseIdentifier: reuseIdentifier)
+        setupCell()
+    }
+
+    required init?(coder aDecoder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
+    
     private func setupCell() {
         backgroundColor = .white
         self.heightAnchor.constraint(equalToConstant: 120).isActive = true
@@ -67,6 +76,9 @@ class ArticleCell: UITableViewCell {
     }
     
     private func setProductImage() {
+        
+        productImage.contentMode = .scaleAspectFit
+        productImage.translatesAutoresizingMaskIntoConstraints = false
         productImage.centerYAnchor.constraint(equalTo: contentView.centerYAnchor).isActive = true
         productImage.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 20).isActive = true
         productImage.topAnchor.constraint(equalTo: contentView.topAnchor, constant: 10).isActive = true
@@ -77,14 +89,16 @@ class ArticleCell: UITableViewCell {
     }
     
     private func setTitleLabel() {
+        titleLabel.translatesAutoresizingMaskIntoConstraints = false
         titleLabel.leadingAnchor.constraint(equalTo: productImage.trailingAnchor, constant: 20).isActive = true
-        titleLabel.topAnchor.constraint(equalTo: productImage.topAnchor).isActive = true
+        titleLabel.topAnchor.constraint(equalTo: productImage.topAnchor, constant: 20).isActive = true
         titleLabel.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -20).isActive = true
     }
     
     private func setPriceLabel() {
+        priceLabel.translatesAutoresizingMaskIntoConstraints = false
         priceLabel.leadingAnchor.constraint(equalTo: titleLabel.leadingAnchor).isActive = true
-        priceLabel.topAnchor.constraint(equalTo: titleLabel.bottomAnchor, constant: 20).isActive = true
+        priceLabel.topAnchor.constraint(equalTo: titleLabel.bottomAnchor).isActive = true
         priceLabel.trailingAnchor.constraint(equalTo: titleLabel.trailingAnchor).isActive = true
         priceLabel.bottomAnchor.constraint(equalTo: contentView.bottomAnchor).isActive = true
     }
@@ -254,7 +268,8 @@ class HomeViewController: UIViewController, UIScrollViewDelegate, UITableViewDel
         viewModel.articleList.bind(to: articleTableView.rx.items(cellIdentifier: reuseIdentifier, cellType: ArticleCell.self)) { row, model, cell in
             print(model)
             cell.titleLabel.text = model.title
-            cell.priceLabel.text = String(model.title)
+            let price = model.price!
+            cell.priceLabel.text = "₩ " + String(price)
             cell.productImage.image = self.getArticleImage(urlString: model.productImageUrl)
         }.disposed(by: disposeBag)
         articleTableView.rx.setDelegate(self).disposed(by: disposeBag)
