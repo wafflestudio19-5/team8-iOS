@@ -30,8 +30,9 @@ extension UserService: TargetType {
             return "/category/"
         case .getCategory:
             return "/category/"
-        }
+
     
+        }
     }
     var method: Moya.Method {
         switch self {

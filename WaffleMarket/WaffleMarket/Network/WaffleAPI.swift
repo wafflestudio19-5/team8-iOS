@@ -15,6 +15,7 @@ enum WaffleService{
     case completeAuth(phoneNumber: String, authNumber: String)
     case signup(phoneNumber: String, userName: String)
     case googleLogin(idToken: [String: String])
+    case leave
 }
 extension WaffleService: TargetType{
     var baseURL: URL {
@@ -33,7 +34,8 @@ extension WaffleService: TargetType{
             return "/signup/"
         case .googleLogin(_):
             return "/login/google/" // MARK: change later
-            
+        case .leave:
+            return "/leave/"
         }
     }
     
@@ -49,7 +51,8 @@ extension WaffleService: TargetType{
             return .post
         case .googleLogin:
             return .post
-
+        case .leave:
+            return .delete
         }
     }
     
@@ -66,11 +69,19 @@ extension WaffleService: TargetType{
             return .requestJSONEncodable(["phone_number": phoneNumber, "username": userName])
         case let .googleLogin(idToken):
             return .requestJSONEncodable(idToken)
+        case .leave:
+            return .requestPlain
         }
     }
     
     var headers: [String : String]? {
-        return ["Content-type": "application/json"]
+        switch self{
+        case .leave:
+            return ["Content-type": "application/json", "Authorization": "JWT "+AccountManager.token!]
+        default:
+            return ["Content-type": "application/json"]
+        }
+        
     }
 }
 
@@ -115,6 +126,10 @@ class WaffleAPI{
     
     static func googleLogin(idToken: String) -> Single<Response> {
         return provider.rx.request(.googleLogin(idToken: ["token": idToken]))
+    }
+    
+    static func leave() -> Single<Response> {
+        return provider.rx.request(.leave)
     }
 }
 
