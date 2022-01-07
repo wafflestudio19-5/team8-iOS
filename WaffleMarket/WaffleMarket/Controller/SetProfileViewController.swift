@@ -22,11 +22,20 @@ enum AccountType {
 
 class SetProfileViewController: UIViewController {
     
+    
     var profileImage: UIImage?
     var profileImageView: UIImageView = UIImageView()
     var picSelectBtn: UIButton = UIButton()
     var nameField: UITextField = UITextField()
     var profileSaveBtn: UIButton = UIButton()
+    var progressView: UIProgressView = {
+        let view = UIProgressView()
+        view.trackTintColor = .white
+        view.progressTintColor = .orange
+        view.progress = 0
+        return view
+    }()
+    
     
     let disposeBag = DisposeBag()
     var accountType: AccountType = .standalone
@@ -57,6 +66,8 @@ class SetProfileViewController: UIViewController {
         setNameField()
         self.view.addSubview(profileSaveBtn)
         setProfileSaveBtn()
+        self.view.addSubview(progressView)
+        setProgressView()
     }
     
     private func setProfileImage(){
@@ -102,6 +113,7 @@ class SetProfileViewController: UIViewController {
             self.present(imagePicker, animated: true)
         }.disposed(by: disposeBag)
     }
+    
         
 //        picSelectBtn.rx.tap.bind{
 ////            let camera = CameraViewController {[weak self] image, asset in
@@ -167,7 +179,12 @@ class SetProfileViewController: UIViewController {
                 if (response.statusCode / 100) == 2 {
                     if let decoded = try? decoder.decode(LoginResponse.self, from: response.data) {
                         AccountManager.login(decoded)
-                        UserAPI.setProfile(profile: profile).subscribe { response in
+                        UserAPI.setProfile(profile: profile).subscribe { progressResponse in
+                            print(progressResponse.progress)
+                            self.progressView.progress = Float(progressResponse.progress)
+                        } onError: { error in
+                            self.toast("오류가 발생했어요")
+                        } onCompleted: {
                             print(String(decoding: response.data, as: UTF8.self))
                             if (response.statusCode/100) == 2 {
                                 if decoded.location_exists {
@@ -179,11 +196,10 @@ class SetProfileViewController: UIViewController {
                                 return
                             }
                             self.toast("오류가 발생했어요")
-                        } onFailure: { error in
-                            self.toast("오류가 발생했어요")
                         } onDisposed: {
                             
                         }.disposed(by: self.disposeBag)
+
                         return
                     }
                 }
@@ -203,6 +219,13 @@ class SetProfileViewController: UIViewController {
 
             
         }.disposed(by: disposeBag)
+    }
+    private func setProgressView(){
+        progressView.translatesAutoresizingMaskIntoConstraints = false
+        progressView.leadingAnchor.constraint(equalTo: profileSaveBtn.leadingAnchor).isActive = true
+        progressView.trailingAnchor.constraint(equalTo: profileSaveBtn.trailingAnchor).isActive = true
+        progressView.topAnchor.constraint(equalTo: profileSaveBtn.bottomAnchor, constant: 30).isActive = true
+        
     }
     
     

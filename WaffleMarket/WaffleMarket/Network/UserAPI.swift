@@ -82,8 +82,8 @@ class UserAPI {
     
 
     
-    static func setProfile(profile: Profile) -> Single<Response> {
-        return provider.rx.request(.setProfile(profile: profile))
+    static func setProfile(profile: Profile) -> Observable<ProgressResponse> {
+        return provider.rx.requestWithProgress(.setProfile(profile: profile))
     }
     static func setCategory(category: String, enabled: Bool) -> Single<Response>{
         return provider.rx.request(.setCategory(category: category, enabled: enabled))
