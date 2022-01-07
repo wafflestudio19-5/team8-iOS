@@ -22,11 +22,20 @@ enum AccountType {
 
 class SetProfileViewController: UIViewController {
     
+    
     var profileImage: UIImage?
     var profileImageView: UIImageView = UIImageView()
     var picSelectBtn: UIButton = UIButton()
     var nameField: UITextField = UITextField()
     var profileSaveBtn: UIButton = UIButton()
+    var progressView: UIProgressView = {
+        let view = UIProgressView()
+        view.trackTintColor = .white
+        view.progressTintColor = .orange
+        view.progress = 0
+        return view
+    }()
+    
     
     let disposeBag = DisposeBag()
     var accountType: AccountType = .standalone
@@ -57,6 +66,8 @@ class SetProfileViewController: UIViewController {
         setNameField()
         self.view.addSubview(profileSaveBtn)
         setProfileSaveBtn()
+        self.view.addSubview(progressView)
+        setProgressView()
     }
     
     private func setProfileImage(){
@@ -102,6 +113,7 @@ class SetProfileViewController: UIViewController {
             self.present(imagePicker, animated: true)
         }.disposed(by: disposeBag)
     }
+    
         
 //        picSelectBtn.rx.tap.bind{
 ////            let camera = CameraViewController {[weak self] image, asset in
@@ -156,19 +168,38 @@ class SetProfileViewController: UIViewController {
         
         profileSaveBtn.rx.tap.bind{
             guard let username = self.nameField.text else { return }
+            guard let profileImage = self.profileImage else {
+                self.toast("프로필 이미지를 선택하세요")
+                return
+            }
             // MARK: upload profile image
-            WaffleAPI.signup(phoneNumber: self.userId!, userName: username).subscribe { response in
+            let profile = Profile(phoneNumber: self.userId!, userName: username, profileImage: profileImage)
+            WaffleAPI.signup(profile: profile).subscribe { response in
                 let decoder = JSONDecoder()
                 if (response.statusCode / 100) == 2 {
-                    
                     if let decoded = try? decoder.decode(LoginResponse.self, from: response.data) {
                         AccountManager.login(decoded)
-                        if decoded.location_exists {
-                            let sceneDelegate = UIApplication.shared.connectedScenes.first?.delegate as? SceneDelegate
-                            sceneDelegate?.changeRootViewController(MainTabBarController())
-                        } else {
-                            self.navigationController?.pushViewController(SetLocationViewController(), animated:true)
-                        }
+                        UserAPI.setProfile(profile: profile).subscribe { progressResponse in
+                            print(progressResponse.progress)
+                            self.progressView.progress = Float(progressResponse.progress)
+                        } onError: { error in
+                            self.toast("오류가 발생했어요")
+                        } onCompleted: {
+                            print(String(decoding: response.data, as: UTF8.self))
+                            if (response.statusCode/100) == 2 {
+                                if decoded.location_exists {
+                                    let sceneDelegate = UIApplication.shared.connectedScenes.first?.delegate as? SceneDelegate
+                                    sceneDelegate?.changeRootViewController(MainTabBarController())
+                                } else {
+                                    self.navigationController?.pushViewController(SetLocationViewController(), animated:true)
+                                }
+                                return
+                            }
+                            self.toast("오류가 발생했어요")
+                        } onDisposed: {
+                            
+                        }.disposed(by: self.disposeBag)
+
                         return
                     }
                 }
@@ -188,6 +219,13 @@ class SetProfileViewController: UIViewController {
 
             
         }.disposed(by: disposeBag)
+    }
+    private func setProgressView(){
+        progressView.translatesAutoresizingMaskIntoConstraints = false
+        progressView.leadingAnchor.constraint(equalTo: profileSaveBtn.leadingAnchor).isActive = true
+        progressView.trailingAnchor.constraint(equalTo: profileSaveBtn.trailingAnchor).isActive = true
+        progressView.topAnchor.constraint(equalTo: profileSaveBtn.bottomAnchor, constant: 30).isActive = true
+        
     }
     
     

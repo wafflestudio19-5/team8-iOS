@@ -25,7 +25,7 @@ extension UserService: TargetType {
         switch self {
 
         case .setProfile:
-            return "/profile/"
+            return "/"
         case .setCategory:
             return "/category/"
         case .getCategory:
@@ -50,7 +50,10 @@ extension UserService: TargetType {
     var task: Task {
         switch self {
         case let .setProfile(profile):
-            return .requestJSONEncodable(["name": profile.name]) // location? image?
+            let imageData = MultipartFormData(provider: .data(profile.profileImage.pngData()!), name: "profile_image", fileName: "profile_image\(Date().timeIntervalSince1970).png", mimeType: "image/png")
+            let userNameData = MultipartFormData(provider: .data(profile.userName!.data(using: .utf8)!), name: "username")
+            let multipartData = [imageData, userNameData]
+            return .uploadMultipart(multipartData)
         case let .setCategory(category, enabled):
             return .requestJSONEncodable(SetCategoryRequest(category: category, enabled: enabled))
         case .getCategory:
@@ -58,7 +61,13 @@ extension UserService: TargetType {
         }
     }
     var headers: [String : String]? {
-        return ["Content-type": "application/json"]
+        switch self{
+        case .setProfile:
+            return ["Content-type": "multipart/form-data"]
+        default:
+            return ["Content-type": "application/json"]
+        }
+        
     }
 }
 struct SetCategoryRequest: Codable{
@@ -73,8 +82,8 @@ class UserAPI {
     
 
     
-    static func setProfile(profile: Profile) -> Single<Response> {
-        return provider.rx.request(.setProfile(profile: profile))
+    static func setProfile(profile: Profile) -> Observable<ProgressResponse> {
+        return provider.rx.requestWithProgress(.setProfile(profile: profile))
     }
     static func setCategory(category: String, enabled: Bool) -> Single<Response>{
         return provider.rx.request(.setCategory(category: category, enabled: enabled))
