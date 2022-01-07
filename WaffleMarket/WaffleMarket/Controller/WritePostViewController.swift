@@ -376,7 +376,19 @@ class WritePostViewController: UIViewController {
             let price = self.priceField.text ?? ""
             let content = self.contentField.text ?? ""
             let category = self.selectedCategory ?? ""
-            
+            ArticleAPI.create(title: title, price: price, content: content, category: category).subscribe { response in
+               // print(String(decoding: response.data, as: UTF8.self))
+                if response.statusCode/100 == 2 {
+                    self.dismiss(animated: true)
+                } else {
+                    self.toast("오류가 발생했어요", y: 50)
+                }
+            } onFailure: { error in
+                self.toast("오류가 발생했어요", y: 50)
+            } onDisposed: {
+                
+            }.disposed(by: self.disposeBag)
+
             // MARK: request to backend
             
         }.disposed(by: disposeBag)
