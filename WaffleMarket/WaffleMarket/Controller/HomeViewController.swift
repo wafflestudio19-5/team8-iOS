@@ -32,16 +32,7 @@ class ArticleViewModel: ObservableObject {
     }
 }
 
-class ArticleCell: UICollectionViewCell {
-    
-    override init(frame: CGRect) {
-        super.init(frame: frame)
-        setupCell()
-    }
-    
-    required init?(coder: NSCoder) {
-        super.init(coder: coder)
-    }
+class ArticleCell: UITableViewCell {
     
     var titleLabel: UILabel = UILabel()
     var productImage: UIImageView = UIImageView()
@@ -50,25 +41,46 @@ class ArticleCell: UICollectionViewCell {
     let viewModel = ArticleViewModel()
     let disposeBag = DisposeBag()
     
+    override func prepareForReuse() {
+        super.prepareForReuse()
+        productImage.image = nil
+        titleLabel.text = nil
+        priceLabel.text = nil
+    }
+    
     private func setupCell() {
         backgroundColor = .white
-        self.contentView.addSubview(titleLabel)
-        setTitleLabel()
+        self.heightAnchor.constraint(equalToConstant: 80).isActive = true
+
         self.contentView.addSubview(productImage)
         setProductImage()
+        self.contentView.addSubview(titleLabel)
+        setTitleLabel()
         self.contentView.addSubview(priceLabel)
         setPriceLabel()
     }
     
-    private func setTitleLabel() {
+    private func setProductImage() {
+        productImage.centerYAnchor.constraint(equalTo: self.centerYAnchor).isActive = true
+        productImage.leadingAnchor.constraint(equalTo: self.leadingAnchor, constant: 20).isActive = true
+        productImage.topAnchor.constraint(equalTo: self.topAnchor, constant: 10).isActive = true
+        productImage.bottomAnchor.constraint(equalTo: self.bottomAnchor, constant: -10).isActive = true
+        productImage.heightAnchor.constraint(equalToConstant: 80).isActive = true
+        productImage.widthAnchor.constraint(equalToConstant: 80).isActive = true
+        
     }
     
-    private func setProductImage() {
-        
+    private func setTitleLabel() {
+        titleLabel.leadingAnchor.constraint(equalTo: productImage.trailingAnchor, constant: 20).isActive = true
+        titleLabel.topAnchor.constraint(equalTo: productImage.topAnchor).isActive = true
+        titleLabel.trailingAnchor.constraint(equalTo: self.trailingAnchor, constant: -20).isActive = true
     }
     
     private func setPriceLabel() {
-        
+        priceLabel.leadingAnchor.constraint(equalTo: titleLabel.leadingAnchor).isActive = true
+        priceLabel.topAnchor.constraint(equalTo: titleLabel.bottomAnchor, constant: 20).isActive = true
+        priceLabel.trailingAnchor.constraint(equalTo: titleLabel.trailingAnchor).isActive = true
+        priceLabel.bottomAnchor.constraint(equalTo: self.bottomAnchor).isActive = true
     }
     
 }
@@ -81,18 +93,10 @@ class HomeViewController: UIViewController, UIScrollViewDelegate, UICollectionVi
     let textSize: CGFloat = 16
     let scrollView = UIScrollView()
     let writePostBtn = UIButton(type:.custom)
-    let articleCollectionView: UICollectionView = {
+    let articleTableView: UITableView = {
         
-        let layout = UICollectionViewFlowLayout()
-        layout.minimumLineSpacing = 10
-        
-        
-        layout.scrollDirection = .vertical
-        layout.sectionInset = UIEdgeInsets(top: 0, left: 0, bottom: 0, right: 0)
-       
-        let cv = UICollectionView(frame: .zero, collectionViewLayout: layout)
-        
-        return cv
+        let tv = UITableView(frame: .zero)
+        return tv
     }()
     let searchField = UISearchTextField()
     let categoryBtn = UIButton()
@@ -102,7 +106,6 @@ class HomeViewController: UIViewController, UIScrollViewDelegate, UICollectionVi
     let viewModel = ArticleViewModel()
     
     var page = 1
-    var fetchMore = false
 
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -114,24 +117,15 @@ class HomeViewController: UIViewController, UIScrollViewDelegate, UICollectionVi
     }
     
     func scrollViewDidScroll(_ scrollView: UIScrollView) {
-        if articleCollectionView.contentOffset.y > (articleCollectionView.contentSize.height - articleCollectionView.bounds.size.height) {
-            if !fetchMore {
-                pagination()
-            }
+        if articleTableView.contentOffset.y > (articleTableView.contentSize.height - articleTableView.bounds.size.height) {
+            pagination()
         }
     }
     
     private func pagination() {
-        fetchMore = true
         page += 1
         viewModel.getArticleList(page: page)
         // articleCollectionView.reloadData()
-    }
-    
-    func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
-        let width = collectionView.frame.size.width
-        let cellWidth = (width - 30) / 2
-        return CGSize(width: cellWidth, height: cellWidth * 1.2)
     }
     
 //    private func setSignOutBtn(){
@@ -159,7 +153,7 @@ class HomeViewController: UIViewController, UIScrollViewDelegate, UICollectionVi
         
         scrollView.addSubview(categoryBtn)
         scrollView.addSubview(searchField)
-        scrollView.addSubview(articleCollectionView)
+        scrollView.addSubview(articleTableView)
         scrollView.addSubview(writePostBtn)
         
         setCategoryBtn()
@@ -232,23 +226,22 @@ class HomeViewController: UIViewController, UIScrollViewDelegate, UICollectionVi
     
     private func setArticleCollectionView() {
         
-        articleCollectionView.translatesAutoresizingMaskIntoConstraints = false
-        articleCollectionView.leadingAnchor.constraint(equalTo: self.scrollView.leadingAnchor).isActive = true
-        articleCollectionView.trailingAnchor.constraint(equalTo: self.scrollView.trailingAnchor).isActive = true
-        articleCollectionView.topAnchor.constraint(equalTo: self.searchField.bottomAnchor, constant: 10).isActive = true
-        articleCollectionView.bottomAnchor.constraint(equalTo: self.scrollView.bottomAnchor).isActive = true
-        articleCollectionView.heightAnchor.constraint(equalTo: self.scrollView.heightAnchor).isActive = true
-        articleCollectionView.widthAnchor.constraint(equalTo: self.scrollView.widthAnchor).isActive = true
+        articleTableView.translatesAutoresizingMaskIntoConstraints = false
+        articleTableView.leadingAnchor.constraint(equalTo: self.scrollView.leadingAnchor).isActive = true
+        articleTableView.trailingAnchor.constraint(equalTo: self.scrollView.trailingAnchor).isActive = true
+        articleTableView.topAnchor.constraint(equalTo: self.searchField.bottomAnchor, constant: 10).isActive = true
+        articleTableView.bottomAnchor.constraint(equalTo: self.scrollView.bottomAnchor).isActive = true
+        articleTableView.heightAnchor.constraint(equalTo: self.scrollView.heightAnchor).isActive = true
+        articleTableView.widthAnchor.constraint(equalTo: self.scrollView.widthAnchor).isActive = true
         
-        articleCollectionView.backgroundColor = .separator
-        self.articleCollectionView.register(ArticleCell.self, forCellWithReuseIdentifier: reuseIdentifier)
-        articleCollectionView.rx.setDelegate(self).disposed(by: disposeBag)
+        articleTableView.backgroundColor = .separator
+        articleTableView.rx.setDelegate(self).disposed(by: disposeBag)
         bindCollectionArticleData()
         
     }
     
     private func bindCollectionArticleData() {
-        viewModel.articleList.bind(to: articleCollectionView.rx.items(cellIdentifier: reuseIdentifier, cellType: ArticleCell.self)) { row,  model, cell in
+        viewModel.articleList.bind(to: articleTableView.rx.items(cellIdentifier: reuseIdentifier, cellType: ArticleCell.self)) { row,  model, cell in
             print(model)
             cell.titleLabel.text = model.title
             cell.priceLabel.text = String(model.title)
@@ -259,7 +252,7 @@ class HomeViewController: UIViewController, UIScrollViewDelegate, UICollectionVi
 //            self.present(UINavigationController(rootViewController: ArticleViewController()), animated: true)
 //        }.disposed(by: disposeBag)
         
-        articleCollectionView.rx.modelSelected(Article.self).subscribe(onNext: { (article) in
+        articleTableView.rx.modelSelected(Article.self).subscribe(onNext: { (article) in
             
             let controller = ArticleViewController()
             
@@ -273,7 +266,7 @@ class HomeViewController: UIViewController, UIScrollViewDelegate, UICollectionVi
         
     }
     
-    private func getArticleImage(urlString: String) -> UIImage {
+    func getArticleImage(urlString: String) -> UIImage {
         let url = URL(string: urlString)
         guard let data = try? Data(contentsOf: url!) else {return UIImage(named: "noImageAvailable") ?? UIImage(named: "noImageAvailable")!}
         return UIImage(data: data) ?? UIImage(named: "noImageAvailable")!

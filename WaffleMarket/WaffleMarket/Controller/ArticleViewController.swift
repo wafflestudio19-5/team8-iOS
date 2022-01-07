@@ -9,51 +9,59 @@ import UIKit
 
 class ArticleViewController: UIViewController {
 
-    let stackView = UIStackView()
+    let scrollView = UIScrollView()
+    let bottomView = UIView()
+    
     let titleLabel = UILabel()
     let categoryLabel = UILabel()
     let priceLabel = UILabel()
     let contentLabel = UILabel()
     let productImage = UIImageView()
+    let buyBtn = UIButton()
     
     var articleSelected: Article?
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        view.addSubview(stackView)
-        setStackView()
+        view.addSubview(scrollView)
+        setScrollView()
+        view.addSubview(bottomView)
+        setBottomView()
         // Do any additional setup after loading the view.
     }
     
-    private func setStackView() {
+    private func setScrollView() {
         
-        stackView.addArrangedSubview(titleLabel)
-        divider()
-        stackView.addArrangedSubview(categoryLabel)
-        divider()
-        stackView.addArrangedSubview(priceLabel)
-        divider()
-        stackView.addArrangedSubview(contentLabel)
-        divider()
-        stackView.addArrangedSubview(productImage)
-        divider()
+        scrollView.translatesAutoresizingMaskIntoConstraints = false
+        scrollView.leadingAnchor.constraint(equalTo: self.view.safeAreaLayoutGuide.leadingAnchor).isActive = true
+        scrollView.topAnchor.constraint(equalTo: self.view.safeAreaLayoutGuide.topAnchor).isActive = true
+        scrollView.trailingAnchor.constraint(equalTo: self.view.safeAreaLayoutGuide.trailingAnchor).isActive = true
+        scrollView.bottomAnchor.constraint(equalTo: self.view.safeAreaLayoutGuide.bottomAnchor, constant: -60).isActive = true
         
-        setTitleLabel()
-        setCategoryLabel()
-        setPriceLabel()
-        setContentLabel()
+        scrollView.addSubview(productImage)
         setProductImage()
+        scrollView.addSubview(titleLabel)
+        setTitleLabel()
+        scrollView.addSubview(categoryLabel)
+        setCategoryLabel()
+        scrollView.addSubview(contentLabel)
+        setContentLabel()
         
     }
     
-    private func divider() {
-        if stackView.arrangedSubviews.count > 0 {
-            let separator = UIView()
-            separator.heightAnchor.constraint(equalToConstant: 1).isActive = true
-            separator.backgroundColor = .separator
-            stackView.addArrangedSubview(separator)
-            separator.widthAnchor.constraint(equalTo: stackView.widthAnchor).isActive = true
-        }
+    private func setBottomView() {
+        
+        bottomView.translatesAutoresizingMaskIntoConstraints = false
+        bottomView.leadingAnchor.constraint(equalTo: self.view.safeAreaLayoutGuide.leadingAnchor).isActive = true
+        bottomView.topAnchor.constraint(equalTo: scrollView.bottomAnchor).isActive = true
+        bottomView.trailingAnchor.constraint(equalTo: self.view.safeAreaLayoutGuide.trailingAnchor).isActive = true
+        bottomView.bottomAnchor.constraint(equalTo: self.view.safeAreaLayoutGuide.bottomAnchor).isActive = true
+        
+        bottomView.addSubview(priceLabel)
+        setPriceLabel()
+        bottomView.addSubview(buyBtn)
+        setBuyBtn()
+    
     }
     
     private func getArticleImage(urlString: String) -> UIImage {
@@ -62,25 +70,81 @@ class ArticleViewController: UIViewController {
         return UIImage(data: data) ?? UIImage(named: "noImageAvailable")!
     }
     
+    private func setProductImage() {
+        productImage.image =  getArticleImage(urlString: articleSelected?.productImageUrl ?? "")
+        
+        productImage.translatesAutoresizingMaskIntoConstraints = false
+        productImage.leadingAnchor.constraint(equalTo: scrollView.leadingAnchor).isActive = true
+        productImage.topAnchor.constraint(equalTo: scrollView.topAnchor).isActive = true
+        productImage.trailingAnchor.constraint(equalTo: scrollView.trailingAnchor).isActive = true
+        productImage.bottomAnchor.constraint(equalTo: scrollView.centerYAnchor).isActive = true
+        
+    }
+    
     private func setTitleLabel() {
         titleLabel.text = articleSelected?.title
+        
+        titleLabel.translatesAutoresizingMaskIntoConstraints = false
+        titleLabel.leadingAnchor.constraint(equalTo: productImage.leadingAnchor, constant: 20).isActive = true
+        titleLabel.topAnchor.constraint(equalTo: productImage.bottomAnchor, constant: 20).isActive = true
+        titleLabel.trailingAnchor.constraint(equalTo: productImage.trailingAnchor, constant: -20).isActive = true
+        titleLabel.bottomAnchor.constraint(equalTo: productImage.bottomAnchor, constant: 60).isActive = true
+        
+        titleLabel.font = .systemFont(ofSize: 20)
+        
     }
     
     private func setCategoryLabel() {
         categoryLabel.text = articleSelected?.category
+        
+        categoryLabel.translatesAutoresizingMaskIntoConstraints = false
+        categoryLabel.leadingAnchor.constraint(equalTo: titleLabel.leadingAnchor).isActive = true
+        categoryLabel.topAnchor.constraint(equalTo: titleLabel.bottomAnchor, constant: 15).isActive = true
+        categoryLabel.trailingAnchor.constraint(equalTo: titleLabel.trailingAnchor).isActive = true
+        categoryLabel.bottomAnchor.constraint(equalTo: titleLabel.bottomAnchor, constant: 40).isActive = true
+        
+        categoryLabel.font = .systemFont(ofSize: 12)
+    }
+    
+    
+    private func setContentLabel() {
+        contentLabel.text = articleSelected?.content
+        
+        contentLabel.translatesAutoresizingMaskIntoConstraints = false
+        contentLabel.leadingAnchor.constraint(equalTo: categoryLabel.leadingAnchor).isActive = true
+        contentLabel.topAnchor.constraint(equalTo: categoryLabel.bottomAnchor, constant: 15).isActive = true
+        contentLabel.trailingAnchor.constraint(equalTo: categoryLabel.trailingAnchor).isActive = true
+        contentLabel.bottomAnchor.constraint(equalTo: scrollView.bottomAnchor, constant: -10).isActive = true
+        
+        contentLabel.font = .systemFont(ofSize: 15)
     }
     
     private func setPriceLabel() {
         let price = articleSelected?.price
         priceLabel.text = String(price!)
+        
+        priceLabel.translatesAutoresizingMaskIntoConstraints = false
+        priceLabel.leadingAnchor.constraint(equalTo: bottomView.leadingAnchor, constant: 20).isActive = true
+        priceLabel.topAnchor.constraint(equalTo: bottomView.topAnchor, constant: 15).isActive = true
+        priceLabel.trailingAnchor.constraint(equalTo: bottomView.centerXAnchor).isActive = true
+        priceLabel.bottomAnchor.constraint(equalTo: bottomView.bottomAnchor, constant: -15).isActive = true
+        
+        priceLabel.font = .systemFont(ofSize: 18)
     }
     
-    private func setContentLabel() {
-        contentLabel.text = articleSelected?.content
-    }
-    
-    private func setProductImage() {
-        productImage.image =  getArticleImage(urlString: articleSelected?.productImageUrl ?? "")
+    private func setBuyBtn() {
+        
+        buyBtn.translatesAutoresizingMaskIntoConstraints = false
+        buyBtn.leadingAnchor.constraint(equalTo: priceLabel.trailingAnchor, constant: 20).isActive = true
+        buyBtn.topAnchor.constraint(equalTo: priceLabel.topAnchor).isActive = true
+        buyBtn.bottomAnchor.constraint(equalTo: priceLabel.bottomAnchor).isActive = true
+        buyBtn.trailingAnchor.constraint(equalTo: bottomView.trailingAnchor, constant: -20).isActive = true
+        
+        buyBtn.setTitle("채팅으로 거래하기", for: .normal)
+        buyBtn.backgroundColor = .orange
+        buyBtn.setTitleColor(.white, for: .normal)
+        buyBtn.layer.cornerRadius = 10
+        buyBtn.titleLabel?.font = .systemFont(ofSize: 15)
     }
 
     /*
