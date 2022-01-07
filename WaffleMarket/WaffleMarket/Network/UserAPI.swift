@@ -58,7 +58,7 @@ extension UserService: TargetType {
         }
     }
     var headers: [String : String]? {
-        return ["Content-type": "application/json", "Authorization": AccountManager.token ?? "no auth"]
+        return ["Content-type": "application/json"]
     }
 }
 struct SetCategoryRequest: Codable{
@@ -66,10 +66,10 @@ struct SetCategoryRequest: Codable{
     var enabled: Bool
 }
 struct GetCategoryResponse: Codable{
-    var categories: [String]
+    var category: [String]
 }
 class UserAPI {
-    static var provider = MoyaProvider<UserService>()
+    static var provider = MoyaProvider<UserService>(plugins: [AuthPlugin()])
     
 
     
