@@ -9,7 +9,7 @@ import Foundation
 import UIKit
 
 struct Article {
-    
+    var id: Int
     var title: String
     var category: String
     var price: Int?

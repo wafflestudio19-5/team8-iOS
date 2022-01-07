@@ -12,6 +12,11 @@ import RxSwift
 enum ArticleService {
     case create(title: String, price: String, content: String, category: String, productImages: [UIImage])
     case list(page: Int, category: String?, keyword: String?)
+    case getComments(articleId: Int)
+    case postComment(articleId: Int, content: String)
+    case postReply(articleId: Int, commentId: Int, content: String)
+    case deleteComment(articleId: Int, commentId: Int)
+    
 }
 extension ArticleService: TargetType {
     var baseURL: URL {
@@ -24,6 +29,14 @@ extension ArticleService: TargetType {
             return "/"
         case .list:
             return "/"
+        case let .getComments(articleId):
+            return "/\(articleId)/comment/"
+        case let .postComment(articleId, _):
+            return "/\(articleId)/comment/"
+        case let .postReply(articleId, commentId, _):
+            return "/\(articleId)/comment/\(commentId)/"
+        case let .deleteComment(articleId, commentId):
+            return "/\(articleId)/comment/\(commentId)/"
         }
     }
     
@@ -33,6 +46,14 @@ extension ArticleService: TargetType {
             return .post
         case .list:
             return .get
+        case .getComments:
+            return .get
+        case .postComment:
+            return .post
+        case .postReply:
+            return .post
+        case .deleteComment:
+            return .delete
         }
     }
     
@@ -65,14 +86,23 @@ extension ArticleService: TargetType {
                 dict["keyword"] = keyword
             }
             return .requestParameters(parameters: dict, encoding: URLEncoding.queryString)
+        case .getComments:
+            return .requestPlain
+        case let .postComment(_, content):
+            return .requestJSONEncodable(["content": content])
+        case let .postReply(_, _, content):
+            return .requestJSONEncodable(["content": content])
+        case .deleteComment:
+            return .requestPlain
         }
+        
     }
     
     var headers: [String : String]? {
         switch self {
         case .create:
             return ["Content-type": "multipart/form-data"]
-        case .list:
+        default:
             return ["Content-type": "application/json"]
         }
     }
@@ -88,9 +118,30 @@ class ArticleAPI {
     static func list(page: Int, category: String? = nil, keyword: String? = nil) -> Single<Response> {
         return provider.rx.request(.list(page: page, category: category, keyword: keyword))
     }
+    static func getComments(articleId: Int) -> Single<Response> {
+        return provider.rx.request(.getComments(articleId: articleId))
+    }
+    static func postComment(articleId: Int, content: String) -> Single<Response> {
+        return provider.rx.request(.postComment(articleId: articleId, content: content))
+    }
+    static func postReply(articleId: Int, commentId: Int, content: String) -> Single<Response> {
+        return provider.rx.request(.postReply(articleId: articleId, commentId: commentId, content: content))
+    }
+    static func deleteComment(articleId: Int, commentId: Int) -> Single<Response> {
+        return provider.rx.request(.deleteComment(articleId: articleId, commentId: commentId))
+    }
 }
-
-struct SellerResponse: Codable {
+struct CommentResponse: Codable {
+    var id: Int
+    var commenter: UserResponse
+    var created_at: String
+    var deleted_at: String?
+    var replies: [CommentResponse]?
+    var content: String
+    var delete_enable: Bool
+}
+struct UserResponse: Codable {
+    var id: Int
     var username: String
     var profile_image: String
 }
@@ -103,7 +154,7 @@ struct ProductImageResponse: Codable {
 }
 struct ArticleResponse: Codable {
     var id: Int
-    var seller: SellerResponse
+    var seller: UserResponse
     var location: LocationResponse
     var title: String
     var content: String

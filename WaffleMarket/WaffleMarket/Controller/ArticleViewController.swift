@@ -20,7 +20,7 @@ class ArticleViewController: UIViewController {
     let productImage = UIImageView()
     let buyBtn = UIButton()
     let disposeBag = DisposeBag()
-    
+    var articleId = 0
     var articleSelected: Article?
     
     override func viewDidLoad() {
@@ -75,7 +75,9 @@ class ArticleViewController: UIViewController {
     }
     
     private func setProductImage() {
-        productImage.image =  getArticleImage(urlString: articleSelected?.productImages[0] ?? "")
+        if let url = articleSelected?.productImages[0] {
+            CachedImageLoader().load(path: url, putOn: productImage)
+        }
         productImage.contentMode = .scaleAspectFit
         
         productImage.translatesAutoresizingMaskIntoConstraints = false
@@ -153,7 +155,9 @@ class ArticleViewController: UIViewController {
         
         buyBtn.rx.tap.bind{
             print("click")
-            self.present(UINavigationController(rootViewController: CommentViewController()), animated: true)
+            let vc = CommentViewController()
+            vc.articleId = self.articleId
+            self.present(UINavigationController(rootViewController: vc), animated: true)
         }.disposed(by: disposeBag)
     }
 

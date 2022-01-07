@@ -13,6 +13,7 @@ class ArticleViewModel: ObservableObject {
     var articles = [Article]()
     let articleList = BehaviorRelay<[Article]>(value: [])
     let disposeBag = DisposeBag()
+    
     func getArticleList(page:Int) {
         // 백엔드와 연결시 API 호출
         ArticleAPI.list(page: page).subscribe { response in
@@ -21,6 +22,7 @@ class ArticleViewModel: ObservableObject {
                 var articles: [Article] = []
                 for articleResponse in decoded {
                     let article = Article(
+                        id: articleResponse.id,
                         title: articleResponse.title,
                         category: articleResponse.category,
                         price: articleResponse.price,
@@ -28,6 +30,7 @@ class ArticleViewModel: ObservableObject {
                         productImages: articleResponse.product_images.map({ it in
                             it.url
                         })
+                        
                     )
                     articles.append(article)
                 }
@@ -54,8 +57,8 @@ class ArticleViewModel: ObservableObject {
     func test_fetchDummyData(){
         print("fetchDummyData")
         let articles = [
-            Article(title: "맥북 에어 미개봉", category: "디지털기기", price: 1000000, content: "맥북 에어 미개봉 팝니다", productImages: ["https://store.storeimages.cdn-apple.com/8756/as-images.apple.com/is/macbook-air-space-gray-select-201810?wid=904&hei=840&fmt=jpeg&qlt=80&.v=1633027804000"]),
-            Article(title: "아이폰 13", category: "디지털기기", price: 700000, content: "아이폰 13입니다. 사용감 거의 없습니다!", productImages: ["https://store.storeimages.cdn-apple.com/8756/as-images.apple.com/is/iphone-13-family-select-2021?wid=940&hei=1112&fmt=jpeg&qlt=80&.v=1629842667000"])
+            Article(id: 1, title: "맥북 에어 미개봉", category: "디지털기기", price: 1000000, content: "맥북 에어 미개봉 팝니다", productImages: ["https://store.storeimages.cdn-apple.com/8756/as-images.apple.com/is/macbook-air-space-gray-select-201810?wid=904&hei=840&fmt=jpeg&qlt=80&.v=1633027804000"]),
+            Article(id: 2, title: "아이폰 13", category: "디지털기기", price: 700000, content: "아이폰 13입니다. 사용감 거의 없습니다!", productImages: ["https://store.storeimages.cdn-apple.com/8756/as-images.apple.com/is/iphone-13-family-select-2021?wid=940&hei=1112&fmt=jpeg&qlt=80&.v=1629842667000"])
         
         ]
         articleList.accept(articles)
@@ -141,7 +144,7 @@ class HomeViewController: UIViewController, UITableViewDelegate {
     let searchField = UISearchTextField()
     let categoryBtn = UIButton()
     var selectedCategory: String?
-    
+    let imageLoader = CachedImageLoader()
     let disposeBag = DisposeBag()
     let viewModel = ArticleViewModel()
     
@@ -273,7 +276,8 @@ class HomeViewController: UIViewController, UITableViewDelegate {
             cell.titleLabel.text = model.title
             let price = model.price!
             cell.priceLabel.text = "₩ " + String(price)
-            cell.productImage.image = self.getArticleImage(urlString: model.productImages[0])
+            self.imageLoader.load(path: model.productImages[0], putOn: cell.productImage)
+            
         }.disposed(by: disposeBag)
         articleTableView.rx.setDelegate(self).disposed(by: disposeBag)
 //        articleCollectionView.rx.modelSelected(Article.self).bind{_ in
@@ -294,8 +298,8 @@ class HomeViewController: UIViewController, UITableViewDelegate {
     private func sendArticle(article: Article) {
         print("sendArticle")
         let controller = ArticleViewController()
-            
-        controller.articleSelected = Article(title: article.title, category: article.category, price: article.price, content: article.content, productImages: article.productImages)
+        controller.articleId = article.id
+        controller.articleSelected = article
             
         self.navigationController!.pushViewController(controller, animated: true)
     }
