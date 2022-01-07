@@ -87,10 +87,10 @@ extension WaffleService: TargetType{
 
 struct LoginResponse: Codable {
     var username: String
-    var phone_number: String
+    var phone_number: String?
     var logined: Bool?
     var first_login: Bool?
-    
+    var email: String?
     var token: String
     var location_exists: Bool
 }

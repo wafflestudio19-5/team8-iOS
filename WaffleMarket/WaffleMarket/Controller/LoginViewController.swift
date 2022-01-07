@@ -276,7 +276,7 @@ class LoginViewController: UIViewController {
                         let signup = UIAlertAction(title: "이 번호로 가입", style: .default) { action in
                             
                             alert.dismiss(animated: true)
-                            let vc = SetProfileViewController(accountType: .standalone, userId: self.authPhoneNumber)
+                            let vc = UINavigationController(rootViewController: SetProfileViewController(accountType: .standalone, userId: self.authPhoneNumber))
                             self.present(vc, animated: true)
                         }
                         alert.addAction(close)
