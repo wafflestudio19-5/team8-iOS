@@ -30,9 +30,10 @@ class SetInterestViewController: UIViewController {
         self.view.backgroundColor = .white
         self.view.addSubview(collectionView)
         UserAPI.getCategory().subscribe { response in
+            print(String(decoding: response.data, as: UTF8.self))
             let decoder = JSONDecoder()
             if let decoded = try? decoder.decode(GetCategoryResponse.self, from: response.data) {
-                self.initialSelectedItems = decoded.categories
+                self.initialSelectedItems = decoded.category
                 self.setCollectionView()
             }
         } onFailure: { error in
