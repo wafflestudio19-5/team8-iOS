@@ -74,6 +74,4 @@ struct Neighborhood: Codable {
     var code: String
 }
 
-struct NeighborhoodResponse: Codable {
-    var neighborhoods: [Neighborhood]
-}
+

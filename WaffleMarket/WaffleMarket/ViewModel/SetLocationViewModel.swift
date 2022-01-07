@@ -32,18 +32,20 @@ class SetLocationViewModel {
     }
     
     private func fetchNearbyAddresses(code: String){
-        print(AccountManager.token)
         LocationAPI.findNearbyNeighborhoods(code: code).subscribe { response in
-            print(String(decoding: response.data, as: UTF8.self))
+            
             if response.statusCode == 200 {
                 let decoder = JSONDecoder()
-                if let decoded = try? decoder.decode(NeighborhoodResponse.self, from: response.data) {
+                if let decoded = try? decoder.decode([Neighborhood].self, from: response.data) {
                     var addresses: [Address] = []
-                    for loc in decoded.neighborhoods {
+                    for loc in decoded {
                         let address = Address(loc.code, loc.place_name)
                         addresses.append(address)
                     }
+                    print(addresses)
                     self.addressRelay.accept(addresses)
+                } else {
+                    print("failed to decode!")
                 }
             } else {
                 print("fetchNearbyAddresses Failed!", response.statusCode)
