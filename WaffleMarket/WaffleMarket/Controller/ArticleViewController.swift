@@ -73,7 +73,7 @@ class ArticleViewController: UIViewController {
     }
     
     private func setProductImage() {
-        productImage.image =  getArticleImage(urlString: articleSelected?.productImageUrl ?? "")
+        productImage.image =  getArticleImage(urlString: articleSelected?.productImages[0] ?? "")
         productImage.contentMode = .scaleAspectFit
         
         productImage.translatesAutoresizingMaskIntoConstraints = false

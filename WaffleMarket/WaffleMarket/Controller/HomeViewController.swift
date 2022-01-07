@@ -12,9 +12,33 @@ class ArticleViewModel: ObservableObject {
     
     var articles = [Article]()
     let articleList = BehaviorRelay<[Article]>(value: [])
-    
+    let disposeBag = DisposeBag()
     func getArticleList(page:Int) {
         // 백엔드와 연결시 API 호출
+        ArticleAPI.list(page: 1).subscribe { response in
+            let decoder = JSONDecoder()
+            if let decoded = try? decoder.decode([ArticleResponse].self, from: response.data){
+                var articles: [Article] = []
+                for articleResponse in decoded {
+                    let article = Article(
+                        title: articleResponse.title,
+                        category: articleResponse.category,
+                        price: articleResponse.price,
+                        content: articleResponse.content,
+                        productImages: articleResponse.product_images.map({ it in
+                            it.url
+                        })
+                    )
+                    articles.append(article)
+                }
+                print("articles count:", articles.count)
+                self.articleList.accept(articles)
+            }
+        } onFailure: { error in
+            
+        } onDisposed: {
+            
+        }.disposed(by: disposeBag)
     }
     
     func getCategoryList(category: String, page: Int) {
@@ -30,8 +54,8 @@ class ArticleViewModel: ObservableObject {
     func test_fetchDummyData(){
         print("fetchDummyData")
         let articles = [
-            Article(title: "맥북 에어 미개봉", category: "디지털기기", price: 1000000, content: "맥북 에어 미개봉 팝니다", productImageUrl: "https://store.storeimages.cdn-apple.com/8756/as-images.apple.com/is/macbook-air-space-gray-select-201810?wid=904&hei=840&fmt=jpeg&qlt=80&.v=1633027804000"),
-            Article(title: "아이폰 13", category: "디지털기기", price: 700000, content: "아이폰 13입니다. 사용감 거의 없습니다!", productImageUrl: "https://store.storeimages.cdn-apple.com/8756/as-images.apple.com/is/iphone-13-family-select-2021?wid=940&hei=1112&fmt=jpeg&qlt=80&.v=1629842667000")
+            Article(title: "맥북 에어 미개봉", category: "디지털기기", price: 1000000, content: "맥북 에어 미개봉 팝니다", productImages: ["https://store.storeimages.cdn-apple.com/8756/as-images.apple.com/is/macbook-air-space-gray-select-201810?wid=904&hei=840&fmt=jpeg&qlt=80&.v=1633027804000"]),
+            Article(title: "아이폰 13", category: "디지털기기", price: 700000, content: "아이폰 13입니다. 사용감 거의 없습니다!", productImages: ["https://store.storeimages.cdn-apple.com/8756/as-images.apple.com/is/iphone-13-family-select-2021?wid=940&hei=1112&fmt=jpeg&qlt=80&.v=1629842667000"])
         
         ]
         articleList.accept(articles)
@@ -132,7 +156,6 @@ class HomeViewController: UIViewController, UIScrollViewDelegate, UITableViewDel
 
         articleTableView.register(ArticleCell.self, forCellReuseIdentifier: "Cell")
         
-        viewModel.test_fetchDummyData()
     }
     
     func scrollViewDidScroll(_ scrollView: UIScrollView) {
@@ -270,7 +293,7 @@ class HomeViewController: UIViewController, UIScrollViewDelegate, UITableViewDel
             cell.titleLabel.text = model.title
             let price = model.price!
             cell.priceLabel.text = "₩ " + String(price)
-            cell.productImage.image = self.getArticleImage(urlString: model.productImageUrl)
+            cell.productImage.image = self.getArticleImage(urlString: model.productImages[0])
         }.disposed(by: disposeBag)
         articleTableView.rx.setDelegate(self).disposed(by: disposeBag)
 //        articleCollectionView.rx.modelSelected(Article.self).bind{_ in
@@ -282,6 +305,7 @@ class HomeViewController: UIViewController, UIScrollViewDelegate, UITableViewDel
                 self.sendArticle(article: article)
             
         }.disposed(by: disposeBag)
+
         
         viewModel.getArticleList(page: page)
         
@@ -291,7 +315,7 @@ class HomeViewController: UIViewController, UIScrollViewDelegate, UITableViewDel
         print("sendArticle")
         let controller = ArticleViewController()
             
-        controller.articleSelected = Article(title: article.title, category: article.category, price: article.price, content: article.content, productImageUrl: article.productImageUrl)
+        controller.articleSelected = Article(title: article.title, category: article.category, price: article.price, content: article.content, productImages: article.productImages)
             
         self.navigationController!.pushViewController(controller, animated: true)
     }

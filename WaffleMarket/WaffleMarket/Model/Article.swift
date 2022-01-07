@@ -14,6 +14,6 @@ struct Article {
     var category: String
     var price: Int?
     var content: String
-    var productImageUrl: String
+    var productImages: [String]
     
 }

@@ -433,9 +433,6 @@ class WritePostViewController: UIViewController {
             
         }.disposed(by: disposeBag)
         
-        completeBtn.rx.tap.bind{
-            self.navigationController?.pushViewController(HomeViewController(), animated:true)
-        }.disposed(by: disposeBag)
     }
     
     private func bindSelectedImages(){

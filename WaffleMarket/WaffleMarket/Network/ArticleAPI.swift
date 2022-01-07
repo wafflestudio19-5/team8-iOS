@@ -11,6 +11,7 @@ import RxAlamofire
 import RxSwift
 enum ArticleService {
     case create(title: String, price: String, content: String, category: String, productImage: UIImage)
+    case list(page: Int, category: String?, keyword: String?)
 }
 extension ArticleService: TargetType {
     var baseURL: URL {
@@ -21,6 +22,8 @@ extension ArticleService: TargetType {
         switch self {
         case .create:
             return "/"
+        case .list:
+            return "/"
         }
     }
     
@@ -28,6 +31,8 @@ extension ArticleService: TargetType {
         switch self {
         case .create:
             return .post
+        case .list:
+            return .get
         }
     }
     
@@ -42,6 +47,16 @@ extension ArticleService: TargetType {
 
             let multipart = [titleData, priceData, contentData, categoryData, imageData]
             return .uploadMultipart(multipart)
+        case let .list(page, category, keyword):
+            var dict: [String: Any] = [:]
+            dict["page"] = page
+            if let category = category {
+                dict["category"] = category
+            }
+            if let keyword = keyword {
+                dict["keyword"] = keyword
+            }
+            return .requestParameters(parameters: dict, encoding: URLEncoding.queryString)
         }
     }
     
@@ -49,6 +64,8 @@ extension ArticleService: TargetType {
         switch self {
         case .create:
             return ["Content-type": "multipart/form-data"]
+        case .list:
+            return ["Content-type": "application/json"]
         }
     }
     
@@ -60,4 +77,33 @@ class ArticleAPI {
     static func create(title: String, price: String, content: String, category: String, productImage: UIImage) -> Observable<ProgressResponse> {
         return provider.rx.requestWithProgress(.create(title: title, price: price, content: content, category: category, productImage: productImage))
     }
+    static func list(page: Int, category: String? = nil, keyword: String? = nil) -> Single<Response> {
+        return provider.rx.request(.list(page: page, category: category, keyword: keyword))
+    }
+}
+
+struct SellerResponse: Codable {
+    var username: String
+    var profile_image: String
+}
+struct LocationResponse: Codable {
+    var place_name: String
+    var code: String
+}
+struct ProductImageResponse: Codable {
+    var url: String
+}
+struct ArticleResponse: Codable {
+    var id: Int
+    var seller: SellerResponse
+    var location: LocationResponse
+    var title: String
+    var content: String
+    var product_images: [ProductImageResponse]
+    var category: String
+    var price: Int
+    var created_at: String
+    var sold_at: String?
+    //var buyer: type not defined
+    var deleted_at: String?
 }
