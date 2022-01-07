@@ -158,7 +158,6 @@ class SetProfileViewController: UIViewController {
             guard let username = self.nameField.text else { return }
             // MARK: upload profile image
             WaffleAPI.signup(phoneNumber: self.userId!, userName: username).subscribe { response in
-                print(String(decoding:response.data, as: UTF8.self))
                 let decoder = JSONDecoder()
                 if (response.statusCode / 100) == 2 {
                     
