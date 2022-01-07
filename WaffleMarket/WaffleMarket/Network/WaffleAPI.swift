@@ -32,7 +32,7 @@ extension WaffleService: TargetType{
         case .signup:
             return "/signup/"
         case .googleLogin(_):
-            return "/google-login-test/" // MARK: change later
+            return "/login/google/" // MARK: change later
             
         }
     }

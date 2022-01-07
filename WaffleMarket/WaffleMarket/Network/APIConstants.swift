@@ -8,6 +8,6 @@
 import Foundation
 
 class APIConstants {
-    static let BASE_URL = "https://www.wafflemarket.shop/api/v1"
+    static let BASE_URL = "http://localhost:8000/api/v1"//"https://www.wafflemarket.shop/api/v1"
 }
 
