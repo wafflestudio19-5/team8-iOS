@@ -14,11 +14,13 @@ class MainTabBarController: UITabBarController, UITabBarControllerDelegate {
 
         let homeNavigationController = UINavigationController(rootViewController: HomeViewController())
         let chatNavigationController = UINavigationController(rootViewController: ChatRoomListViewController())
+        let mypageNavigationController = UINavigationController(rootViewController: MypageViewController())
         
         homeNavigationController.tabBarItem = UITabBarItem(title: "Home", image: UIImage(systemName: "house"), selectedImage: UIImage(systemName: "house.fill"))
         chatNavigationController.tabBarItem = UITabBarItem(title: "Chats", image: UIImage(systemName: "message"), selectedImage: UIImage(systemName: "message.fill"))
+        mypageNavigationController.tabBarItem = UITabBarItem(title: "My Waffle", image: UIImage(systemName: "person"), selectedImage: UIImage(systemName: "person.fill"))
         
-        self.viewControllers = [homeNavigationController, chatNavigationController]
+        self.viewControllers = [homeNavigationController, chatNavigationController, mypageNavigationController]
         
         // Do any additional setup after loading the view.
     }

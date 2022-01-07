@@ -40,11 +40,59 @@ class LoginViewController: UIViewController {
     let disposeBag = DisposeBag()
     let loginViewModel = LoginViewModel()
     var authPhoneNumber = ""
-    
+    var originalViewY: CGFloat = 0
+    @objc func keyboardWillShow(notification: NSNotification) {
+        print("kwillshow")
+        guard let keyboardSize = (notification.userInfo?[UIResponder.keyboardFrameEndUserInfoKey] as? NSValue)?.cgRectValue else {
+           // if keyboard size is not available for some reason, dont do anything
+           return
+        }
+        
+      
+      // move the root view up by the distance of keyboard height
+        let delta = ((self.loginBtn.frame.origin.y + self.loginBtn.frame.size.height + 10) - keyboardSize.origin.y)
+        if delta > 0 {
+            self.view.frame.origin.y = originalViewY - delta
+        }
+        
+    }
+    @objc func keyboardWillHide(notification: NSNotification) {
+        print("kwillhide")
+      
+      // move the root view up by the distance of keyboard height
+        
+        self.view.frame.origin.y = originalViewY
+    }
+    private func addObserver(){
+        NotificationCenter.default.addObserver(self, selector: #selector(self.keyboardWillShow), name: UIResponder.keyboardWillShowNotification, object: nil)
+        NotificationCenter.default.addObserver(self, selector: #selector(self.keyboardWillHide), name: UIResponder.keyboardWillHideNotification, object: nil)
+    }
+    private func removeObserver(){
+        NotificationCenter.default.removeObserver(self, name: UIResponder.keyboardWillShowNotification, object: nil)
+        NotificationCenter.default.removeObserver(self, name: UIResponder.keyboardWillHideNotification, object: nil)
+    }
+    @objc func dismissKeyboard() {
+        //Causes the view (or one of its embedded text fields) to resign the first responder status.
+        view.endEditing(true)
+    }
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        addObserver()
+    }
+    override func viewWillDisappear(_ animated: Bool) {
+        super.viewWillDisappear(animated)
+        removeObserver()
+    }
     override func viewDidLoad() {
         super.viewDidLoad()
         self.view.backgroundColor = .white
-        
+        originalViewY = self.view.frame.origin.y
+        let tap = UITapGestureRecognizer(target: self, action: #selector(UIInputViewController.dismissKeyboard))
+
+       //Uncomment the line below if you want the tap not not interfere and cancel other interactions.
+        tap.cancelsTouchesInView = false
+
+        view.addGestureRecognizer(tap)
         if AccountManager.tryAutologin() {
             let sceneDelegate = UIApplication.shared.connectedScenes.first?.delegate as? SceneDelegate
             sceneDelegate?.changeRootViewController(MainTabBarController())
@@ -87,16 +135,16 @@ class LoginViewController: UIViewController {
     
     private func setWaffleLogoLabel(){
         waffleLogoLabel.translatesAutoresizingMaskIntoConstraints = false
-        waffleLogoLabel.centerXAnchor.constraint(equalTo: self.view.centerXAnchor).isActive = true
-        waffleLogoLabel.topAnchor.constraint(equalTo: self.view.topAnchor, constant: 200).isActive = true
-        
+        waffleLogoLabel.centerXAnchor.constraint(equalTo: self.view.safeAreaLayoutGuide.centerXAnchor).isActive = true
+        waffleLogoLabel.topAnchor.constraint(lessThanOrEqualTo: self.view.safeAreaLayoutGuide.topAnchor, constant: 200).isActive = true
+        waffleLogoLabel.topAnchor.constraint(greaterThanOrEqualTo: self.view.safeAreaLayoutGuide.topAnchor).isActive = true
         waffleLogoLabel.text = "🧇"
         waffleLogoLabel.font = .systemFont(ofSize: 100)
     }
     
     private func setWelcomeLabel(){
         welcomeLabel.translatesAutoresizingMaskIntoConstraints = false
-        welcomeLabel.centerXAnchor.constraint(equalTo: self.view.centerXAnchor).isActive = true
+        welcomeLabel.centerXAnchor.constraint(equalTo: self.view.safeAreaLayoutGuide.centerXAnchor).isActive = true
         welcomeLabel.topAnchor.constraint(equalTo: waffleLogoLabel.bottomAnchor, constant: 30).isActive = true
         
         welcomeLabel.text = "당신 근처의 와플마켓을 시작해보세요!"
@@ -104,10 +152,13 @@ class LoginViewController: UIViewController {
     
     private func setIdField(){
         idField.translatesAutoresizingMaskIntoConstraints = false
-        idField.centerXAnchor.constraint(equalTo: self.view.centerXAnchor).isActive = true
-        idField.topAnchor.constraint(equalTo: welcomeLabel.bottomAnchor, constant: 100).isActive = true
-        idField.leadingAnchor.constraint(equalTo: self.view.leadingAnchor, constant: 50).isActive = true
-        idField.trailingAnchor.constraint(equalTo: self.view.trailingAnchor, constant: -100).isActive = true
+        
+        idField.topAnchor.constraint(lessThanOrEqualTo: welcomeLabel.bottomAnchor, constant: 100).isActive = true
+        idField.topAnchor.constraint(greaterThanOrEqualTo: welcomeLabel.bottomAnchor, constant: 10).isActive = true
+        idField.leadingAnchor.constraint(lessThanOrEqualTo: self.view.safeAreaLayoutGuide.leadingAnchor, constant: 30).isActive = true
+        idField.leadingAnchor.constraint(greaterThanOrEqualTo: self.view.safeAreaLayoutGuide.leadingAnchor, constant: 10).isActive = true
+        
+        
         idField.heightAnchor.constraint(equalToConstant: 50).isActive = true
         
         idField.backgroundColor = .white
@@ -121,10 +172,11 @@ class LoginViewController: UIViewController {
     
     private func setIdValidateBtn(){
         idValidateBtn.translatesAutoresizingMaskIntoConstraints = false
-        idValidateBtn.centerXAnchor.constraint(equalTo: self.view.centerXAnchor).isActive = true
+        
         idValidateBtn.topAnchor.constraint(equalTo: idField.topAnchor, constant: 10).isActive = true
-        idValidateBtn.leadingAnchor.constraint(equalTo: idField.leadingAnchor, constant: 230).isActive = true
-        idValidateBtn.trailingAnchor.constraint(equalTo: self.view.trailingAnchor, constant: -50).isActive = true
+        idValidateBtn.leadingAnchor.constraint(greaterThanOrEqualTo: idField.trailingAnchor).isActive = true
+        idValidateBtn.trailingAnchor.constraint(greaterThanOrEqualTo: self.view.safeAreaLayoutGuide.trailingAnchor, constant: -30).isActive = true
+        idValidateBtn.widthAnchor.constraint(equalToConstant: 50).isActive = true
         idValidateBtn.heightAnchor.constraint(equalTo: idField.heightAnchor, constant: -20).isActive = true
         
         idValidateBtn.setTitle("인증하기", for: .normal)
@@ -139,20 +191,21 @@ class LoginViewController: UIViewController {
             WaffleAPI.startAuth(phoneNumber: phoneNumber).subscribe { response in
                 let decoder = JSONDecoder()
                 if (response.statusCode / 100) == 4 {
-                    self.toast("전화번호가 올바르지 않아요")
+                    self.toast("전화번호가 올바르지 않아요", y: self.loginBtn.frame.origin.y)
                     return
                 }
                 if let decoded = try? decoder.decode(StartAuthResponse.self, from: response.data) {
+                    self.pwField.becomeFirstResponder()
                     if let authnumber = decoded.auth_number {
-                        self.toast("테스트용 인증번호: \(authnumber)")
+                        self.toast("테스트용 인증번호: \(authnumber)", y: self.loginBtn.frame.origin.y)
                         
                     } else {
-                        self.toast("인증번호가 전송되었어요")
+                        self.toast("인증번호가 전송되었어요", y: self.loginBtn.frame.origin.y)
                     }
                     
                     print(decoded.auth_number ?? "no auth_number")
                 } else {
-                    self.toast("오류가 발생했어요")
+                    self.toast("오류가 발생했어요", y: self.loginBtn.frame.origin.y)
                     print("failed to decode StartAuthResponse")
                 }
             } onFailure: { error in
@@ -167,7 +220,7 @@ class LoginViewController: UIViewController {
     
     private func setPwField(){
         pwField.translatesAutoresizingMaskIntoConstraints = false
-        pwField.centerXAnchor.constraint(equalTo: self.view.centerXAnchor).isActive = true
+        
         pwField.topAnchor.constraint(equalTo: idField.bottomAnchor, constant: 20).isActive = true
         pwField.leadingAnchor.constraint(equalTo: idField.leadingAnchor).isActive = true
         pwField.trailingAnchor.constraint(equalTo: idValidateBtn.trailingAnchor).isActive = true
@@ -185,8 +238,8 @@ class LoginViewController: UIViewController {
     private func setLoginBtn(){
 
         loginBtn.translatesAutoresizingMaskIntoConstraints = false
-        loginBtn.centerXAnchor.constraint(equalTo: self.view.centerXAnchor).isActive = true
-        loginBtn.topAnchor.constraint(equalTo: pwField.bottomAnchor, constant: 50).isActive = true
+        
+        loginBtn.topAnchor.constraint(lessThanOrEqualTo: pwField.bottomAnchor, constant: 50).isActive = true
         loginBtn.leadingAnchor.constraint(equalTo: pwField.leadingAnchor).isActive = true
         loginBtn.trailingAnchor.constraint(equalTo: pwField.trailingAnchor).isActive = true
         loginBtn.heightAnchor.constraint(equalTo: pwField.heightAnchor).isActive = true
@@ -232,7 +285,7 @@ class LoginViewController: UIViewController {
                         self.present(alert, animated: true)
                     }
                 } else {
-                    self.toast("오류가 발생했어요")
+                    self.toast("오류가 발생했어요", y: self.loginBtn.frame.origin.y)
                 }
             } onFailure: { error in
                 
@@ -245,13 +298,14 @@ class LoginViewController: UIViewController {
     
     private func setGoogleLoginBtn(){
         googleLoginBtn.translatesAutoresizingMaskIntoConstraints = false
-        googleLoginBtn.centerXAnchor.constraint(equalTo: self.view.centerXAnchor).isActive = true
+        
         googleLoginBtn.topAnchor.constraint(equalTo: loginBtn.bottomAnchor, constant: 20).isActive = true
         googleLoginBtn.leadingAnchor.constraint(equalTo: loginBtn.leadingAnchor).isActive = true
         googleLoginBtn.trailingAnchor.constraint(equalTo: loginBtn.trailingAnchor).isActive = true
         googleLoginBtn.heightAnchor.constraint(equalTo: loginBtn.heightAnchor).isActive = true
       
         googleLoginBtn.rx.controlEvent(.touchUpInside).bind{
+            print("gcli")
             GoogleSignInAuthenticator.sharedInstance.signIn(presenting: self, disposeBag: self.disposeBag) {
                 print("success")
             }
@@ -260,13 +314,13 @@ class LoginViewController: UIViewController {
     
     private func setSignUpBtn(){
         signUpBtn.translatesAutoresizingMaskIntoConstraints = false
-        signUpBtn.centerXAnchor.constraint(equalTo: self.view.centerXAnchor).isActive = true
+        signUpBtn.centerXAnchor.constraint(equalTo: self.view.safeAreaLayoutGuide.centerXAnchor).isActive = true
         signUpBtn.topAnchor.constraint(equalTo: googleLoginBtn.bottomAnchor, constant: 20).isActive = true
-        
+        signUpBtn.bottomAnchor.constraint(lessThanOrEqualTo: self.view.safeAreaLayoutGuide.bottomAnchor, constant: -40).isActive = true
         signUpBtn.setTitle("회원가입하기", for: .normal)
         
         signUpBtn.rx.tap.bind{
-            
+            print("click")
             self.present(UINavigationController(rootViewController: SignUpViewController()), animated: true)
         }.disposed(by: disposeBag)
     }
