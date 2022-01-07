@@ -258,7 +258,6 @@ class LoginViewController: UIViewController {
                     return
                 }
                 if (response.statusCode / 100) == 2{
-                    print(String(decoding:response.data, as: UTF8.self))
                     let decoder = JSONDecoder()
                     if let decoded = try? decoder.decode(LoginResponse.self, from:response.data) {
                         AccountManager.login(decoded)
