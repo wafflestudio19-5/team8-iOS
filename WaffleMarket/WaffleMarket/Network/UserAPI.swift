@@ -12,6 +12,8 @@ import Moya
 enum UserService{
     
     case setProfile(profile: Profile)
+    case setCategory(category: String, enabled: Bool)
+    case getCategory
 }
 
 extension UserService: TargetType {
@@ -24,38 +26,61 @@ extension UserService: TargetType {
 
         case .setProfile:
             return "/profile/"
-        }
-        
+        case .setCategory:
+            return "/category/"
+        case .getCategory:
+            return "/category/"
+
     
+        }
     }
     var method: Moya.Method {
         switch self {
 
         case .setProfile:
             return .put
+        case .setCategory:
+            return .put
+        case .getCategory:
+            return .get
+            
         }
     }
     
     var task: Task {
         switch self {
-
-            
         case let .setProfile(profile):
             return .requestJSONEncodable(["name": profile.name]) // location? image?
+        case let .setCategory(category, enabled):
+            return .requestJSONEncodable(SetCategoryRequest(category: category, enabled: enabled))
+        case .getCategory:
+            return .requestPlain
         }
     }
     var headers: [String : String]? {
-        return ["Content-type": "application/json", "Authorization": AccountManager.token!]
+        return ["Content-type": "application/json"]
     }
 }
-
-
+struct SetCategoryRequest: Codable{
+    var category: String
+    var enabled: Bool
+}
+struct GetCategoryResponse: Codable{
+    var category: [String]
+}
 class UserAPI {
-    static var provider = MoyaProvider<UserService>()
+    static var provider = MoyaProvider<UserService>(plugins: [AuthPlugin()])
     
 
     
     static func setProfile(profile: Profile) -> Single<Response> {
         return provider.rx.request(.setProfile(profile: profile))
+    }
+    static func setCategory(category: String, enabled: Bool) -> Single<Response>{
+        return provider.rx.request(.setCategory(category: category, enabled: enabled))
+    }
+    
+    static func getCategory() -> Single<Response> {
+        return provider.rx.request(.getCategory)
     }
 }

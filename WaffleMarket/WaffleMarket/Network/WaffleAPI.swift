@@ -15,6 +15,7 @@ enum WaffleService{
     case completeAuth(phoneNumber: String, authNumber: String)
     case signup(phoneNumber: String, userName: String)
     case googleLogin(idToken: [String: String])
+    case leave
 }
 extension WaffleService: TargetType{
     var baseURL: URL {
@@ -32,9 +33,11 @@ extension WaffleService: TargetType{
         case .signup:
             return "/signup/"
         case .googleLogin(_):
-            return "/google-login-test/" // MARK: change later
-            
+            return "/login/google/"
+        case .leave:
+            return "/leave/"
         }
+        
     }
     
     var method: Moya.Method {
@@ -49,7 +52,8 @@ extension WaffleService: TargetType{
             return .post
         case .googleLogin:
             return .post
-
+        case .leave:
+            return .delete
         }
     }
     
@@ -66,20 +70,30 @@ extension WaffleService: TargetType{
             return .requestJSONEncodable(["phone_number": phoneNumber, "username": userName])
         case let .googleLogin(idToken):
             return .requestJSONEncodable(idToken)
+        case .leave:
+            return .requestPlain
         }
     }
     
     var headers: [String : String]? {
-        return ["Content-type": "application/json"]
+        switch self{
+        case .leave:
+            return ["Content-type": "application/json", "Authorization": "JWT "+AccountManager.token!]
+        default:
+            return ["Content-type": "application/json"]
+        }
+        
     }
 }
-
+struct NonFieldErrorsResponse: Codable {
+    var non_field_errors: [String]
+}
 struct LoginResponse: Codable {
     var username: String
-    var phone_number: String
+    var phone_number: String?
     var logined: Bool?
     var first_login: Bool?
-    
+    var email: String?
     var token: String
     var location_exists: Bool
 }
@@ -96,7 +110,7 @@ struct CompleteAuthResponse: Codable {
 
 
 class WaffleAPI{
-    static var provider = MoyaProvider<WaffleService>()
+    private static var provider = MoyaProvider<WaffleService>()
 
     static func ping() -> Single<Response> {
         return provider.rx.request(.ping)
@@ -115,6 +129,10 @@ class WaffleAPI{
     
     static func googleLogin(idToken: String) -> Single<Response> {
         return provider.rx.request(.googleLogin(idToken: ["token": idToken]))
+    }
+
+    static func leave() -> Single<Response> {
+        return provider.rx.request(.leave)
     }
 }
 
