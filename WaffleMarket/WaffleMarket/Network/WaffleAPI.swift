@@ -130,7 +130,7 @@ class WaffleAPI{
     static func googleLogin(idToken: String) -> Single<Response> {
         return provider.rx.request(.googleLogin(idToken: ["token": idToken]))
     }
-    
+
     static func leave() -> Single<Response> {
         return provider.rx.request(.leave)
     }

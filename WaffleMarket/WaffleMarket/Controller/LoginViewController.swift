@@ -23,6 +23,7 @@ class LoginViewModel {
 class LoginViewController: UIViewController {
 
     var googleLoginBtn = GIDSignInButton()
+    
 
     
     var waffleLogoLabel: UILabel = UILabel()
@@ -118,6 +119,7 @@ class LoginViewController: UIViewController {
         self.view.addSubview(signUpBtn)
         setSignUpBtn()
         
+
         
         Observable.combineLatest(isIdValid, isPwValid, resultSelector: {$0 && $1})
             .subscribe { value in
@@ -302,11 +304,17 @@ class LoginViewController: UIViewController {
         googleLoginBtn.leadingAnchor.constraint(equalTo: loginBtn.leadingAnchor).isActive = true
         googleLoginBtn.trailingAnchor.constraint(equalTo: loginBtn.trailingAnchor).isActive = true
         googleLoginBtn.heightAnchor.constraint(equalTo: loginBtn.heightAnchor).isActive = true
-      
+        
+        googleLoginBtn.style = .wide
         googleLoginBtn.rx.controlEvent(.touchUpInside).bind{
-            print("gcli")
-            GoogleSignInAuthenticator.sharedInstance.signIn(presenting: self, disposeBag: self.disposeBag) {
-                print("success")
+            GoogleSignInAuthenticator.sharedInstance.signIn(presenting: self, disposeBag: self.disposeBag) { data in
+                AccountManager.login(data)
+                if data.location_exists {
+                    let sceneDelegate = UIApplication.shared.connectedScenes.first?.delegate as? SceneDelegate
+                    sceneDelegate?.changeRootViewController(MainTabBarController())
+                } else {
+                    self.present(SetLocationViewController(), animated:true)
+                }
             }
         }.disposed(by: disposeBag)
     }
