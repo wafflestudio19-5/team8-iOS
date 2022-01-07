@@ -158,10 +158,10 @@ class SetProfileViewController: UIViewController {
             guard let username = self.nameField.text else { return }
             // MARK: upload profile image
             WaffleAPI.signup(phoneNumber: self.userId!, userName: username).subscribe { response in
+                let decoder = JSONDecoder()
                 if (response.statusCode / 100) == 2 {
-                    let decoder = JSONDecoder()
+                    
                     if let decoded = try? decoder.decode(LoginResponse.self, from: response.data) {
-                        print(decoded)
                         AccountManager.login(decoded)
                         if decoded.location_exists {
                             let sceneDelegate = UIApplication.shared.connectedScenes.first?.delegate as? SceneDelegate
@@ -171,6 +171,12 @@ class SetProfileViewController: UIViewController {
                         }
                         return
                     }
+                }
+                if let decoded = try? decoder.decode(NonFieldErrorsResponse.self, from: response.data){
+                    if decoded.non_field_errors.count >= 1 {
+                        self.toast(decoded.non_field_errors[0])
+                    }
+                    return
                 }
                 self.toast("오류가 발생했어요")
                 

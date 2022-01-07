@@ -19,19 +19,7 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         guard let windowScene = (scene as? UIWindowScene) else { return }
     
         self.window = UIWindow(windowScene: windowScene)
-        if GIDSignIn.sharedInstance.hasPreviousSignIn() {
-            GIDSignIn.sharedInstance.restorePreviousSignIn { user, error in
-                if error != nil || user == nil {
-                    // signed-out
-                    self.presentRootViewController(false)
-                } else {
-                    // signed-in
-                    self.presentRootViewController(true)
-                }
-            }
-        } else { // MARK: check built-in login
-            self.presentRootViewController(false)
-        }
+        self.presentRootViewController(AccountManager.tryAutologin())
     }
     
     
@@ -39,7 +27,7 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         guard let window = window else {
             return
         }
-        window.rootViewController = isLoggedIn ? MainTabBarController() : LoginViewController()
+        window.rootViewController = isLoggedIn ? MainTabBarController() : UINavigationController(rootViewController: LoginViewController())
         window.makeKeyAndVisible()
     }
 
