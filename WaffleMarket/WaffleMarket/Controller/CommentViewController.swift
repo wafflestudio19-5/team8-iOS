@@ -18,9 +18,62 @@ class CommentViewController: UIViewController {
     let commentField = UITextField()
     let disposeBag = DisposeBag()
     
+    var originalViewY: CGFloat = 0
+    @objc func keyboardWillShow(notification: NSNotification) {
+        print("kwillshow")
+        guard let keyboardSize = (notification.userInfo?[UIResponder.keyboardFrameEndUserInfoKey] as? NSValue)?.cgRectValue else {
+           // if keyboard size is not available for some reason, dont do anything
+           return
+        }
+        
+      // move the root view up by the distance of keyboard height
+        let delta = keyboardSize.origin.y
+        if delta > 0 {
+            self.bottomView.frame.origin.y = self.bottomView.frame.origin.y - delta
+        }
+        
+    }
+    @objc func keyboardWillHide(notification: NSNotification) {
+        print("kwillhide")
+      
+      // move the root view up by the distance of keyboard height
+        
+        self.bottomView.frame.origin.y = originalViewY
+    }
+    
+    private func addObserver(){
+        NotificationCenter.default.addObserver(self, selector: #selector(self.keyboardWillShow), name: UIResponder.keyboardWillShowNotification, object: nil)
+        NotificationCenter.default.addObserver(self, selector: #selector(self.keyboardWillHide), name: UIResponder.keyboardWillHideNotification, object: nil)
+    }
+    
+    private func removeObserver(){
+        NotificationCenter.default.removeObserver(self, name: UIResponder.keyboardWillShowNotification, object: nil)
+        NotificationCenter.default.removeObserver(self, name: UIResponder.keyboardWillHideNotification, object: nil)
+    }
+    
+    @objc func dismissKeyboard() {
+        //Causes the view (or one of its embedded text fields) to resign the first responder status.
+        view.endEditing(true)
+    }
+    
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        addObserver()
+    }
+    
+    override func viewWillDisappear(_ animated: Bool) {
+        super.viewWillDisappear(animated)
+        removeObserver()
+    }
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         view.backgroundColor = .white
+        originalViewY = self.bottomView.frame.origin.y
+        let tap = UITapGestureRecognizer(target: self, action: #selector(UIInputViewController.dismissKeyboard))
+
+       //Uncomment the line below if you want the tap not not interfere and cancel other interactions.
+        tap.cancelsTouchesInView = false
         
         view.addSubview(commentTableView)
         setCommentTableView()
