@@ -50,7 +50,7 @@ class ArticleCell: UITableViewCell {
     
     private func setupCell() {
         backgroundColor = .white
-        self.heightAnchor.constraint(equalToConstant: 80).isActive = true
+        self.heightAnchor.constraint(equalToConstant: 120).isActive = true
 
         self.contentView.addSubview(productImage)
         setProductImage()
@@ -87,7 +87,7 @@ class ArticleCell: UITableViewCell {
 
 private let reuseIdentifier = "Cell"
 
-class HomeViewController: UIViewController, UIScrollViewDelegate {
+class HomeViewController: UIViewController, UIScrollViewDelegate, UITableViewDelegate {
     
 
 //    var signOutBtn = UIButton(type:.system) // MARK: this is for test. remove later
@@ -115,6 +115,8 @@ class HomeViewController: UIViewController, UIScrollViewDelegate {
         setScrollView()
 
         articleTableView.register(ArticleCell.self, forCellReuseIdentifier: "Cell")
+        articleTableView.rowHeight = UITableView.automaticDimension
+        articleTableView.estimatedRowHeight = 200
         
         viewModel.test_fetchDummyData()
     }
@@ -123,6 +125,10 @@ class HomeViewController: UIViewController, UIScrollViewDelegate {
         if articleTableView.contentOffset.y > (articleTableView.contentSize.height - articleTableView.bounds.size.height) {
             pagination()
         }
+    }
+    
+    func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
+        return 120
     }
     
     private func pagination() {
