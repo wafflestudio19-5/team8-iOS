@@ -131,12 +131,11 @@ class ArticleCell: UITableViewCell {
 
 private let reuseIdentifier = "Cell"
 
-class HomeViewController: UIViewController, UIScrollViewDelegate, UITableViewDelegate {
+class HomeViewController: UIViewController, UITableViewDelegate {
     
 
 //    var signOutBtn = UIButton(type:.system) // MARK: this is for test. remove later
     let textSize: CGFloat = 16
-    let scrollView = UIScrollView()
     let writePostBtn = UIButton(type:.custom)
     let articleTableView: UITableView = UITableView()
     let searchField = UISearchTextField()
@@ -151,17 +150,18 @@ class HomeViewController: UIViewController, UIScrollViewDelegate, UITableViewDel
     override func viewDidLoad() {
         super.viewDidLoad()
         self.view.backgroundColor = .white
-        self.view.addSubview(scrollView)
-        setScrollView()
+        self.view.addSubview(categoryBtn)
+        self.view.addSubview(searchField)
+        self.view.addSubview(articleTableView)
+        self.view.addSubview(writePostBtn)
+        
+        setCategoryBtn()
+        setSearchField()
+        setArticleTableView()
+        setWritePostBtn()
 
         articleTableView.register(ArticleCell.self, forCellReuseIdentifier: "Cell")
         
-    }
-    
-    func scrollViewDidScroll(_ scrollView: UIScrollView) {
-        if articleTableView.contentOffset.y > (articleTableView.contentSize.height - articleTableView.bounds.size.height) {
-            pagination()
-        }
     }
     
     func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
@@ -187,26 +187,6 @@ class HomeViewController: UIViewController, UIScrollViewDelegate, UITableViewDel
 //            print("signed out!")
 //        }.disposed(by: disposeBag)
 //    }
-    
-    private func setScrollView() {
-        
-        scrollView.translatesAutoresizingMaskIntoConstraints = false
-        scrollView.leadingAnchor.constraint(equalTo: self.view.safeAreaLayoutGuide.leadingAnchor).isActive = true
-        scrollView.topAnchor.constraint(equalTo: self.view.safeAreaLayoutGuide.topAnchor).isActive = true
-        scrollView.trailingAnchor.constraint(equalTo: self.view.safeAreaLayoutGuide.trailingAnchor).isActive = true
-        scrollView.bottomAnchor.constraint(equalTo: self.view.safeAreaLayoutGuide.bottomAnchor).isActive = true
-        
-        
-        scrollView.addSubview(categoryBtn)
-        scrollView.addSubview(searchField)
-        scrollView.addSubview(articleTableView)
-        scrollView.addSubview(writePostBtn)
-        
-        setCategoryBtn()
-        setSearchField()
-        setArticleTableView()
-        setWritePostBtn()
-    }
     
     private func setWritePostBtn(){
         let size:CGFloat = 60
@@ -273,12 +253,12 @@ class HomeViewController: UIViewController, UIScrollViewDelegate, UITableViewDel
     private func setArticleTableView() {
         
         articleTableView.translatesAutoresizingMaskIntoConstraints = false
-        articleTableView.leadingAnchor.constraint(equalTo: self.scrollView.leadingAnchor).isActive = true
-        articleTableView.trailingAnchor.constraint(equalTo: self.scrollView.trailingAnchor).isActive = true
-        articleTableView.topAnchor.constraint(equalTo: self.searchField.bottomAnchor, constant: 10).isActive = true
-        articleTableView.bottomAnchor.constraint(equalTo: self.scrollView.bottomAnchor).isActive = true
-        articleTableView.heightAnchor.constraint(equalTo: self.scrollView.heightAnchor).isActive = true
-        articleTableView.widthAnchor.constraint(equalTo: self.scrollView.widthAnchor).isActive = true
+        articleTableView.leadingAnchor.constraint(equalTo: self.view.safeAreaLayoutGuide.leadingAnchor).isActive = true
+        articleTableView.trailingAnchor.constraint(equalTo: self.view.safeAreaLayoutGuide.trailingAnchor).isActive = true
+        articleTableView.topAnchor.constraint(equalTo: self.view.safeAreaLayoutGuide.bottomAnchor, constant: 10).isActive = true
+        articleTableView.bottomAnchor.constraint(equalTo: self.view.safeAreaLayoutGuide.bottomAnchor).isActive = true
+        articleTableView.heightAnchor.constraint(equalTo:self.view.safeAreaLayoutGuide.heightAnchor, constant: -10).isActive = true
+        articleTableView.widthAnchor.constraint(equalTo: self.view.safeAreaLayoutGuide.widthAnchor).isActive = true
         
         articleTableView.backgroundColor = .separator
 
