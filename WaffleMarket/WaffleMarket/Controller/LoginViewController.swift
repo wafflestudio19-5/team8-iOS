@@ -261,7 +261,7 @@ class LoginViewController: UIViewController {
                     print(String(decoding:response.data, as: UTF8.self))
                     let decoder = JSONDecoder()
                     if let decoded = try? decoder.decode(LoginResponse.self, from:response.data) {
-                        AccountManager.login(decoded, autologin: true)
+                        AccountManager.login(decoded)
                         if decoded.location_exists {
                             let sceneDelegate = UIApplication.shared.connectedScenes.first?.delegate as? SceneDelegate
                             sceneDelegate?.changeRootViewController(MainTabBarController())
