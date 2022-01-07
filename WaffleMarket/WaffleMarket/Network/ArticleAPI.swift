@@ -10,7 +10,7 @@ import Moya
 import RxAlamofire
 import RxSwift
 enum ArticleService {
-    case create(title: String, price: String, content: String, category: String, productImage: UIImage)
+    case create(title: String, price: String, content: String, category: String, productImages: [UIImage])
 }
 extension ArticleService: TargetType {
     var baseURL: URL {
@@ -33,14 +33,22 @@ extension ArticleService: TargetType {
     
     var task: Task {
         switch self {
-        case let .create(title, price, content, category, productImage):
-            let imageData = MultipartFormData(provider: .data(productImage.pngData()!), name: "product_image", fileName: "product_image\(Date().timeIntervalSince1970).png", mimeType: "image/png")
+        case let .create(title, price, content, category, productImages):
+            var multipart: [MultipartFormData] = []
+            var count = 1
+            for productImage in productImages {
+                let imageData = MultipartFormData(provider: .data(productImage.pngData()!), name: "product_image_\(count)", fileName: "product_image\(Date().timeIntervalSince1970).png", mimeType: "image/png")
+                multipart.append(imageData)
+                count += 1
+                
+            }
+            
             let titleData = MultipartFormData(provider: .data(title.data(using: .utf8)!), name: "title")
             let priceData = MultipartFormData(provider: .data(price.data(using: .utf8)!), name: "price")
             let contentData = MultipartFormData(provider: .data(content.data(using: .utf8)!), name: "content")
             let categoryData = MultipartFormData(provider: .data(category.data(using: .utf8)!), name: "category")
-
-            let multipart = [titleData, priceData, contentData, categoryData, imageData]
+            let countData = MultipartFormData(provider: .data("\(productImages.count)".data(using: .utf8)!), name: "image_count")
+            multipart.append(contentsOf: [titleData, priceData, contentData, categoryData, countData])
             return .uploadMultipart(multipart)
         }
     }
@@ -57,7 +65,7 @@ extension ArticleService: TargetType {
 class ArticleAPI {
     private static var authPlugin = AuthPlugin()
     private static var provider = MoyaProvider<ArticleService>(plugins: [authPlugin])
-    static func create(title: String, price: String, content: String, category: String, productImage: UIImage) -> Observable<ProgressResponse> {
-        return provider.rx.requestWithProgress(.create(title: title, price: price, content: content, category: category, productImage: productImage))
+    static func create(title: String, price: String, content: String, category: String, productImages: [UIImage]) -> Observable<ProgressResponse> {
+        return provider.rx.requestWithProgress(.create(title: title, price: price, content: content, category: category, productImages: productImages))
     }
 }
