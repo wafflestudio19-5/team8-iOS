@@ -27,7 +27,7 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         guard let window = window else {
             return
         }
-        window.rootViewController = isLoggedIn ? MainTabBarController() : LoginViewController()
+        window.rootViewController = isLoggedIn ? MainTabBarController() : UINavigationController(rootViewController: LoginViewController())
         window.makeKeyAndVisible()
     }
 
