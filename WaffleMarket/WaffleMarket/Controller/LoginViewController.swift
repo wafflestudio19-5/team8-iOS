@@ -253,47 +253,52 @@ class LoginViewController: UIViewController {
         
         // loginBtn.rx.tap.bind(to: loginViewModel.loginBtnTouched).disposed(by: disposeBag)
         
+//        loginBtn.rx.tap.bind{
+//            guard let authNumber = self.pwField.text else { return }
+//            WaffleAPI.completeAuth(phoneNumber: self.authPhoneNumber, authNumber: authNumber).subscribe { response in
+//                if (response.statusCode / 100) == 4 {
+//                    self.toast("인증번호가 올바르지 않아요")
+//                    return
+//                }
+//                if (response.statusCode / 100) == 2{
+//                    let decoder = JSONDecoder()
+//                    if let decoded = try? decoder.decode(LoginResponse.self, from:response.data) {
+//                        AccountManager.login(decoded)
+//                        if decoded.location_exists {
+//                            let sceneDelegate = UIApplication.shared.connectedScenes.first?.delegate as? SceneDelegate
+//                            sceneDelegate?.changeRootViewController(MainTabBarController())
+//                        } else {
+//                            self.present(SetLocationViewController(), animated:true)
+//                        }
+//                    } else {
+//                        let alert = UIAlertController(title: "알림", message: "가입되지 않은 전화번호입니다.", preferredStyle: .alert)
+//                        let close = UIAlertAction(title: "닫기", style: .cancel) { action in
+//                            alert.dismiss(animated: true)
+//                        }
+//                        let signup = UIAlertAction(title: "이 번호로 가입", style: .default) { action in
+//
+//                            alert.dismiss(animated: true)
+//                            let vc = UINavigationController(rootViewController: SetProfileViewController(accountType: .standalone, userId: self.authPhoneNumber))
+//                            self.present(vc, animated: true)
+//                        }
+//                        alert.addAction(close)
+//                        alert.addAction(signup)
+//                        self.present(alert, animated: true)
+//                    }
+//                } else {
+//                    self.toast("오류가 발생했어요", y: self.loginBtn.frame.origin.y)
+//                }
+//            } onFailure: { error in
+//
+//            } onDisposed: {
+//
+//            }.disposed(by: self.disposeBag)
+//
+//        }.disposed(by: disposeBag)
+        
         loginBtn.rx.tap.bind{
-            guard let authNumber = self.pwField.text else { return }
-            WaffleAPI.completeAuth(phoneNumber: self.authPhoneNumber, authNumber: authNumber).subscribe { response in
-                if (response.statusCode / 100) == 4 {
-                    self.toast("인증번호가 올바르지 않아요")
-                    return
-                }
-                if (response.statusCode / 100) == 2{
-                    let decoder = JSONDecoder()
-                    if let decoded = try? decoder.decode(LoginResponse.self, from:response.data) {
-                        AccountManager.login(decoded)
-                        if decoded.location_exists {
-                            let sceneDelegate = UIApplication.shared.connectedScenes.first?.delegate as? SceneDelegate
-                            sceneDelegate?.changeRootViewController(MainTabBarController())
-                        } else {
-                            self.present(SetLocationViewController(), animated:true)
-                        }
-                    } else {
-                        let alert = UIAlertController(title: "알림", message: "가입되지 않은 전화번호입니다.", preferredStyle: .alert)
-                        let close = UIAlertAction(title: "닫기", style: .cancel) { action in
-                            alert.dismiss(animated: true)
-                        }
-                        let signup = UIAlertAction(title: "이 번호로 가입", style: .default) { action in
-                            
-                            alert.dismiss(animated: true)
-                            let vc = UINavigationController(rootViewController: SetProfileViewController(accountType: .standalone, userId: self.authPhoneNumber))
-                            self.present(vc, animated: true)
-                        }
-                        alert.addAction(close)
-                        alert.addAction(signup)
-                        self.present(alert, animated: true)
-                    }
-                } else {
-                    self.toast("오류가 발생했어요", y: self.loginBtn.frame.origin.y)
-                }
-            } onFailure: { error in
-                
-            } onDisposed: {
-                
-            }.disposed(by: self.disposeBag)
-
+            print("click")
+            self.present(UINavigationController(rootViewController: HomeViewController()), animated: true)
         }.disposed(by: disposeBag)
     }
     

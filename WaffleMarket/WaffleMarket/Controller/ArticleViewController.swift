@@ -23,6 +23,8 @@ class ArticleViewController: UIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        view.backgroundColor = .white
+        
         view.addSubview(scrollView)
         setScrollView()
         view.addSubview(bottomView)
@@ -72,12 +74,13 @@ class ArticleViewController: UIViewController {
     
     private func setProductImage() {
         productImage.image =  getArticleImage(urlString: articleSelected?.productImageUrl ?? "")
+        productImage.contentMode = .scaleAspectFit
         
         productImage.translatesAutoresizingMaskIntoConstraints = false
-        productImage.leadingAnchor.constraint(equalTo: scrollView.leadingAnchor).isActive = true
-        productImage.topAnchor.constraint(equalTo: scrollView.topAnchor).isActive = true
-        productImage.trailingAnchor.constraint(equalTo: scrollView.trailingAnchor).isActive = true
-        productImage.bottomAnchor.constraint(equalTo: scrollView.centerYAnchor).isActive = true
+        productImage.leadingAnchor.constraint(equalTo: self.view.safeAreaLayoutGuide.leadingAnchor).isActive = true
+        productImage.topAnchor.constraint(equalTo: self.view.safeAreaLayoutGuide.topAnchor).isActive = true
+        productImage.trailingAnchor.constraint(equalTo: self.view.safeAreaLayoutGuide.trailingAnchor).isActive = true
+        productImage.bottomAnchor.constraint(equalTo: self.view.safeAreaLayoutGuide.topAnchor, constant: 300).isActive = true
         
     }
     
@@ -121,7 +124,7 @@ class ArticleViewController: UIViewController {
     
     private func setPriceLabel() {
         let price = articleSelected?.price
-        priceLabel.text = String(price!)
+        priceLabel.text = "₩ " + String(price!)
         
         priceLabel.translatesAutoresizingMaskIntoConstraints = false
         priceLabel.leadingAnchor.constraint(equalTo: bottomView.leadingAnchor, constant: 20).isActive = true

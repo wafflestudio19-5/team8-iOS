@@ -87,7 +87,8 @@ class ArticleCell: UITableViewCell {
 
 private let reuseIdentifier = "Cell"
 
-class HomeViewController: UIViewController, UIScrollViewDelegate, UICollectionViewDelegateFlowLayout {
+class HomeViewController: UIViewController, UIScrollViewDelegate {
+    
 
 //    var signOutBtn = UIButton(type:.system) // MARK: this is for test. remove later
     let textSize: CGFloat = 16
@@ -113,6 +114,8 @@ class HomeViewController: UIViewController, UIScrollViewDelegate, UICollectionVi
         self.view.addSubview(scrollView)
         setScrollView()
 
+        articleTableView.register(ArticleCell.self, forCellReuseIdentifier: "Cell")
+        
         viewModel.test_fetchDummyData()
     }
     
@@ -158,7 +161,7 @@ class HomeViewController: UIViewController, UIScrollViewDelegate, UICollectionVi
         
         setCategoryBtn()
         setSearchField()
-        setArticleCollectionView()
+        setArticleTableView()
         setWritePostBtn()
     }
     
@@ -224,7 +227,7 @@ class HomeViewController: UIViewController, UIScrollViewDelegate, UICollectionVi
         searchField.autocorrectionType = .no
     }
     
-    private func setArticleCollectionView() {
+    private func setArticleTableView() {
         
         articleTableView.translatesAutoresizingMaskIntoConstraints = false
         articleTableView.leadingAnchor.constraint(equalTo: self.scrollView.leadingAnchor).isActive = true
@@ -235,12 +238,12 @@ class HomeViewController: UIViewController, UIScrollViewDelegate, UICollectionVi
         articleTableView.widthAnchor.constraint(equalTo: self.scrollView.widthAnchor).isActive = true
         
         articleTableView.backgroundColor = .separator
-        articleTableView.rx.setDelegate(self).disposed(by: disposeBag)
-        bindCollectionArticleData()
+
+        bindTableArticleData()
         
     }
     
-    private func bindCollectionArticleData() {
+    private func bindTableArticleData() {
         viewModel.articleList.bind(to: articleTableView.rx.items(cellIdentifier: reuseIdentifier, cellType: ArticleCell.self)) { row,  model, cell in
             print(model)
             cell.titleLabel.text = model.title
