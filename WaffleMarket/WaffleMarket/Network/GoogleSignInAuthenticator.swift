@@ -31,7 +31,6 @@ class GoogleSignInAuthenticator{
                 guard let authentication = authentication else { return }
                 guard let idToken = authentication.idToken else { return }
                 WaffleAPI.googleLogin(idToken: idToken).subscribe { response in
-                    print(String(decoding: response.data, as: UTF8.self))
                     guard response.statusCode/100 == 2 else {
                         print("Google Login statusCode:", response.statusCode)
                         presenting.toast("로그인에 실패했어요")
