@@ -51,7 +51,7 @@ class WritePostViewController: UIViewController {
     let contentField = UITextView()
     
     let selectedImages = BehaviorRelay<[UIImage]>(value: [])
-    let maxImageNumber = 1
+    let maxImageNumber = 10
     var imageCount = 0
     
     
@@ -410,7 +410,7 @@ class WritePostViewController: UIViewController {
                 return
             }
             
-            ArticleAPI.create(title: title, price: price, content: content, category: category, productImage: self.selectedImages.value[0]).subscribe { progressResponse in
+            ArticleAPI.create(title: title, price: price, content: content, category: category, productImages: self.selectedImages.value).subscribe { progressResponse in
                 self.progressView.progress = Float(progressResponse.progress)
                 if progressResponse.completed {
                     print(String(decoding: progressResponse.response!.data, as: UTF8.self))
