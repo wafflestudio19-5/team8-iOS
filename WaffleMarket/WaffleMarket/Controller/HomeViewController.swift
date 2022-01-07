@@ -7,7 +7,7 @@
 
 import UIKit
 import RxSwift
-
+import RxCocoa
 class ArticleViewModel: ObservableObject {
     
     var articles = [Article]()
@@ -19,6 +19,16 @@ class ArticleViewModel: ObservableObject {
     
     func getCategoryList(category: String, page: Int) {
         // categorypicker로 카테고리 선택시 호출
+    }
+    
+    func test_fetchDummyData(){
+        print("fetchDummyData")
+        let articles = [
+            Article(title: "맥북 에어 미개봉", category: "디지털기기", price: 1000000, content: "맥북 에어 미개봉 팝니다", productImageUrl: "https://store.storeimages.cdn-apple.com/8756/as-images.apple.com/is/macbook-air-space-gray-select-201810?wid=904&hei=840&fmt=jpeg&qlt=80&.v=1633027804000"),
+            Article(title: "아이폰 13", category: "디지털기기", price: 700000, content: "아이폰 13입니다. 사용감 거의 없습니다!", productImageUrl: "https://store.storeimages.cdn-apple.com/8756/as-images.apple.com/is/iphone-13-family-select-2021?wid=940&hei=1112&fmt=jpeg&qlt=80&.v=1629842667000")
+        
+        ]
+        articleList.onNext(articles)
     }
 }
 
@@ -42,16 +52,15 @@ class ArticleCell: UICollectionViewCell {
     
     private func setupCell() {
         backgroundColor = .white
-        addSubview(titleLabel)
+        self.contentView.addSubview(titleLabel)
         setTitleLabel()
-        addSubview(productImage)
+        self.contentView.addSubview(productImage)
         setProductImage()
-        addSubview(priceLabel)
+        self.contentView.addSubview(priceLabel)
         setPriceLabel()
     }
     
     private func setTitleLabel() {
-        
     }
     
     private func setProductImage() {
@@ -101,6 +110,7 @@ class HomeViewController: UIViewController, UIScrollViewDelegate, UICollectionVi
         self.view.addSubview(scrollView)
         setScrollView()
 
+        viewModel.test_fetchDummyData()
     }
     
     func scrollViewDidScroll(_ scrollView: UIScrollView) {
@@ -115,7 +125,7 @@ class HomeViewController: UIViewController, UIScrollViewDelegate, UICollectionVi
         fetchMore = true
         page += 1
         viewModel.getArticleList(page: page)
-        articleCollectionView.reloadData()
+        // articleCollectionView.reloadData()
     }
     
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
@@ -146,16 +156,16 @@ class HomeViewController: UIViewController, UIScrollViewDelegate, UICollectionVi
         scrollView.trailingAnchor.constraint(equalTo: self.view.safeAreaLayoutGuide.trailingAnchor).isActive = true
         scrollView.bottomAnchor.constraint(equalTo: self.view.safeAreaLayoutGuide.bottomAnchor).isActive = true
         
-        scrollView.addSubview(writePostBtn)
+        
         scrollView.addSubview(categoryBtn)
         scrollView.addSubview(searchField)
         scrollView.addSubview(articleCollectionView)
+        scrollView.addSubview(writePostBtn)
         
-        setWritePostBtn()
         setCategoryBtn()
         setSearchField()
         setArticleCollectionView()
-        
+        setWritePostBtn()
     }
     
     private func setWritePostBtn(){
@@ -215,7 +225,7 @@ class HomeViewController: UIViewController, UIScrollViewDelegate, UICollectionVi
         searchField.bottomAnchor.constraint(equalTo: self.categoryBtn.bottomAnchor).isActive = true
         
         searchField.backgroundColor = .white
-        searchField.placeholder = "🔍"
+        searchField.placeholder = "검색"
         searchField.autocapitalizationType = .none
         searchField.autocorrectionType = .no
     }
@@ -227,6 +237,8 @@ class HomeViewController: UIViewController, UIScrollViewDelegate, UICollectionVi
         articleCollectionView.trailingAnchor.constraint(equalTo: self.scrollView.trailingAnchor).isActive = true
         articleCollectionView.topAnchor.constraint(equalTo: self.searchField.bottomAnchor, constant: 10).isActive = true
         articleCollectionView.bottomAnchor.constraint(equalTo: self.scrollView.bottomAnchor).isActive = true
+        articleCollectionView.heightAnchor.constraint(equalTo: self.scrollView.heightAnchor).isActive = true
+        articleCollectionView.widthAnchor.constraint(equalTo: self.scrollView.widthAnchor).isActive = true
         
         articleCollectionView.backgroundColor = .separator
         self.articleCollectionView.register(ArticleCell.self, forCellWithReuseIdentifier: reuseIdentifier)
@@ -236,8 +248,8 @@ class HomeViewController: UIViewController, UIScrollViewDelegate, UICollectionVi
     }
     
     private func bindCollectionArticleData() {
-        
         viewModel.articleList.bind(to: articleCollectionView.rx.items(cellIdentifier: reuseIdentifier, cellType: ArticleCell.self)) { row,  model, cell in
+            print(model)
             cell.titleLabel.text = model.title
             cell.priceLabel.text = String(model.title)
             cell.productImage.image = self.getArticleImage(urlString: model.productImageUrl)
@@ -249,8 +261,7 @@ class HomeViewController: UIViewController, UIScrollViewDelegate, UICollectionVi
         
         articleCollectionView.rx.modelSelected(Article.self).subscribe(onNext: { (article) in
             
-            let identifier = "Cell"
-            guard let controller = self.storyboard?.instantiateViewController(identifier: identifier) as? ArticleViewController else {return}
+            let controller = ArticleViewController()
             
             controller.articleSelected = Article(title: article.title, category: article.category, price: article.price, content: article.content, productImageUrl: article.productImageUrl)
                 
