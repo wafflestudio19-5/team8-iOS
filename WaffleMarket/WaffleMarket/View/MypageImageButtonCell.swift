@@ -19,6 +19,7 @@ class MypageImageButtonCell: UITableViewCell {
             guard let item = item as? MypageViewModelImageButtonItem else { return }
             button.setTitle(item.title, for: .normal)
             iconImageView.image = item.image
+            iconImageView.tintColor = .orange
             onClick = item.onClick
         }
     }
@@ -37,7 +38,7 @@ class MypageImageButtonCell: UITableViewCell {
         }.disposed(by: disposeBag)
         iconImageView.isUserInteractionEnabled = false
         iconImageView.translatesAutoresizingMaskIntoConstraints = false
-        iconImageView.leadingAnchor.constraint(equalTo: self.contentView.safeAreaLayoutGuide.leadingAnchor, constant: 10).isActive = true
+        iconImageView.leadingAnchor.constraint(equalTo: self.contentView.safeAreaLayoutGuide.leadingAnchor, constant: 30).isActive = true
         iconImageView.topAnchor.constraint(equalTo: self.contentView.safeAreaLayoutGuide.topAnchor).isActive = true
         iconImageView.bottomAnchor.constraint(equalTo: self.contentView.safeAreaLayoutGuide.bottomAnchor).isActive = true
         
