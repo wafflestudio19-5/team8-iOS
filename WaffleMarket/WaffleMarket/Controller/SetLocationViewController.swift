@@ -50,6 +50,7 @@ class SetLocationViewController: UIViewController, CLLocationManagerDelegate {
         LocationAPI.postLocation(code: code).subscribe { response in
             print(String(decoding: response.data, as: UTF8.self))
             if response.statusCode == 200 {
+                AccountManager.saveTokenForAutoLogin()
                 let sceneDelegate = UIApplication.shared.connectedScenes.first?.delegate as? SceneDelegate
                 sceneDelegate?.changeRootViewController(MainTabBarController())
             } else {
