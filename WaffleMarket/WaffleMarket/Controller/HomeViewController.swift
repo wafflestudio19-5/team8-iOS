@@ -15,7 +15,7 @@ class ArticleViewModel: ObservableObject {
     let disposeBag = DisposeBag()
     func getArticleList(page:Int) {
         // 백엔드와 연결시 API 호출
-        ArticleAPI.list(page: 1).subscribe { response in
+        ArticleAPI.list(page: page).subscribe { response in
             let decoder = JSONDecoder()
             if let decoded = try? decoder.decode([ArticleResponse].self, from: response.data){
                 var articles: [Article] = []
