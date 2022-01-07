@@ -8,6 +8,10 @@
 	<string>Used to set your location</string>
 	<key>NMFClientId</key>
 	<string>$(NAVER_CLIENT_ID)</string>
+	<key>NSPhotoLibraryUsageDescription</key>
+	<string>이미지를 업로드합니다</string>
+	<key>NSCameraUsageDescription</key>
+	<string>이미지를 업로드합니다</string>
 	<key>UISupportedInterfaceOrientations~iphone</key>
 	<array>
 		<string>UIInterfaceOrientationPortrait</string>
