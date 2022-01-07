@@ -27,8 +27,8 @@ extension LocationService: TargetType, AccessTokenAuthorizable {
         switch self {
         case .postLocation:
             return "/"
-        case .findNearbyNeighborhoods:
-            return "/neighborhood/" // MARK: change later
+        case let .findNearbyNeighborhoods(code):
+            return "/\(code)/neighborhood/" // MARK: change later
         }
         
     }
@@ -48,8 +48,8 @@ extension LocationService: TargetType, AccessTokenAuthorizable {
         switch self {
         case let .postLocation(code):
             return .requestJSONEncodable(["location_code": code])
-        case let .findNearbyNeighborhoods(code):
-            return .requestParameters(parameters: ["location_code": code], encoding: URLEncoding.queryString) // MARK: change "code" later
+        case .findNearbyNeighborhoods:
+            return .requestPlain // MARK: change "code" later
         }
     }
     

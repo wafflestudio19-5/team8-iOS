@@ -37,7 +37,6 @@ class LoginViewController: UIViewController {
     var loginBtn = UIButton(type: .system)
     var signUpBtn = UIButton(type: .system)
     
-    let mapTestBtn = UIButton(type: .system)
     let disposeBag = DisposeBag()
     let loginViewModel = LoginViewModel()
     var authPhoneNumber = ""
@@ -52,7 +51,6 @@ class LoginViewController: UIViewController {
             return
         }
         
-        self.view.addSubview(mapTestBtn)
         
         self.view.addSubview(waffleLogoLabel)
         setWaffleLogoLabel()
@@ -72,15 +70,6 @@ class LoginViewController: UIViewController {
         self.view.addSubview(signUpBtn)
         setSignUpBtn()
         
-        mapTestBtn.setTitle("Location 테스트", for: .normal)
-        mapTestBtn.translatesAutoresizingMaskIntoConstraints = false
-        mapTestBtn.centerXAnchor.constraint(equalTo: self.view.centerXAnchor).isActive = true
-        mapTestBtn.topAnchor.constraint(equalTo: self.view.topAnchor, constant: 100).isActive = true
-        mapTestBtn.heightAnchor.constraint(equalToConstant: 30).isActive = true
-        mapTestBtn.rx.tap.bind{
-            self.navigationController?.pushViewController(SetLocationViewController(), animated: true)
-        }.disposed(by: disposeBag)
-    
         
         Observable.combineLatest(isIdValid, isPwValid, resultSelector: {$0 && $1})
             .subscribe { value in
