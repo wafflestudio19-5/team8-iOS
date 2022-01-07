@@ -33,10 +33,11 @@ extension WaffleService: TargetType{
         case .signup:
             return "/signup/"
         case .googleLogin(_):
-            return "/login/google/" // MARK: change later
+            return "/login/google/"
         case .leave:
             return "/leave/"
         }
+        
     }
     
     var method: Moya.Method {
@@ -109,7 +110,7 @@ struct CompleteAuthResponse: Codable {
 
 
 class WaffleAPI{
-    static var provider = MoyaProvider<WaffleService>()
+    private static var provider = MoyaProvider<WaffleService>()
 
     static func ping() -> Single<Response> {
         return provider.rx.request(.ping)

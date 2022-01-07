@@ -2,28 +2,138 @@
 //  SetLocationViewController.swift
 //  WaffleMarket
 //
-//  Created by Chaemin Lee on 2021/12/19.
+//  Created by 안재우 on 2021/12/22.
 //
 
+import Foundation
 import UIKit
+import RxSwift
 
-class SetLocationViewController: UIViewController {
+import CoreLocation
 
+
+class SetLocationViewController: UIViewController, CLLocationManagerDelegate {
+    let locationManager = CLLocationManager()
+    let searchBar = UISearchBar()
+    let findNearbyBtn = UIButton(type:.system)
+    let addressTableView = UITableView()
+    let disposeBag = DisposeBag()
+    var viewModel: SetLocationViewModel!
     override func viewDidLoad() {
         super.viewDidLoad()
         self.view.backgroundColor = .white
-        // Do any additional setup after loading the view.
+        viewModel = SetLocationViewModel(disposeBag: disposeBag)
+        self.view.addSubview(searchBar)
+        self.view.addSubview(findNearbyBtn)
+        self.view.addSubview(addressTableView)
+        setSearchBar()
+        setFindNearbyBtn()
+        setAddressTableView()
+        locationManager.delegate = self
+        switch locationManager.authorizationStatus {
+            case .authorizedAlways, .authorizedWhenInUse:
+                break
+            case .restricted, .notDetermined:
+                locationManager.requestWhenInUseAuthorization()
+        case .denied:
+            break
+        @unknown default:
+            print("default")
+                return
+        }
+        
+        
+    }
+
+    private func sendLocation(code: String){
+        
+        LocationAPI.postLocation(code: code).subscribe { response in
+            print(String(decoding: response.data, as: UTF8.self))
+            if response.statusCode == 200 {
+                AccountManager.saveTokenForAutoLogin()
+                let sceneDelegate = UIApplication.shared.connectedScenes.first?.delegate as? SceneDelegate
+                sceneDelegate?.changeRootViewController(MainTabBarController())
+            } else {
+                print("postLocation:", response)
+            }
+        } onFailure: { error in
+            
+        } onDisposed: {
+            
+        }.disposed(by: disposeBag)
+
     }
     
-
-    /*
-    // MARK: - Navigation
-
-    // In a storyboard-based application, you will often want to do a little preparation before navigation
-    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
-        // Get the new view controller using segue.destination.
-        // Pass the selected object to the new view controller.
+    private func setSearchBar(){
+        searchBar.translatesAutoresizingMaskIntoConstraints = false
+        searchBar.topAnchor.constraint(equalTo: self.view.safeAreaLayoutGuide.topAnchor, constant: 20).isActive = true
+        searchBar.leadingAnchor.constraint(equalTo: self.view.safeAreaLayoutGuide.leadingAnchor).isActive = true
+        searchBar.trailingAnchor.constraint(equalTo: self.view.safeAreaLayoutGuide.trailingAnchor).isActive = true
+        searchBar.heightAnchor.constraint(equalToConstant: 50).isActive = true
+        searchBar.placeholder = "검색"
     }
-    */
+    
+    private func setFindNearbyBtn(){
+        findNearbyBtn.translatesAutoresizingMaskIntoConstraints = false
+        findNearbyBtn.topAnchor.constraint(equalTo: searchBar.bottomAnchor, constant: 10).isActive = true
+        findNearbyBtn.leadingAnchor.constraint(equalTo: self.view.safeAreaLayoutGuide.leadingAnchor, constant: 10).isActive = true
+        findNearbyBtn.trailingAnchor.constraint(equalTo: self.view.safeAreaLayoutGuide.trailingAnchor, constant: -10).isActive = true
+        findNearbyBtn.heightAnchor.constraint(equalToConstant: 50).isActive = true
+        findNearbyBtn.backgroundColor = .orange
+        findNearbyBtn.setTitle("주변 동네 찾기", for: .normal)
+        findNearbyBtn.setTitleColor(.white, for: .normal)
+        findNearbyBtn.layer.cornerRadius = 10
+        
+        findNearbyBtn.rx.tap.bind{
+            guard let location = self.locationManager.location else {return}
+            self.viewModel.fetchNeighborhoodByLocation(longitude: location.coordinate.longitude, latitude: location.coordinate.latitude)
+        }.disposed(by: disposeBag)
+    }
+    
+    private func setAddressTableView(){
+        addressTableView.translatesAutoresizingMaskIntoConstraints = false
+        addressTableView.topAnchor.constraint(equalTo: findNearbyBtn.bottomAnchor, constant: 10).isActive = true
+        addressTableView.leadingAnchor.constraint(equalTo: self.view.safeAreaLayoutGuide.leadingAnchor).isActive = true
+        addressTableView.trailingAnchor.constraint(equalTo: self.view.safeAreaLayoutGuide.trailingAnchor).isActive = true
+        addressTableView.bottomAnchor.constraint(equalTo: self.view.safeAreaLayoutGuide.bottomAnchor).isActive = true
+        addressTableView.register(AddressTableViewCell.self, forCellReuseIdentifier: "addressCell")
+        addressTableView.rx.setDelegate(self).disposed(by: disposeBag)
+    
+        
+        addressTableView.rx.itemSelected.subscribe { indexPath in
+            guard let address = self.viewModel.getAddressAt(indexPath) else {return}
+            self.sendLocation(code: address.code)
+        }.disposed(by: disposeBag)
+        
+        
+        let query = searchBar.rx.text.orEmpty.throttle(.milliseconds(800), latest: true, scheduler: MainScheduler.instance).distinctUntilChanged()
+        
+        self.viewModel
+            .filterByQuery(query: query)
+            .bind(to: self.addressTableView.rx.items(cellIdentifier: "addressCell", cellType: AddressTableViewCell.self)) {
+                index, element, cell in
+                cell.setData(address: element)
+            }.disposed(by: disposeBag)
+        
+    
+        // self.viewModel.test_fetchDummyData()
+    }
+    
+    func locationManagerDidChangeAuthorization(_ manager: CLLocationManager) {
+        if manager.authorizationStatus == .authorizedWhenInUse || manager.authorizationStatus == .authorizedAlways {
+            print("location permission authorized")
+            if let location = self.locationManager.location {
+                self.viewModel.fetchNeighborhoodByLocation(longitude: location.coordinate.longitude, latitude: location.coordinate.latitude)
+            }
+        }
+    }
+}
 
+extension SetLocationViewController: UITableViewDelegate {
+    func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
+        return 50
+    }
+    func tableView(_ tableView: UITableView, shouldHighlightRowAt indexPath: IndexPath) -> Bool {
+        return true
+    }
 }

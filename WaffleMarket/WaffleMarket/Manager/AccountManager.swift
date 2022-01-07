@@ -9,18 +9,21 @@ import Foundation
 import UIKit
 class AccountManager {
     static var token: String?
+    static func saveTokenForAutoLogin(){
+        let keychainQuery: NSDictionary = [
+            kSecClass : kSecClassGenericPassword,
+            kSecAttrService: "com.wafflestudio.team8.WaffleMarket",
+            kSecAttrAccount: "userToken",
+            kSecValueData: token!.data(using: .utf8, allowLossyConversion: false)!
+        ]
+        SecItemDelete(keychainQuery)
+        let status: OSStatus = SecItemAdd(keychainQuery, nil)
+        assert(status == noErr, "failed to save jwt token: \(status)")
+    }
     static func login(_ data: LoginResponse, autologin: Bool = false) {
         token = data.token
         if autologin {
-            let keychainQuery: NSDictionary = [
-                kSecClass : kSecClassGenericPassword,
-                kSecAttrService: "com.wafflestudio.team8.WaffleMarket",
-                kSecAttrAccount: "userToken",
-                kSecValueData: data.token.data(using: .utf8, allowLossyConversion: false)!
-            ]
-            SecItemDelete(keychainQuery)
-            let status: OSStatus = SecItemAdd(keychainQuery, nil)
-            assert(status == noErr, "failed to save jwt token: \(status)")
+            saveTokenForAutoLogin()
         }
     }
     static func logout() {

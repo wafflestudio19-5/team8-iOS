@@ -36,7 +36,7 @@ class LoginViewController: UIViewController {
     let isPwValid = BehaviorSubject(value: false)
     var loginBtn = UIButton(type: .system)
     var signUpBtn = UIButton(type: .system)
-
+    
     let disposeBag = DisposeBag()
     let loginViewModel = LoginViewModel()
     var authPhoneNumber = ""
@@ -117,6 +117,7 @@ class LoginViewController: UIViewController {
         setGoogleLoginBtn()
         self.view.addSubview(signUpBtn)
         setSignUpBtn()
+        
         
         Observable.combineLatest(isIdValid, isPwValid, resultSelector: {$0 && $1})
             .subscribe { value in

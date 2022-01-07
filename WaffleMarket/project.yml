@@ -1,18 +1,35 @@
 name: WaffleMarket
 options:
+  defaultConfig: Release
   deploymentTarget:
     iOS: "15.0"
   postGenCommand: pod install
-
+configs:
+  Release: release
+  Debug: debug
+configFiles:
+  Release: xcconfig/Project-Release.xcconfig
+  Debug: xcconfig/Project-Debug.xcconfig
+fileGroups:
+  - xcconfig/WaffleMarket-Shared.xcconfig
+  - xcconfig/Secrets.xcconfig
+  - xcconfig/Project-Debug.xcconfig
+  - xcconfig/Project-Release.xcconfig
+  - xcconfig/Project-Shared.xcconfig
 targets:
   WaffleMarket:
     type: application
     platform: iOS
     sources:
       - path: WaffleMarket
+    configFiles:
+      Release: xcconfig/WaffleMarket-Release.xcconfig
+      Debug: xcconfig/WaffleMarket-Debug.xcconfig
     settings:
-      CODE_SIGN_STYLE: Automatic
       INFOPLIST_FILE: WaffleMarket/Info.plist
-      PRODUCT_BUNDLE_IDENTIFIER: com.wafflestudio.team8.WaffleMarket
 
-      
+schemes:
+  WaffleMarketScheme:
+    build:
+      targets:
+        WaffleMarket: all
