@@ -255,9 +255,9 @@ class HomeViewController: UIViewController, UITableViewDelegate {
         articleTableView.translatesAutoresizingMaskIntoConstraints = false
         articleTableView.leadingAnchor.constraint(equalTo: self.view.safeAreaLayoutGuide.leadingAnchor).isActive = true
         articleTableView.trailingAnchor.constraint(equalTo: self.view.safeAreaLayoutGuide.trailingAnchor).isActive = true
-        articleTableView.topAnchor.constraint(equalTo: self.view.safeAreaLayoutGuide.bottomAnchor, constant: 10).isActive = true
+        articleTableView.topAnchor.constraint(equalTo: self.view.safeAreaLayoutGuide.topAnchor ,constant: 70).isActive = true
         articleTableView.bottomAnchor.constraint(equalTo: self.view.safeAreaLayoutGuide.bottomAnchor).isActive = true
-        articleTableView.heightAnchor.constraint(equalTo:self.view.safeAreaLayoutGuide.heightAnchor, constant: -10).isActive = true
+        articleTableView.heightAnchor.constraint(equalTo:self.view.safeAreaLayoutGuide.heightAnchor, constant: -70).isActive = true
         articleTableView.widthAnchor.constraint(equalTo: self.view.safeAreaLayoutGuide.widthAnchor).isActive = true
         
         articleTableView.backgroundColor = .separator

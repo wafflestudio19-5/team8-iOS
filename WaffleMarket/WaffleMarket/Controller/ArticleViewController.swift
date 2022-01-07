@@ -6,6 +6,7 @@
 //
 
 import UIKit
+import RxSwift
 
 class ArticleViewController: UIViewController {
 
@@ -18,6 +19,7 @@ class ArticleViewController: UIViewController {
     let contentLabel = UILabel()
     let productImage = UIImageView()
     let buyBtn = UIButton()
+    let disposeBag = DisposeBag()
     
     var articleSelected: Article?
     
@@ -143,11 +145,16 @@ class ArticleViewController: UIViewController {
         buyBtn.bottomAnchor.constraint(equalTo: priceLabel.bottomAnchor).isActive = true
         buyBtn.trailingAnchor.constraint(equalTo: bottomView.trailingAnchor, constant: -20).isActive = true
         
-        buyBtn.setTitle("채팅으로 거래하기", for: .normal)
+        buyBtn.setTitle("댓글 작성하기", for: .normal)
         buyBtn.backgroundColor = .orange
         buyBtn.setTitleColor(.white, for: .normal)
         buyBtn.layer.cornerRadius = 10
         buyBtn.titleLabel?.font = .systemFont(ofSize: 15)
+        
+        buyBtn.rx.tap.bind{
+            print("click")
+            self.present(UINavigationController(rootViewController: CommentViewController()), animated: true)
+        }.disposed(by: disposeBag)
     }
 
     /*
