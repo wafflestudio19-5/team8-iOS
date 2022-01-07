@@ -85,7 +85,11 @@ class SetLocationViewController: UIViewController, CLLocationManagerDelegate {
         findNearbyBtn.layer.cornerRadius = 10
         
         findNearbyBtn.rx.tap.bind{
-            guard let location = self.locationManager.location else {return}
+            guard let location = self.locationManager.location else {
+                self.toast("위치 정보를 읽어오는데 실패했어요")
+                return
+                
+            }
             self.viewModel.fetchNeighborhoodByLocation(longitude: location.coordinate.longitude, latitude: location.coordinate.latitude)
         }.disposed(by: disposeBag)
     }

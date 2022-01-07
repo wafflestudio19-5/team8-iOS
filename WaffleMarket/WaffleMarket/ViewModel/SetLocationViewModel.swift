@@ -85,7 +85,9 @@ class SetLocationViewModel {
             .subscribe { response in
                 let decoder = JSONDecoder()
                 if let decoded = try? decoder.decode(ReverseGeocodeResponse.self, from: response.data) {
-                    self.fetchNearbyAddresses(code: decoded.results[0].id)
+                    if !decoded.results.isEmpty {
+                        self.fetchNearbyAddresses(code: decoded.results[0].id)
+                    }
                 }
             } onFailure: { error in
                 
