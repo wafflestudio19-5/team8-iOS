@@ -161,7 +161,6 @@ class SetProfileViewController: UIViewController {
                 if (response.statusCode / 100) == 2 {
                     let decoder = JSONDecoder()
                     if let decoded = try? decoder.decode(LoginResponse.self, from: response.data) {
-                        print(decoded)
                         AccountManager.login(decoded, autologin: true)
                         if decoded.location_exists {
                             let sceneDelegate = UIApplication.shared.connectedScenes.first?.delegate as? SceneDelegate
