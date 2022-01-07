@@ -15,6 +15,7 @@ class LoginViewModel {
     
     let id = PublishRelay<String>()
     let pw = PublishRelay<String>()
+    
     let loginBtnTouched = PublishRelay<Void>()
     
 }
@@ -38,14 +39,17 @@ class LoginViewController: UIViewController {
 
     let disposeBag = DisposeBag()
     let loginViewModel = LoginViewModel()
+    var authPhoneNumber = ""
     
     override func viewDidLoad() {
         super.viewDidLoad()
         self.view.backgroundColor = .white
         
-        
-
-
+        if AccountManager.tryAutologin() {
+            let sceneDelegate = UIApplication.shared.connectedScenes.first?.delegate as? SceneDelegate
+            sceneDelegate?.changeRootViewController(MainTabBarController())
+            return
+        }
         
         
         self.view.addSubview(waffleLogoLabel)
@@ -127,6 +131,37 @@ class LoginViewController: UIViewController {
         idValidateBtn.setTitleColor(.white, for: .normal)
         idValidateBtn.layer.cornerRadius = 10
         idValidateBtn.titleLabel?.font = .systemFont(ofSize: 13)
+        
+        idValidateBtn.rx.tap.bind{ // MARK: apply MVVM
+            guard let phoneNumber = self.idField.text else { return }
+            self.authPhoneNumber = phoneNumber
+            WaffleAPI.startAuth(phoneNumber: phoneNumber).subscribe { response in
+                let decoder = JSONDecoder()
+                if (response.statusCode / 100) == 4 {
+                    self.toast("전화번호가 올바르지 않아요")
+                    return
+                }
+                if let decoded = try? decoder.decode(StartAuthResponse.self, from: response.data) {
+                    if let authnumber = decoded.auth_number {
+                        self.toast("테스트용 인증번호: \(authnumber)")
+                        
+                    } else {
+                        self.toast("인증번호가 전송되었어요")
+                    }
+                    
+                    print(decoded.auth_number ?? "no auth_number")
+                } else {
+                    self.toast("오류가 발생했어요")
+                    print("failed to decode StartAuthResponse")
+                }
+            } onFailure: { error in
+                
+            } onDisposed: {
+                
+                
+            }.disposed(by: self.disposeBag)
+
+        }.disposed(by: disposeBag)
     }
     
     private func setPwField(){
@@ -139,7 +174,6 @@ class LoginViewController: UIViewController {
         
         pwField.backgroundColor = .white
         pwField.placeholder = "인증번호를 입력하세요"
-        pwField.isSecureTextEntry = true
         pwField.autocapitalizationType = .none
         pwField.autocorrectionType = .no
         pwField.rx.text.orEmpty.bind(to: pwText).disposed(by: disposeBag)
@@ -161,7 +195,52 @@ class LoginViewController: UIViewController {
         loginBtn.setTitleColor(.white, for: .normal)
         loginBtn.layer.cornerRadius = 10
         
-        loginBtn.rx.tap.bind(to: loginViewModel.loginBtnTouched).disposed(by: disposeBag)
+        // loginBtn.rx.tap.bind(to: loginViewModel.loginBtnTouched).disposed(by: disposeBag)
+        
+        loginBtn.rx.tap.bind{
+            guard let authNumber = self.pwField.text else { return }
+            WaffleAPI.completeAuth(phoneNumber: self.authPhoneNumber, authNumber: authNumber).subscribe { response in
+                if (response.statusCode / 100) == 4 {
+                    self.toast("인증번호가 올바르지 않아요")
+                    return
+                }
+                if (response.statusCode / 100) == 2{
+                    print(String(decoding:response.data, as: UTF8.self))
+                    let decoder = JSONDecoder()
+                    if let decoded = try? decoder.decode(LoginResponse.self, from:response.data) {
+                        print(decoded.token)
+                        AccountManager.login(decoded)
+                        if decoded.location_exists {
+                            let sceneDelegate = UIApplication.shared.connectedScenes.first?.delegate as? SceneDelegate
+                            sceneDelegate?.changeRootViewController(MainTabBarController())
+                        } else {
+                            self.present(SetLocationViewController(), animated:true)
+                        }
+                    } else {
+                        let alert = UIAlertController(title: "알림", message: "가입되지 않은 전화번호입니다.", preferredStyle: .alert)
+                        let close = UIAlertAction(title: "닫기", style: .cancel) { action in
+                            alert.dismiss(animated: true)
+                        }
+                        let signup = UIAlertAction(title: "이 번호로 가입", style: .default) { action in
+                            
+                            alert.dismiss(animated: true)
+                            let vc = SetProfileViewController(accountType: .standalone, userId: self.authPhoneNumber)
+                            self.present(vc, animated: true)
+                        }
+                        alert.addAction(close)
+                        alert.addAction(signup)
+                        self.present(alert, animated: true)
+                    }
+                } else {
+                    self.toast("오류가 발생했어요")
+                }
+            } onFailure: { error in
+                
+            } onDisposed: {
+                
+            }.disposed(by: self.disposeBag)
+
+        }.disposed(by: disposeBag)
     }
     
     private func setGoogleLoginBtn(){
