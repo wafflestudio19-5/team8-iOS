@@ -100,11 +100,7 @@ class HomeViewController: UIViewController, UIScrollViewDelegate, UITableViewDel
     let textSize: CGFloat = 16
     let scrollView = UIScrollView()
     let writePostBtn = UIButton(type:.custom)
-    let articleTableView: UITableView = {
-        
-        let tv = UITableView(frame: .zero)
-        return tv
-    }()
+    let articleTableView: UITableView = UITableView()
     let searchField = UISearchTextField()
     let categoryBtn = UIButton()
     var selectedCategory: String?
@@ -121,7 +117,6 @@ class HomeViewController: UIViewController, UIScrollViewDelegate, UITableViewDel
         setScrollView()
 
         articleTableView.register(ArticleCell.self, forCellReuseIdentifier: "Cell")
-        articleTableView.delegate = self
         
         viewModel.test_fetchDummyData()
     }
@@ -255,19 +250,19 @@ class HomeViewController: UIViewController, UIScrollViewDelegate, UITableViewDel
     }
     
     private func bindTableArticleData() {
-        viewModel.articleList.bind(to: articleTableView.rx.items(cellIdentifier: reuseIdentifier, cellType: ArticleCell.self)) { row,  model, cell in
+        
+        viewModel.articleList.bind(to: articleTableView.rx.items(cellIdentifier: reuseIdentifier, cellType: ArticleCell.self)) { row, model, cell in
             print(model)
             cell.titleLabel.text = model.title
             cell.priceLabel.text = String(model.title)
             cell.productImage.image = self.getArticleImage(urlString: model.productImageUrl)
         }.disposed(by: disposeBag)
-        
+        articleTableView.rx.setDelegate(self).disposed(by: disposeBag)
 //        articleCollectionView.rx.modelSelected(Article.self).bind{_ in
 //            self.present(UINavigationController(rootViewController: ArticleViewController()), animated: true)
 //        }.disposed(by: disposeBag)
-        
-        articleTableView.rx.itemSelected
-            .subscribe { indexPath in
+        articleTableView.rx.itemSelected.subscribe { indexPath in
+                print("asdf")
                 guard let article = self.viewModel.getArticleAt(indexPath) else { return }
                 self.sendArticle(article: article)
             
@@ -278,11 +273,12 @@ class HomeViewController: UIViewController, UIScrollViewDelegate, UITableViewDel
     }
     
     private func sendArticle(article: Article) {
+        print("sendArticle")
         let controller = ArticleViewController()
             
         controller.articleSelected = Article(title: article.title, category: article.category, price: article.price, content: article.content, productImageUrl: article.productImageUrl)
             
-        self.navigationController?.pushViewController(controller, animated: true)
+        self.navigationController!.pushViewController(controller, animated: true)
     }
     
     func getArticleImage(urlString: String) -> UIImage {
