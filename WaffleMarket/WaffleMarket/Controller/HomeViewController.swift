@@ -11,7 +11,7 @@ import RxCocoa
 class ArticleViewModel: ObservableObject {
     
     var articles = [Article]()
-    let articleList = BehaviorSubject<[Article]>(value: [])
+    let articleList = BehaviorRelay<[Article]>(value: [])
     
     func getArticleList(page:Int) {
         // 백엔드와 연결시 API 호출
@@ -21,6 +21,12 @@ class ArticleViewModel: ObservableObject {
         // categorypicker로 카테고리 선택시 호출
     }
     
+    func getArticleAt(_ index: Event<ControlEvent<IndexPath>.Element>) -> Article?{
+        guard let item = index.element?.item else {return nil}
+        let article = articleList.value[item]
+        return article
+    }
+    
     func test_fetchDummyData(){
         print("fetchDummyData")
         let articles = [
@@ -28,7 +34,7 @@ class ArticleViewModel: ObservableObject {
             Article(title: "아이폰 13", category: "디지털기기", price: 700000, content: "아이폰 13입니다. 사용감 거의 없습니다!", productImageUrl: "https://store.storeimages.cdn-apple.com/8756/as-images.apple.com/is/iphone-13-family-select-2021?wid=940&hei=1112&fmt=jpeg&qlt=80&.v=1629842667000")
         
         ]
-        articleList.onNext(articles)
+        articleList.accept(articles)
     }
 }
 
@@ -61,10 +67,10 @@ class ArticleCell: UITableViewCell {
     }
     
     private func setProductImage() {
-        productImage.centerYAnchor.constraint(equalTo: self.centerYAnchor).isActive = true
-        productImage.leadingAnchor.constraint(equalTo: self.leadingAnchor, constant: 20).isActive = true
-        productImage.topAnchor.constraint(equalTo: self.topAnchor, constant: 10).isActive = true
-        productImage.bottomAnchor.constraint(equalTo: self.bottomAnchor, constant: -10).isActive = true
+        productImage.centerYAnchor.constraint(equalTo: contentView.centerYAnchor).isActive = true
+        productImage.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 20).isActive = true
+        productImage.topAnchor.constraint(equalTo: contentView.topAnchor, constant: 10).isActive = true
+        productImage.bottomAnchor.constraint(equalTo: contentView.bottomAnchor, constant: -10).isActive = true
         productImage.heightAnchor.constraint(equalToConstant: 80).isActive = true
         productImage.widthAnchor.constraint(equalToConstant: 80).isActive = true
         
@@ -73,14 +79,14 @@ class ArticleCell: UITableViewCell {
     private func setTitleLabel() {
         titleLabel.leadingAnchor.constraint(equalTo: productImage.trailingAnchor, constant: 20).isActive = true
         titleLabel.topAnchor.constraint(equalTo: productImage.topAnchor).isActive = true
-        titleLabel.trailingAnchor.constraint(equalTo: self.trailingAnchor, constant: -20).isActive = true
+        titleLabel.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -20).isActive = true
     }
     
     private func setPriceLabel() {
         priceLabel.leadingAnchor.constraint(equalTo: titleLabel.leadingAnchor).isActive = true
         priceLabel.topAnchor.constraint(equalTo: titleLabel.bottomAnchor, constant: 20).isActive = true
         priceLabel.trailingAnchor.constraint(equalTo: titleLabel.trailingAnchor).isActive = true
-        priceLabel.bottomAnchor.constraint(equalTo: self.bottomAnchor).isActive = true
+        priceLabel.bottomAnchor.constraint(equalTo: contentView.bottomAnchor).isActive = true
     }
     
 }
@@ -115,8 +121,7 @@ class HomeViewController: UIViewController, UIScrollViewDelegate, UITableViewDel
         setScrollView()
 
         articleTableView.register(ArticleCell.self, forCellReuseIdentifier: "Cell")
-        articleTableView.rowHeight = UITableView.automaticDimension
-        articleTableView.estimatedRowHeight = 200
+        articleTableView.delegate = self
         
         viewModel.test_fetchDummyData()
     }
@@ -261,18 +266,23 @@ class HomeViewController: UIViewController, UIScrollViewDelegate, UITableViewDel
 //            self.present(UINavigationController(rootViewController: ArticleViewController()), animated: true)
 //        }.disposed(by: disposeBag)
         
-        articleTableView.rx.modelSelected(Article.self).subscribe(onNext: { (article) in
+        articleTableView.rx.itemSelected
+            .subscribe { indexPath in
+                guard let article = self.viewModel.getArticleAt(indexPath) else { return }
+                self.sendArticle(article: article)
             
-            let controller = ArticleViewController()
-            
-            controller.articleSelected = Article(title: article.title, category: article.category, price: article.price, content: article.content, productImageUrl: article.productImageUrl)
-                
-            self.navigationController?.pushViewController(controller, animated: true)
-            
-        }).disposed(by: disposeBag)
+        }.disposed(by: disposeBag)
         
         viewModel.getArticleList(page: page)
         
+    }
+    
+    private func sendArticle(article: Article) {
+        let controller = ArticleViewController()
+            
+        controller.articleSelected = Article(title: article.title, category: article.category, price: article.price, content: article.content, productImageUrl: article.productImageUrl)
+            
+        self.navigationController?.pushViewController(controller, animated: true)
     }
     
     func getArticleImage(urlString: String) -> UIImage {
