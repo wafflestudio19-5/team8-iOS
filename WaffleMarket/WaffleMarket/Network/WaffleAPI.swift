@@ -67,12 +67,7 @@ extension WaffleService: TargetType{
         case let .completeAuth(phoneNumber, authNumber):
             return .requestJSONEncodable(["phone_number": phoneNumber, "auth_number": authNumber])
         case let .signup(profile):
-            let imageData = MultipartFormData(provider: .data(profile.profileImage.pngData()!), name: "profile_image", fileName: "profile_image", mimeType: "image/png")
-            let phoneNumberData = MultipartFormData(provider: .data(profile.phoneNumber!.data(using: .utf8)!), name: "phone_number")
-            let userNameData = MultipartFormData(provider: .data(profile.userName!.data(using: .utf8)!), name: "username")
-            let multipartData = [imageData, phoneNumberData, userNameData]
-            return .uploadMultipart(multipartData)
-            //return .requestJSONEncodable(["phone_number": profile.phoneNumber, "username": profile.userName])
+            return .requestJSONEncodable(["phone_number": profile.phoneNumber, "username": profile.userName])
         case let .googleLogin(idToken):
             return .requestJSONEncodable(idToken)
         case .leave:

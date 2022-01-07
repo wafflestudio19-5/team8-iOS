@@ -165,15 +165,25 @@ class SetProfileViewController: UIViewController {
             WaffleAPI.signup(profile: profile).subscribe { response in
                 let decoder = JSONDecoder()
                 if (response.statusCode / 100) == 2 {
-                    
                     if let decoded = try? decoder.decode(LoginResponse.self, from: response.data) {
                         AccountManager.login(decoded)
-                        if decoded.location_exists {
-                            let sceneDelegate = UIApplication.shared.connectedScenes.first?.delegate as? SceneDelegate
-                            sceneDelegate?.changeRootViewController(MainTabBarController())
-                        } else {
-                            self.navigationController?.pushViewController(SetLocationViewController(), animated:true)
-                        }
+                        UserAPI.setProfile(profile: profile).subscribe { response in
+                            print(String(decoding: response.data, as: UTF8.self))
+                            if (response.statusCode/100) == 2 {
+                                if decoded.location_exists {
+                                    let sceneDelegate = UIApplication.shared.connectedScenes.first?.delegate as? SceneDelegate
+                                    sceneDelegate?.changeRootViewController(MainTabBarController())
+                                } else {
+                                    self.navigationController?.pushViewController(SetLocationViewController(), animated:true)
+                                }
+                                return
+                            }
+                            self.toast("오류가 발생했어요")
+                        } onFailure: { error in
+                            self.toast("오류가 발생했어요")
+                        } onDisposed: {
+                            
+                        }.disposed(by: self.disposeBag)
                         return
                     }
                 }
