@@ -76,6 +76,8 @@ class SetProfileViewController: UIViewController {
         profileImageView.topAnchor.constraint(equalTo: self.view.topAnchor, constant: 200).isActive = true
         profileImageView.heightAnchor.constraint(equalToConstant: 150).isActive = true
         profileImageView.widthAnchor.constraint(equalToConstant: 150).isActive = true
+        profileImage = UIImage(named: "defaultProfileImage")
+        profileImageView.image = profileImage
         
     }
     
@@ -182,24 +184,24 @@ class SetProfileViewController: UIViewController {
                         UserAPI.setProfile(profile: profile).subscribe { progressResponse in
                             print(progressResponse.progress)
                             self.progressView.progress = Float(progressResponse.progress)
+                            if progressResponse.completed {
+                                print(String(decoding: progressResponse.response!.data, as: UTF8.self))
+                                if (progressResponse.response!.statusCode/100) == 2 {
+                                    if decoded.location_exists {
+                                        let sceneDelegate = UIApplication.shared.connectedScenes.first?.delegate as? SceneDelegate
+                                        sceneDelegate?.changeRootViewController(MainTabBarController())
+                                    } else {
+                                        self.navigationController?.pushViewController(SetLocationViewController(), animated:true)
+                                    }
+                                    return
+                                }
+                                self.toast("오류가 발생했어요")
+                            }
                         } onError: { error in
                             self.toast("오류가 발생했어요")
-                        } onCompleted: {
-                            print(String(decoding: response.data, as: UTF8.self))
-                            if (response.statusCode/100) == 2 {
-                                if decoded.location_exists {
-                                    let sceneDelegate = UIApplication.shared.connectedScenes.first?.delegate as? SceneDelegate
-                                    sceneDelegate?.changeRootViewController(MainTabBarController())
-                                } else {
-                                    self.navigationController?.pushViewController(SetLocationViewController(), animated:true)
-                                }
-                                return
-                            }
-                            self.toast("오류가 발생했어요")
-                        } onDisposed: {
-                            
                         }.disposed(by: self.disposeBag)
 
+                        
                         return
                     }
                 }

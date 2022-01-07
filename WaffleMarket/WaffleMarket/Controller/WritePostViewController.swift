@@ -15,6 +15,13 @@ import YPImagePicker
 
 class WritePostViewController: UIViewController {
     let textSize: CGFloat = 18
+    let progressView: UIProgressView = {
+        let view = UIProgressView()
+        view.trackTintColor = .white
+        view.progressTintColor = .orange
+        view.progress = 0
+        return view
+    }()
     let scrollView = UIScrollView()
     let scrollContentView = UIView()
     let stackView = UIStackView()
@@ -44,7 +51,7 @@ class WritePostViewController: UIViewController {
     let contentField = UITextView()
     
     let selectedImages = BehaviorRelay<[UIImage]>(value: [])
-    let maxImageNumber = 10
+    let maxImageNumber = 1
     var imageCount = 0
     
     
@@ -95,8 +102,10 @@ class WritePostViewController: UIViewController {
         self.view.backgroundColor = .white
         originalViewHeight = self.view.frame.size.height
         
-
+        self.view.addSubview(progressView)
+        setProgressView()
         self.view.addSubview(scrollView)
+        
         setScrollView()
         
         stackView.addArrangedSubview(imageContainerView)
@@ -128,6 +137,12 @@ class WritePostViewController: UIViewController {
             stackView.addArrangedSubview(separator)
             separator.widthAnchor.constraint(equalTo: stackView.widthAnchor).isActive = true
         }
+    }
+    private func setProgressView(){
+        progressView.translatesAutoresizingMaskIntoConstraints = false
+        progressView.leadingAnchor.constraint(equalTo: self.view.safeAreaLayoutGuide.leadingAnchor).isActive = true
+        progressView.trailingAnchor.constraint(equalTo: self.view.safeAreaLayoutGuide.trailingAnchor).isActive = true
+        progressView.topAnchor.constraint(equalTo: self.view.safeAreaLayoutGuide.topAnchor).isActive = true
     }
     private func setScrollView(){
         scrollView.addSubview(scrollContentView)
@@ -372,11 +387,48 @@ class WritePostViewController: UIViewController {
     private func setCompleteBtn(){
         completeBtn.title = "완료"
         completeBtn.rx.tap.bind{
+            if self.imageCount == 0 {
+                self.toast("제품 사진을 첨부하세요", y: 50)
+                return
+            }
+            
             let title = self.titleField.text ?? ""
             let price = self.priceField.text ?? ""
             let content = self.contentField.text ?? ""
             let category = self.selectedCategory ?? ""
             
+            if title.isEmpty {
+                self.toast("제목을 입력하세요", y: 50)
+                return
+            }
+            if category.isEmpty {
+                self.toast("카테고리를 선택하세요", y: 50)
+                return
+            }
+            if content.isEmpty || self.contentField.textColor == .lightGray {
+                self.toast("내용을 입력하세요", y: 50)
+                return
+            }
+            
+            ArticleAPI.create(title: title, price: price, content: content, category: category, productImage: self.selectedImages.value[0]).subscribe { progressResponse in
+                self.progressView.progress = Float(progressResponse.progress)
+                if progressResponse.completed {
+                    print(String(decoding: progressResponse.response!.data, as: UTF8.self))
+                    if progressResponse.response!.statusCode/100 == 2 {
+                        self.navigationController?.popViewController(animated: true)
+                    } else if progressResponse.response!.statusCode == 413 {
+                        self.toast("이미지 용량이 너무 커요", y: 50)
+                    } else {
+                        self.toast("오류가 발생했어요", y: 50)
+                    }
+                    self.progressView.progress = 0
+                }
+            } onError: { error in
+                self.progressView.progress = 0
+                self.toast("오류가 발생했어요", y: 50)
+            }.disposed(by: self.disposeBag)
+            
+
             // MARK: request to backend
             
         }.disposed(by: disposeBag)
