@@ -38,7 +38,7 @@ class ArticleViewModel: ObservableObject {
                     articles.append(article)
                 }
                 print("articles count:", articles.count)
-                self.articleList.accept(articles)
+                self.articleList.accept(self.articleList.value + articles)
             } else {
                 print("decoding failure")
             }
@@ -165,6 +165,7 @@ class HomeViewController: UIViewController, UITableViewDelegate {
     var page = 1
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
+        self.viewModel.articleList.accept([])
         self.viewModel.getArticleList(page: page, category: selectedCategory, keyword: self.searchField.text)
     }
     override func viewDidLoad() {
@@ -336,7 +337,7 @@ class HomeViewController: UIViewController, UITableViewDelegate {
         }.disposed(by: disposeBag)
 
         
-        viewModel.getArticleList(page: page)
+        //viewModel.getArticleList(page: page)
         
     }
     
