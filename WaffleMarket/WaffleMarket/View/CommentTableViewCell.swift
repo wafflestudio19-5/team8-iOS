@@ -74,7 +74,11 @@ class CommentTableViewCell: UITableViewCell {
         } else {
             containerView.leadingAnchor.constraint(equalTo: self.contentView.leadingAnchor).isActive = true
         }
-        CachedImageLoader().load(path: profile_image, putOn: profileImageView)
+        if profile_image == "default" {
+            profileImageView.image = UIImage(named: "defaultProfileImage")
+        } else {
+            CachedImageLoader().load(path: profile_image, putOn: profileImageView)
+        }
         usernameLabel.text = username
         contentLabel.text = content
         timestampLabel.text = timestamp

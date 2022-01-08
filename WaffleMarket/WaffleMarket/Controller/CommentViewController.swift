@@ -108,7 +108,7 @@ class CommentViewController: UIViewController {
                         continue
                     }
         
-                    let comment = Comment(id: commentResponse.id, username: commentResponse.commenter.username, profile_image: commentResponse.commenter.profile_image, timestamp: commentResponse.created_at, content: commentResponse.content, isReply: false, deletable: commentResponse.delete_enable, commenter_id: commentResponse.commenter.id)
+                    let comment = Comment(id: commentResponse.id, username: commentResponse.commenter.username, profile_image: commentResponse.commenter.profile_image ?? "default", timestamp: commentResponse.created_at, content: commentResponse.content, isReply: false, deletable: commentResponse.delete_enable, commenter_id: commentResponse.commenter.id ?? -1)
                     addedIds.update(with: commentResponse.id)
                     comments.append(comment)
                     for reply in commentResponse.replies ?? [] {
@@ -119,7 +119,7 @@ class CommentViewController: UIViewController {
                             continue
                         }
     
-                        let comment2 = Comment(id: reply.id, username: reply.commenter.username, profile_image: reply.commenter.profile_image, timestamp: reply.created_at, content: reply.content, isReply: true, deletable: reply.delete_enable, commenter_id: reply.commenter.id)
+                        let comment2 = Comment(id: reply.id, username: reply.commenter.username, profile_image: reply.commenter.profile_image ?? "default", timestamp: reply.created_at, content: reply.content, isReply: true, deletable: reply.delete_enable, commenter_id: reply.commenter.id ?? -1)
                         addedIds.update(with: reply.id)
                         comments.append(comment2)
                     }

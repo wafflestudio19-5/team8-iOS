@@ -18,7 +18,7 @@ class ArticleViewModel: ObservableObject {
         // 백엔드와 연결시 API 호출
         isLoadingMoreData = true
         ArticleAPI.list(page: page, category: category, keyword: keyword).subscribe { response in
-            print(String(decoding: response.data, as:UTF8.self))
+            print(String(decoding: response.data, as: UTF8.self))
             let decoder = JSONDecoder()
             if let decoded = try? decoder.decode([ArticleResponse].self, from: response.data){
                 var articles: [Article] = []
@@ -39,6 +39,8 @@ class ArticleViewModel: ObservableObject {
                 }
                 print("articles count:", articles.count)
                 self.articleList.accept(articles)
+            } else {
+                print("decoding failure")
             }
             self.isLoadingMoreData = false
         } onFailure: { error in

@@ -263,7 +263,7 @@ class LoginViewController: UIViewController {
                 if (response.statusCode / 100) == 2{
                     let decoder = JSONDecoder()
                     if let decoded = try? decoder.decode(LoginResponse.self, from:response.data) {
-                        AccountManager.login(decoded)
+                        AccountManager.login(decoded, autologin: true)
                         if decoded.location_exists {
                             let sceneDelegate = UIApplication.shared.connectedScenes.first?.delegate as? SceneDelegate
                             sceneDelegate?.changeRootViewController(MainTabBarController())
@@ -315,6 +315,7 @@ class LoginViewController: UIViewController {
             GoogleSignInAuthenticator.sharedInstance.signIn(presenting: self, disposeBag: self.disposeBag) { data in
                 AccountManager.login(data)
                 if data.location_exists {
+                    AccountManager.login(data, autologin: true)
                     let sceneDelegate = UIApplication.shared.connectedScenes.first?.delegate as? SceneDelegate
                     sceneDelegate?.changeRootViewController(MainTabBarController())
                 } else {
