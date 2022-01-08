@@ -151,9 +151,9 @@ struct CommentResponse: Codable {
     var delete_enable: Bool
 }
 struct UserResponse: Codable {
-    var id: Int
+    var id: Int?
     var username: String
-    var profile_image: String
+    var profile_image: String?
 }
 struct LocationResponse: Codable {
     var place_name: String

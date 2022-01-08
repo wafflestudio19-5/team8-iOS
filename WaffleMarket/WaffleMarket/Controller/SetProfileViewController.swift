@@ -180,7 +180,7 @@ class SetProfileViewController: UIViewController {
                 let decoder = JSONDecoder()
                 if (response.statusCode / 100) == 2 {
                     if let decoded = try? decoder.decode(LoginResponse.self, from: response.data) {
-                        AccountManager.login(decoded)
+                        AccountManager.login(decoded, autologin: true)
                         UserAPI.setProfile(profile: profile).subscribe { progressResponse in
                             print(progressResponse.progress)
                             self.progressView.progress = Float(progressResponse.progress)
