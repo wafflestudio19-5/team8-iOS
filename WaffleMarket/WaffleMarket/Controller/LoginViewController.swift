@@ -276,7 +276,7 @@ class LoginViewController: UIViewController {
                             alert.dismiss(animated: true)
                         }
                         let signup = UIAlertAction(title: "이 번호로 가입", style: .default) { action in
-                            
+
                             alert.dismiss(animated: true)
                             let vc = UINavigationController(rootViewController: SetProfileViewController(accountType: .standalone, userId: self.authPhoneNumber))
                             self.present(vc, animated: true)
@@ -289,12 +289,17 @@ class LoginViewController: UIViewController {
                     self.toast("오류가 발생했어요", y: self.loginBtn.frame.origin.y)
                 }
             } onFailure: { error in
-                
+
             } onDisposed: {
-                
+
             }.disposed(by: self.disposeBag)
 
         }.disposed(by: disposeBag)
+        
+//        loginBtn.rx.tap.bind{
+//            print("click")
+//            self.present(UINavigationController(rootViewController: HomeViewController()), animated: true)
+//        }.disposed(by: disposeBag)
     }
     
     private func setGoogleLoginBtn(){

@@ -11,6 +11,12 @@ import RxAlamofire
 import RxSwift
 enum ArticleService {
     case create(title: String, price: String, content: String, category: String, productImages: [UIImage])
+    case list(page: Int, category: String?, keyword: String?)
+    case getComments(articleId: Int)
+    case postComment(articleId: Int, content: String)
+    case postReply(articleId: Int, commentId: Int, content: String)
+    case deleteComment(articleId: Int, commentId: Int)
+    case registerBuyer(articleId: Int, buyer_id: Int)
 }
 extension ArticleService: TargetType {
     var baseURL: URL {
@@ -21,6 +27,18 @@ extension ArticleService: TargetType {
         switch self {
         case .create:
             return "/"
+        case .list:
+            return "/"
+        case let .getComments(articleId):
+            return "/\(articleId)/comment/"
+        case let .postComment(articleId, _):
+            return "/\(articleId)/comment/"
+        case let .postReply(articleId, commentId, _):
+            return "/\(articleId)/comment/\(commentId)/"
+        case let .deleteComment(articleId, commentId):
+            return "/\(articleId)/comment/\(commentId)/"
+        case let .registerBuyer(articleId, _):
+            return "/\(articleId)/buyer/"
         }
     }
     
@@ -28,6 +46,18 @@ extension ArticleService: TargetType {
         switch self {
         case .create:
             return .post
+        case .list:
+            return .get
+        case .getComments:
+            return .get
+        case .postComment:
+            return .post
+        case .postReply:
+            return .post
+        case .deleteComment:
+            return .delete
+        case .registerBuyer:
+            return .put
         }
     }
     
@@ -50,13 +80,37 @@ extension ArticleService: TargetType {
             let countData = MultipartFormData(provider: .data("\(productImages.count)".data(using: .utf8)!), name: "image_count")
             multipart.append(contentsOf: [titleData, priceData, contentData, categoryData, countData])
             return .uploadMultipart(multipart)
+        case let .list(page, category, keyword):
+            var dict: [String: String] = [:]
+            dict["page"] = "\(page)"
+            if let category = category {
+                dict["category"] = category
+            }
+            if let keyword = keyword {
+                dict["keyword"] = keyword
+            }
+            return .requestParameters(parameters: dict, encoding: URLEncoding.queryString)
+        case .getComments:
+            return .requestPlain
+        case let .postComment(_, content):
+            return .requestJSONEncodable(["content": content])
+        case let .postReply(_, _, content):
+            return .requestJSONEncodable(["content": content])
+        case .deleteComment:
+            return .requestPlain
+        case let .registerBuyer(articleId, buyer_id):
+            return .requestJSONEncodable(["buyer_id": buyer_id])
         }
+        
+        
     }
     
     var headers: [String : String]? {
         switch self {
         case .create:
             return ["Content-type": "multipart/form-data"]
+        default:
+            return ["Content-type": "application/json"]
         }
     }
     
@@ -68,4 +122,57 @@ class ArticleAPI {
     static func create(title: String, price: String, content: String, category: String, productImages: [UIImage]) -> Observable<ProgressResponse> {
         return provider.rx.requestWithProgress(.create(title: title, price: price, content: content, category: category, productImages: productImages))
     }
+    static func list(page: Int, category: String? = nil, keyword: String? = nil) -> Single<Response> {
+        return provider.rx.request(.list(page: page, category: category, keyword: keyword))
+    }
+    static func getComments(articleId: Int) -> Single<Response> {
+        return provider.rx.request(.getComments(articleId: articleId))
+    }
+    static func postComment(articleId: Int, content: String) -> Single<Response> {
+        return provider.rx.request(.postComment(articleId: articleId, content: content))
+    }
+    static func postReply(articleId: Int, commentId: Int, content: String) -> Single<Response> {
+        return provider.rx.request(.postReply(articleId: articleId, commentId: commentId, content: content))
+    }
+    static func deleteComment(articleId: Int, commentId: Int) -> Single<Response> {
+        return provider.rx.request(.deleteComment(articleId: articleId, commentId: commentId))
+    }
+    static func registerBuyer(articleId: Int, buyer_id: Int) -> Single<Response> {
+        return provider.rx.request(.registerBuyer(articleId: articleId, buyer_id: buyer_id))
+    }
+}
+struct CommentResponse: Codable {
+    var id: Int
+    var commenter: UserResponse
+    var created_at: String
+    var deleted_at: String?
+    var replies: [CommentResponse]?
+    var content: String
+    var delete_enable: Bool
+}
+struct UserResponse: Codable {
+    var id: Int
+    var username: String
+    var profile_image: String
+}
+struct LocationResponse: Codable {
+    var place_name: String
+    var code: String
+}
+struct ProductImageResponse: Codable {
+    var url: String
+}
+struct ArticleResponse: Codable {
+    var id: Int
+    var seller: UserResponse
+    var location: LocationResponse
+    var title: String
+    var content: String
+    var product_images: [ProductImageResponse]
+    var category: String
+    var price: Int
+    var created_at: String
+    var sold_at: String?
+    var buyer: UserResponse?
+    var deleted_at: String?
 }

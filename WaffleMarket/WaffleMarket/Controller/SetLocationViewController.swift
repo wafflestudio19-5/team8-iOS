@@ -46,7 +46,6 @@ class SetLocationViewController: UIViewController, CLLocationManagerDelegate {
     }
 
     private func sendLocation(code: String){
-        
         LocationAPI.postLocation(code: code).subscribe { response in
             print(String(decoding: response.data, as: UTF8.self))
             if response.statusCode == 200 {
