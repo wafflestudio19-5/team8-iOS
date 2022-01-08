@@ -248,6 +248,7 @@ class CommentViewController: UIViewController {
             if self.isReplyMode {
                 self.isReplyMode = false
                 ArticleAPI.postReply(articleId: self.articleId, commentId: self.replyCommentId, content: content).subscribe { response in
+                    self.commentField.text = ""
                     print("afterpostreply", String(decoding: response.data, as: UTF8.self))
                     self.getComments()
                 } onFailure: { error in
@@ -258,6 +259,7 @@ class CommentViewController: UIViewController {
                 
             } else {
                 ArticleAPI.postComment(articleId: self.articleId, content: content).subscribe { response in
+                    self.commentField.text = ""
                     print("afterpostcomment", String(decoding: response.data, as: UTF8.self))
                     self.getComments()
                 } onFailure: { error in
