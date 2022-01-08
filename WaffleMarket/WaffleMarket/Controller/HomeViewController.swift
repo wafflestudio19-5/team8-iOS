@@ -165,6 +165,7 @@ class HomeViewController: UIViewController, UITableViewDelegate {
     var page = 1
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
+        self.viewModel.articleList.accept([])
         self.viewModel.getArticleList(page: page, category: selectedCategory, keyword: self.searchField.text)
     }
     override func viewDidLoad() {
@@ -336,7 +337,7 @@ class HomeViewController: UIViewController, UITableViewDelegate {
         }.disposed(by: disposeBag)
 
         
-        viewModel.getArticleList(page: page)
+        //viewModel.getArticleList(page: page)
         
     }
     
