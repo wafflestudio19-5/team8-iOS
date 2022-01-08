@@ -38,7 +38,7 @@ class ArticleViewModel: ObservableObject {
                     articles.append(article)
                 }
                 print("articles count:", articles.count)
-                self.articleList.accept(articles)
+                self.articleList.accept(self.articleList.value + articles)
             } else {
                 print("decoding failure")
             }
