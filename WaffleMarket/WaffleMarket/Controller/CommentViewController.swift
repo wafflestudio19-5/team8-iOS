@@ -25,19 +25,17 @@ class CommentViewController: UIViewController {
     var replyCommentId = 0
 
     
-    var originalViewY: CGFloat = 0
+    var originalViewHeight: CGFloat = 0
     @objc func keyboardWillShow(notification: NSNotification) {
-        print("kwillshow")
         guard let keyboardSize = (notification.userInfo?[UIResponder.keyboardFrameEndUserInfoKey] as? NSValue)?.cgRectValue else {
            // if keyboard size is not available for some reason, dont do anything
            return
         }
         
+      
       // move the root view up by the distance of keyboard height
-        let delta = keyboardSize.origin.y
-        if delta > 0 {
-            self.bottomView.frame.origin.y = self.bottomView.frame.origin.y - delta
-        }
+        self.view.frame.size.height = originalViewHeight - ((self.view.frame.origin.y + originalViewHeight) - keyboardSize.origin.y)
+        self.commentTableView.contentInset = UIEdgeInsets(top: 0, left: 0, bottom: (self.view.frame.origin.y + self.view.frame.size.height) - keyboardSize.origin.y, right: 0)
         
     }
     @objc func keyboardWillHide(notification: NSNotification) {
@@ -45,7 +43,8 @@ class CommentViewController: UIViewController {
       
       // move the root view up by the distance of keyboard height
         
-        self.bottomView.frame.origin.y = originalViewY
+        self.view.frame.size.height = originalViewHeight
+        self.commentTableView.contentInset = UIEdgeInsets(top: 0, left: 0, bottom: 0, right: 0)
     }
     
     private func addObserver(){
@@ -77,7 +76,7 @@ class CommentViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         view.backgroundColor = .white
-        originalViewY = self.bottomView.frame.origin.y
+        
         let tap = UITapGestureRecognizer(target: self, action: #selector(UIInputViewController.dismissKeyboard))
 
        //Uncomment the line below if you want the tap not not interfere and cancel other interactions.
@@ -88,6 +87,8 @@ class CommentViewController: UIViewController {
         view.addSubview(bottomView)
         setBottomView()
         getComments()
+        originalViewHeight = self.view.frame.size.height
+        
         //test_fetchDummyData()
         // Do any additional setup after loading the view.
     }
@@ -107,7 +108,7 @@ class CommentViewController: UIViewController {
                         continue
                     }
         
-                    let comment = Comment(id: commentResponse.id, username: commentResponse.commenter.username, profile_image: commentResponse.commenter.profile_image, timestamp: commentResponse.created_at, content: commentResponse.content, isReply: false, deletable: commentResponse.delete_enable)
+                    let comment = Comment(id: commentResponse.id, username: commentResponse.commenter.username, profile_image: commentResponse.commenter.profile_image, timestamp: commentResponse.created_at, content: commentResponse.content, isReply: false, deletable: commentResponse.delete_enable, commenter_id: commentResponse.commenter.id)
                     addedIds.update(with: commentResponse.id)
                     comments.append(comment)
                     for reply in commentResponse.replies ?? [] {
@@ -118,7 +119,7 @@ class CommentViewController: UIViewController {
                             continue
                         }
     
-                        let comment2 = Comment(id: reply.id, username: reply.commenter.username, profile_image: reply.commenter.profile_image, timestamp: reply.created_at, content: reply.content, isReply: true, deletable: reply.delete_enable)
+                        let comment2 = Comment(id: reply.id, username: reply.commenter.username, profile_image: reply.commenter.profile_image, timestamp: reply.created_at, content: reply.content, isReply: true, deletable: reply.delete_enable, commenter_id: reply.commenter.id)
                         addedIds.update(with: reply.id)
                         comments.append(comment2)
                     }
@@ -171,6 +172,14 @@ class CommentViewController: UIViewController {
             }
             let sellAction = UIAlertAction(title: "판매 완료", style: .default) { action in
                 self.commentTableView.deselectRow(at: indexPath, animated: true)
+                ArticleAPI.registerBuyer(articleId: self.articleId, buyer_id: self.comments.value[indexPath.item].commenter_id).subscribe { response in
+                    print(String(decoding: response.data, as: UTF8.self))
+                    self.navigationController?.popViewController(animated: true)
+                } onFailure: { error in
+                    
+                } onDisposed: {
+                    
+                }.disposed(by: self.disposeBag)
                 alert.dismiss(animated: true)
             }
             let cancelAction = UIAlertAction(title: "취소", style: .cancel) { action in
@@ -210,7 +219,7 @@ class CommentViewController: UIViewController {
         commentField.trailingAnchor.constraint(equalTo: bottomView.trailingAnchor, constant: -80).isActive = true
         commentField.bottomAnchor.constraint(equalTo: bottomView.bottomAnchor, constant: -15).isActive = true
         
-        commentField.backgroundColor = .lightGray
+        commentField.backgroundColor = .clear
         commentField.layer.cornerRadius = 10
         commentField.placeholder = "  댓글을 작성하세요"
         commentField.autocapitalizationType = .none
@@ -226,9 +235,10 @@ class CommentViewController: UIViewController {
         writeCommentBtn.bottomAnchor.constraint(equalTo: commentField.bottomAnchor).isActive = true
         writeCommentBtn.trailingAnchor.constraint(equalTo: bottomView.trailingAnchor, constant: -20).isActive = true
         
-        writeCommentBtn.setTitle("⬆️", for: .normal)
-        writeCommentBtn.backgroundColor = .clear
-        writeCommentBtn.titleLabel?.font = .systemFont(ofSize: 25)
+        writeCommentBtn.setTitle("확인", for: .normal)
+        writeCommentBtn.backgroundColor = .orange
+        writeCommentBtn.layer.cornerRadius = 8
+        writeCommentBtn.titleLabel?.font = .systemFont(ofSize: 14)
         writeCommentBtn.rx.tap.bind{
             print("click")
             guard let content = self.commentField.text else {

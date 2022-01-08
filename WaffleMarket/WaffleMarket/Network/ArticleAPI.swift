@@ -16,7 +16,7 @@ enum ArticleService {
     case postComment(articleId: Int, content: String)
     case postReply(articleId: Int, commentId: Int, content: String)
     case deleteComment(articleId: Int, commentId: Int)
-    
+    case registerBuyer(articleId: Int, buyer_id: Int)
 }
 extension ArticleService: TargetType {
     var baseURL: URL {
@@ -37,6 +37,8 @@ extension ArticleService: TargetType {
             return "/\(articleId)/comment/\(commentId)/"
         case let .deleteComment(articleId, commentId):
             return "/\(articleId)/comment/\(commentId)/"
+        case let .registerBuyer(articleId, _):
+            return "/\(articleId)/buyer/"
         }
     }
     
@@ -54,6 +56,8 @@ extension ArticleService: TargetType {
             return .post
         case .deleteComment:
             return .delete
+        case .registerBuyer:
+            return .put
         }
     }
     
@@ -77,8 +81,8 @@ extension ArticleService: TargetType {
             multipart.append(contentsOf: [titleData, priceData, contentData, categoryData, countData])
             return .uploadMultipart(multipart)
         case let .list(page, category, keyword):
-            var dict: [String: Any] = [:]
-            dict["page"] = page
+            var dict: [String: String] = [:]
+            dict["page"] = "\(page)"
             if let category = category {
                 dict["category"] = category
             }
@@ -94,7 +98,10 @@ extension ArticleService: TargetType {
             return .requestJSONEncodable(["content": content])
         case .deleteComment:
             return .requestPlain
+        case let .registerBuyer(articleId, buyer_id):
+            return .requestJSONEncodable(["buyer_id": buyer_id])
         }
+        
         
     }
     
@@ -130,6 +137,9 @@ class ArticleAPI {
     static func deleteComment(articleId: Int, commentId: Int) -> Single<Response> {
         return provider.rx.request(.deleteComment(articleId: articleId, commentId: commentId))
     }
+    static func registerBuyer(articleId: Int, buyer_id: Int) -> Single<Response> {
+        return provider.rx.request(.registerBuyer(articleId: articleId, buyer_id: buyer_id))
+    }
 }
 struct CommentResponse: Codable {
     var id: Int
@@ -163,6 +173,6 @@ struct ArticleResponse: Codable {
     var price: Int
     var created_at: String
     var sold_at: String?
-    //var buyer: type not defined
+    var buyer: UserResponse?
     var deleted_at: String?
 }

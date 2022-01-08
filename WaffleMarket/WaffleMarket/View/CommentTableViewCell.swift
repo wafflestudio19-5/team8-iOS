@@ -79,7 +79,7 @@ class CommentTableViewCell: UITableViewCell {
         contentLabel.text = content
         timestampLabel.text = timestamp
         contentLabel.heightAnchor.constraint(equalToConstant: content.getEstimatedFrame(with: contentLabel.font).size.height).isActive = true
-        print(content.getEstimatedFrame(with: contentLabel.font).size.height)
+        
     }
     
 }

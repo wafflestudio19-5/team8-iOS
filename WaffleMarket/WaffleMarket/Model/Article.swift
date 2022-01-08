@@ -15,5 +15,6 @@ struct Article {
     var price: Int?
     var content: String
     var productImages: [String]
+    var isSold: Bool
     
 }

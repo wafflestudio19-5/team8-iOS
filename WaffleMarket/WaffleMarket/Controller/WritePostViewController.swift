@@ -458,16 +458,19 @@ class CategoryPickerModalViewController: UIViewController {
     deinit{
         print("deinit!")
     }
+    var includeAll = false
     let categoryPicker = UIPickerView()
     let disposeBag = DisposeBag()
     let confirmBtn = UIButton(type: .system)
     let navigationBar = UINavigationBar()
     let didSelect = PublishRelay<String>()
-    let items = CategoryConstants.categories
+    var items = CategoryConstants.categories
     override func viewDidLoad() {
         super.viewDidLoad()
         self.view.backgroundColor = .white
-        
+        if includeAll {
+            items = ["전체"] + items
+        }
         
         Observable.just(items).bind(to: categoryPicker.rx.itemTitles) {
             _, item in

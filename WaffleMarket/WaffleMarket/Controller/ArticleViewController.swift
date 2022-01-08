@@ -129,7 +129,9 @@ class ArticleViewController: UIViewController {
     private func setPriceLabel() {
         let price = articleSelected?.price
         priceLabel.text = "₩ " + String(price!)
-        
+        if articleSelected?.isSold == true {
+            priceLabel.text = "판매완료"
+        }
         priceLabel.translatesAutoresizingMaskIntoConstraints = false
         priceLabel.leadingAnchor.constraint(equalTo: bottomView.leadingAnchor, constant: 20).isActive = true
         priceLabel.topAnchor.constraint(equalTo: bottomView.topAnchor, constant: 15).isActive = true
@@ -157,7 +159,7 @@ class ArticleViewController: UIViewController {
             print("click")
             let vc = CommentViewController()
             vc.articleId = self.articleId
-            self.present(UINavigationController(rootViewController: vc), animated: true)
+            self.navigationController?.pushViewController(vc, animated: true)
         }.disposed(by: disposeBag)
     }
 

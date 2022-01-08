@@ -14,4 +14,5 @@ struct Comment{
     var content: String
     var isReply: Bool
     var deletable: Bool
+    var commenter_id: Int
 }

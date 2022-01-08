@@ -13,10 +13,12 @@ class ArticleViewModel: ObservableObject {
     var articles = [Article]()
     let articleList = BehaviorRelay<[Article]>(value: [])
     let disposeBag = DisposeBag()
-    
-    func getArticleList(page:Int) {
+    var isLoadingMoreData = false
+    func getArticleList(page:Int, category: String? = nil, keyword: String? = nil) {
         // 백엔드와 연결시 API 호출
-        ArticleAPI.list(page: page).subscribe { response in
+        isLoadingMoreData = true
+        ArticleAPI.list(page: page, category: category, keyword: keyword).subscribe { response in
+            print(String(decoding: response.data, as:UTF8.self))
             let decoder = JSONDecoder()
             if let decoded = try? decoder.decode([ArticleResponse].self, from: response.data){
                 var articles: [Article] = []
@@ -29,7 +31,8 @@ class ArticleViewModel: ObservableObject {
                         content: articleResponse.content,
                         productImages: articleResponse.product_images.map({ it in
                             it.url
-                        })
+                        }),
+                        isSold: (articleResponse.buyer != nil)
                         
                     )
                     articles.append(article)
@@ -37,8 +40,10 @@ class ArticleViewModel: ObservableObject {
                 print("articles count:", articles.count)
                 self.articleList.accept(articles)
             }
+            self.isLoadingMoreData = false
         } onFailure: { error in
-            
+            self.isLoadingMoreData = false
+            print(error)
         } onDisposed: {
             
         }.disposed(by: disposeBag)
@@ -48,17 +53,17 @@ class ArticleViewModel: ObservableObject {
         // categorypicker로 카테고리 선택시 호출
     }
     
-    func getArticleAt(_ index: Event<ControlEvent<IndexPath>.Element>) -> Article?{
-        guard let item = index.element?.item else {return nil}
-        let article = articleList.value[item]
+    func getArticleAt(_ index: IndexPath) -> Article?{
+        
+        let article = articleList.value[index.item]
         return article
     }
     
     func test_fetchDummyData(){
         print("fetchDummyData")
         let articles = [
-            Article(id: 1, title: "맥북 에어 미개봉", category: "디지털기기", price: 1000000, content: "맥북 에어 미개봉 팝니다", productImages: ["https://store.storeimages.cdn-apple.com/8756/as-images.apple.com/is/macbook-air-space-gray-select-201810?wid=904&hei=840&fmt=jpeg&qlt=80&.v=1633027804000"]),
-            Article(id: 2, title: "아이폰 13", category: "디지털기기", price: 700000, content: "아이폰 13입니다. 사용감 거의 없습니다!", productImages: ["https://store.storeimages.cdn-apple.com/8756/as-images.apple.com/is/iphone-13-family-select-2021?wid=940&hei=1112&fmt=jpeg&qlt=80&.v=1629842667000"])
+            Article(id: 1, title: "맥북 에어 미개봉", category: "디지털기기", price: 1000000, content: "맥북 에어 미개봉 팝니다", productImages: ["https://store.storeimages.cdn-apple.com/8756/as-images.apple.com/is/macbook-air-space-gray-select-201810?wid=904&hei=840&fmt=jpeg&qlt=80&.v=1633027804000"], isSold: false),
+            Article(id: 2, title: "아이폰 13", category: "디지털기기", price: 700000, content: "아이폰 13입니다. 사용감 거의 없습니다!", productImages: ["https://store.storeimages.cdn-apple.com/8756/as-images.apple.com/is/iphone-13-family-select-2021?wid=940&hei=1112&fmt=jpeg&qlt=80&.v=1629842667000"], isSold: false)
         
         ]
         articleList.accept(articles)
@@ -68,9 +73,10 @@ class ArticleViewModel: ObservableObject {
 class ArticleCell: UITableViewCell {
     
     var titleLabel: UILabel = UILabel()
+    var imageUrl: String?
     var productImage: UIImageView = UIImageView()
     var priceLabel: UILabel = UILabel()
-    
+    let imageLoader = CachedImageLoader()
     let viewModel = ArticleViewModel()
     let disposeBag = DisposeBag()
     
@@ -79,6 +85,7 @@ class ArticleCell: UITableViewCell {
         productImage.image = nil
         titleLabel.text = nil
         priceLabel.text = nil
+        imageLoader.cancel()
     }
     
     override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
@@ -87,7 +94,7 @@ class ArticleCell: UITableViewCell {
     }
 
     required init?(coder aDecoder: NSCoder) {
-        fatalError("init(coder:) has not been implemented")
+        super.init(coder: aDecoder)
     }
     
     private func setupCell() {
@@ -100,6 +107,10 @@ class ArticleCell: UITableViewCell {
         setTitleLabel()
         self.contentView.addSubview(priceLabel)
         setPriceLabel()
+        
+    }
+    func loadImage(){
+        imageLoader.load(path: imageUrl!, putOn: productImage)
     }
     
     private func setProductImage() {
@@ -130,6 +141,7 @@ class ArticleCell: UITableViewCell {
         priceLabel.bottomAnchor.constraint(equalTo: contentView.bottomAnchor).isActive = true
     }
     
+    
 }
 
 private let reuseIdentifier = "Cell"
@@ -149,7 +161,10 @@ class HomeViewController: UIViewController, UITableViewDelegate {
     let viewModel = ArticleViewModel()
     
     var page = 1
-
+    override func viewDidAppear(_ animated: Bool) {
+        super.viewDidAppear(animated)
+        self.viewModel.getArticleList(page: page, category: selectedCategory, keyword: self.searchField.text)
+    }
     override func viewDidLoad() {
         super.viewDidLoad()
         self.view.backgroundColor = .white
@@ -173,7 +188,7 @@ class HomeViewController: UIViewController, UITableViewDelegate {
     
     private func pagination() {
         page += 1
-        viewModel.getArticleList(page: page)
+        viewModel.getArticleList(page: page, category: selectedCategory, keyword: self.searchField.text)
         // articleCollectionView.reloadData()
     }
     
@@ -229,10 +244,18 @@ class HomeViewController: UIViewController, UITableViewDelegate {
         
         categoryBtn.rx.tap.bind{
             let vc = CategoryPickerModalViewController()
+            vc.includeAll = true
             weak var didSelect = vc.didSelect
             didSelect?.bind(onNext: { value in
-                self.selectedCategory = value
+                if value == "전체" {
+                    self.selectedCategory = nil
+                } else {
+                    self.selectedCategory = value
+                }
                 self.categoryBtn.setTitle(value, for: .normal)
+                self.page = 1
+                self.viewModel.articleList.accept([])
+                self.viewModel.getArticleList(page: self.page, category: self.selectedCategory, keyword: self.searchField.text)
             }).disposed(by: self.disposeBag)
             self.present(vc, animated: true)
         }.disposed(by: disposeBag)
@@ -251,6 +274,11 @@ class HomeViewController: UIViewController, UITableViewDelegate {
         searchField.placeholder = "검색"
         searchField.autocapitalizationType = .none
         searchField.autocorrectionType = .no
+        searchField.rx.text.orEmpty.throttle(.milliseconds(800),latest: true ,scheduler: MainScheduler.instance).bind { value in
+            self.viewModel.articleList.accept([])
+            self.page = 1
+            self.viewModel.getArticleList(page: self.page, category: self.selectedCategory, keyword: value)
+        }.disposed(by: disposeBag)
     }
     
     private func setArticleTableView() {
@@ -263,7 +291,7 @@ class HomeViewController: UIViewController, UITableViewDelegate {
         articleTableView.heightAnchor.constraint(equalTo:self.view.safeAreaLayoutGuide.heightAnchor, constant: -70).isActive = true
         articleTableView.widthAnchor.constraint(equalTo: self.view.safeAreaLayoutGuide.widthAnchor).isActive = true
         
-        articleTableView.backgroundColor = .separator
+        
 
         bindTableArticleData()
         
@@ -271,20 +299,35 @@ class HomeViewController: UIViewController, UITableViewDelegate {
     
     private func bindTableArticleData() {
         
+        articleTableView.rx.didScroll.bind{
+            let offset = self.articleTableView.contentOffset.y + self.articleTableView.frame.height
+            let height = self.articleTableView.contentSize.height
+            if offset > height-10 && !self.viewModel.isLoadingMoreData {
+                self.pagination()
+            }
+        }.disposed(by: disposeBag)
+        
         viewModel.articleList.bind(to: articleTableView.rx.items(cellIdentifier: reuseIdentifier, cellType: ArticleCell.self)) { row, model, cell in
             print(model)
             cell.titleLabel.text = model.title
             let price = model.price!
             cell.priceLabel.text = "₩ " + String(price)
-            self.imageLoader.load(path: model.productImages[0], putOn: cell.productImage)
+            if model.isSold {
+                cell.priceLabel.text = "판매완료"
+            }
+            cell.imageUrl = model.productImages[0]
+            cell.loadImage()
+            
             
         }.disposed(by: disposeBag)
         articleTableView.rx.setDelegate(self).disposed(by: disposeBag)
 //        articleCollectionView.rx.modelSelected(Article.self).bind{_ in
 //            self.present(UINavigationController(rootViewController: ArticleViewController()), animated: true)
 //        }.disposed(by: disposeBag)
-        articleTableView.rx.itemSelected.subscribe { indexPath in
+        articleTableView.rx.itemSelected.bind { indexPath in
                 print("asdf")
+            
+            self.articleTableView.deselectRow(at: indexPath, animated: true)
                 guard let article = self.viewModel.getArticleAt(indexPath) else { return }
                 self.sendArticle(article: article)
             
