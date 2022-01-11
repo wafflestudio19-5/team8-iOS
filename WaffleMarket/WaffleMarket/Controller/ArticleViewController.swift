@@ -19,9 +19,11 @@ class ArticleViewController: UIViewController {
     let contentLabel = UILabel()
     let productImage = UIImageView()
     let buyBtn = UIButton()
+    let likeBtn = UIButton()
     let disposeBag = DisposeBag()
     var articleId = 0
     var articleSelected: Article?
+    var isLiked: Bool = false
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -61,6 +63,8 @@ class ArticleViewController: UIViewController {
         bottomView.trailingAnchor.constraint(equalTo: self.view.safeAreaLayoutGuide.trailingAnchor).isActive = true
         bottomView.bottomAnchor.constraint(equalTo: self.view.safeAreaLayoutGuide.bottomAnchor).isActive = true
         
+        bottomView.addSubview(likeBtn)
+        setLikeBtn()
         bottomView.addSubview(priceLabel)
         setPriceLabel()
         bottomView.addSubview(buyBtn)
@@ -126,19 +130,50 @@ class ArticleViewController: UIViewController {
         contentLabel.font = .systemFont(ofSize: 15)
     }
     
+    private func setLikeBtn() {
+        
+        likeBtn.translatesAutoresizingMaskIntoConstraints = false
+        likeBtn.leadingAnchor.constraint(equalTo: bottomView.leadingAnchor, constant: 20).isActive = true
+        likeBtn.topAnchor.constraint(equalTo: bottomView.topAnchor, constant: 15).isActive = true
+        likeBtn.trailingAnchor.constraint(equalTo: bottomView.centerXAnchor).isActive = true
+        likeBtn.bottomAnchor.constraint(equalTo: bottomView.bottomAnchor, constant: -15).isActive = true
+        
+        likeBtn.setImage(UIImage(named: "heart_empty"), for: .normal)
+        
+        likeBtn.rx.tap.bind{
+            print("click")
+            self.isLiked = !self.isLiked
+            self.animateHeart()
+        }.disposed(by: disposeBag)
+        
+    }
+    
+    private func animateHeart() {
+        UIView.animate(withDuration: 0.1, animations: {
+            let newImage = self.isLiked ? UIImage(named: "heart_filled") : UIImage(named: "heart_empty")
+            self.likeBtn.transform = self.likeBtn.transform.scaledBy(x: 0.8, y: 0.8)
+            self.likeBtn.setImage(newImage, for: .normal)
+        }, completion: { _  in
+            UIView.animate(withDuration: 0.1, animations: {
+                self.likeBtn.transform = CGAffineTransform.identity
+            })
+        })
+    }
+    
     private func setPriceLabel() {
         let price = articleSelected?.price
-        priceLabel.text = "₩ " + String(price!)
+        priceLabel.text = "| ₩ " + String(price!)
         if articleSelected?.isSold == true {
             priceLabel.text = "판매완료"
         }
         priceLabel.translatesAutoresizingMaskIntoConstraints = false
-        priceLabel.leadingAnchor.constraint(equalTo: bottomView.leadingAnchor, constant: 20).isActive = true
-        priceLabel.topAnchor.constraint(equalTo: bottomView.topAnchor, constant: 15).isActive = true
+        priceLabel.leadingAnchor.constraint(equalTo: likeBtn.trailingAnchor, constant: 20).isActive = true
+        priceLabel.topAnchor.constraint(equalTo: likeBtn.topAnchor).isActive = true
         priceLabel.trailingAnchor.constraint(equalTo: bottomView.centerXAnchor).isActive = true
-        priceLabel.bottomAnchor.constraint(equalTo: bottomView.bottomAnchor, constant: -15).isActive = true
+        priceLabel.bottomAnchor.constraint(equalTo: likeBtn.bottomAnchor).isActive = true
         
         priceLabel.font = .systemFont(ofSize: 18)
+        
     }
     
     private func setBuyBtn() {
