@@ -138,7 +138,7 @@ class ArticleViewController: UIViewController {
         likeBtn.trailingAnchor.constraint(equalTo: bottomView.centerXAnchor).isActive = true
         likeBtn.bottomAnchor.constraint(equalTo: bottomView.bottomAnchor, constant: -15).isActive = true
         
-        likeBtn.setImage(UIImage(named: "heart_empty"), for: .normal)
+        likeBtn.setImage(UIImage(named: "heart"), for: .normal)
         
         likeBtn.rx.tap.bind{
             print("click")
@@ -150,7 +150,7 @@ class ArticleViewController: UIViewController {
     
     private func animateHeart() {
         UIView.animate(withDuration: 0.1, animations: {
-            let newImage = self.isLiked ? UIImage(named: "heart_filled") : UIImage(named: "heart_empty")
+            let newImage = self.isLiked ? UIImage(named: "heart.fill") : UIImage(named: "heart")
             self.likeBtn.transform = self.likeBtn.transform.scaledBy(x: 0.8, y: 0.8)
             self.likeBtn.setImage(newImage, for: .normal)
         }, completion: { _  in
