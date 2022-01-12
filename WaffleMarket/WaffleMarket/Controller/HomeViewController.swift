@@ -78,6 +78,7 @@ class ArticleCell: UITableViewCell {
     var imageUrl: String?
     var productImage: UIImageView = UIImageView()
     var priceLabel: UILabel = UILabel()
+    var commentLikeLabel: UILabel = UILabel()
     let imageLoader = CachedImageLoader()
     let viewModel = ArticleViewModel()
     let disposeBag = DisposeBag()
@@ -87,6 +88,7 @@ class ArticleCell: UITableViewCell {
         productImage.image = nil
         titleLabel.text = nil
         priceLabel.text = nil
+        commentLikeLabel.text = nil
         imageLoader.cancel()
     }
     
@@ -109,6 +111,8 @@ class ArticleCell: UITableViewCell {
         setTitleLabel()
         self.contentView.addSubview(priceLabel)
         setPriceLabel()
+        self.contentView.addSubview(commentLikeLabel)
+        setCommentLikeLabel()
         
     }
     func loadImage(){
@@ -141,6 +145,12 @@ class ArticleCell: UITableViewCell {
         priceLabel.topAnchor.constraint(equalTo: titleLabel.bottomAnchor).isActive = true
         priceLabel.trailingAnchor.constraint(equalTo: titleLabel.trailingAnchor).isActive = true
         priceLabel.bottomAnchor.constraint(equalTo: contentView.bottomAnchor).isActive = true
+    }
+    
+    private func setCommentLikeLabel() {
+        commentLikeLabel.translatesAutoresizingMaskIntoConstraints = false
+        commentLikeLabel.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -20).isActive = true
+        commentLikeLabel.bottomAnchor.constraint(equalTo: contentView.bottomAnchor).isActive = true
     }
     
     
@@ -313,6 +323,9 @@ class HomeViewController: UIViewController, UITableViewDelegate {
         viewModel.articleList.bind(to: articleTableView.rx.items(cellIdentifier: reuseIdentifier, cellType: ArticleCell.self)) { row, model, cell in
             print(model)
             cell.titleLabel.text = model.title
+            let comment = model.commentNum!
+            let like = model.likeNum!
+            cell.commentLikeLabel.text = "💬 " + String(comment) + "🧡 " + String(like)
             let price = model.price!
             cell.priceLabel.text = "₩ " + String(price)
             if model.isSold {
