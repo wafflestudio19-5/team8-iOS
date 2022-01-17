@@ -12,6 +12,7 @@ import Moya
 enum UserService{
     
     case setProfile(profile: Profile)
+    case getProfile
     case setCategory(category: String, enabled: Bool)
     case getCategory
 }
@@ -26,6 +27,8 @@ extension UserService: TargetType {
 
         case .setProfile:
             return "/"
+        case .getProfile:
+            return "/"
         case .setCategory:
             return "/category/"
         case .getCategory:
@@ -39,6 +42,8 @@ extension UserService: TargetType {
 
         case .setProfile:
             return .put
+        case .getProfile:
+            return .get
         case .setCategory:
             return .put
         case .getCategory:
@@ -54,6 +59,8 @@ extension UserService: TargetType {
             let userNameData = MultipartFormData(provider: .data(profile.userName!.data(using: .utf8)!), name: "username")
             let multipartData = [imageData, userNameData]
             return .uploadMultipart(multipartData)
+        case .getProfile:
+            return .requestPlain
         case let .setCategory(category, enabled):
             return .requestJSONEncodable(SetCategoryRequest(category: category, enabled: enabled))
         case .getCategory:
@@ -77,6 +84,12 @@ struct SetCategoryRequest: Codable{
 struct GetCategoryResponse: Codable{
     var category: [String]
 }
+struct ProfileResponse: Codable{
+    var id: Int
+    var phone_number: String?
+    var username: String
+    var profile_image: String
+}
 class UserAPI {
     static var provider = MoyaProvider<UserService>(plugins: [AuthPlugin()])
     
@@ -84,6 +97,9 @@ class UserAPI {
     
     static func setProfile(profile: Profile) -> Observable<ProgressResponse> {
         return provider.rx.requestWithProgress(.setProfile(profile: profile))
+    }
+    static func getProfile() -> Single<Response> {
+        return provider.rx.request(.getProfile)
     }
     static func setCategory(category: String, enabled: Bool) -> Single<Response>{
         return provider.rx.request(.setCategory(category: category, enabled: enabled))

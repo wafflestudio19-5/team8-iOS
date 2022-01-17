@@ -35,13 +35,17 @@ class SetProfileViewController: UIViewController {
     let disposeBag = DisposeBag()
 
     var userId: String?
+    var username: String?
+    
     
     let viewModel = SetProfileViewModel()
 
-    init(userId: String? = nil, isSignUp: Bool = true){
+    init(userId: String? = nil, isSignUp: Bool = true, username: String? = nil, profileImage: UIImage? = nil){
         super.init(nibName: nil, bundle: nil)
         self.userId = userId
         self.isSignUp = isSignUp
+        self.username = username
+        self.profileImage = profileImage
     }
     
     required init?(coder: NSCoder) {
@@ -71,9 +75,11 @@ class SetProfileViewController: UIViewController {
         profileImageView.topAnchor.constraint(equalTo: self.view.topAnchor, constant: 200).isActive = true
         profileImageView.heightAnchor.constraint(equalToConstant: 150).isActive = true
         profileImageView.widthAnchor.constraint(equalToConstant: 150).isActive = true
-        profileImage = UIImage(named: "defaultProfileImage")
+        if isSignUp {
+            profileImage = UIImage(named: "defaultProfileImage")
+
+        }
         profileImageView.image = profileImage
-        
     }
     
     private func setPicSelectBtn(){
@@ -144,7 +150,11 @@ class SetProfileViewController: UIViewController {
         nameField.placeholder = "닉네임을 입력하세요"
         nameField.autocapitalizationType = .none
         nameField.autocorrectionType = .no
+        if !isSignUp {
+            nameField.text = username!
+        }
         nameField.rx.text.orEmpty.bind(to: viewModel.name).disposed(by: disposeBag)
+        
     }
     
     private func setProfileSaveBtn(){
