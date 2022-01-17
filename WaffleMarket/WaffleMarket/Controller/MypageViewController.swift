@@ -33,7 +33,27 @@ class MypageViewController: UIViewController {
 
         var items = [MypageViewModelItem]()
         items.append(MypageViewModelImageButtonItem(image: UIImage(systemName: "pencil")!, title: "프로필 수정") {
-            self.toast("구현 예정입니다")
+            UserAPI.getProfile().subscribe { response in
+                print(String(decoding: response.data, as: UTF8.self))
+                let decoder = JSONDecoder()
+                if let decoded = try? decoder.decode(ProfileResponse.self, from: response.data) {
+                    let username = decoded.username
+                    let profileImage = decoded.profile_image
+                    let profileImageView = UIImageView()
+                    CachedImageLoader().load(path: profileImage, putOn: profileImageView) { imageView, usedCache in
+                        DispatchQueue.main.async {
+                            self.present(SetProfileViewController(isSignUp: false, username: username, profileImage: profileImageView.image), animated: true)
+                        }
+                        
+                    }
+                }
+            } onFailure: { error in
+                
+            } onDisposed: {
+                
+            }.disposed(by: self.disposeBag)
+
+            
         })
         items.append(MypageViewModelImageButtonItem(image: UIImage(systemName: "slider.horizontal.3")!, title: "관심 카테고리 설정") {
             self.navigationController?.pushViewController(SetInterestViewController(), animated: true)
