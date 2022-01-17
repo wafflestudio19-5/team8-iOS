@@ -33,7 +33,7 @@ class SetLocationViewModel {
     
     private func fetchNearbyAddresses(code: String){
         LocationAPI.findNearbyNeighborhoods(code: code).subscribe { response in
-            
+            print(String(decoding: response.data, as: UTF8.self))
             if response.statusCode == 200 {
                 let decoder = JSONDecoder()
                 if let decoded = try? decoder.decode([Neighborhood].self, from: response.data) {
@@ -61,9 +61,8 @@ class SetLocationViewModel {
     
     func test_fetchDummyData(){
         addressRelay.accept([
-            Address("111111", "서울특별시 관악구"),
-            Address("222222", "서울특별시 도봉구"),
-            Address("333333", "서울특별시 노원구")
+            Address("1111011100", "서울특별시 종로구 옥인동"),
+            Address("1111011700", "서울특별시 종로구 당주동")
         ])
     }
     
@@ -83,6 +82,7 @@ class SetLocationViewModel {
     func fetchNeighborhoodByLocation(longitude: CLLocationDegrees, latitude: CLLocationDegrees) {
         NaverMapAPI.reverseGeocode(longitude: longitude, latitude: latitude)
             .subscribe { response in
+                
                 let decoder = JSONDecoder()
                 if let decoded = try? decoder.decode(ReverseGeocodeResponse.self, from: response.data) {
                     if !decoded.results.isEmpty {

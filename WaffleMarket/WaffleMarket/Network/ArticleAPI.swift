@@ -67,7 +67,7 @@ extension ArticleService: TargetType {
             var multipart: [MultipartFormData] = []
             var count = 1
             for productImage in productImages {
-                let imageData = MultipartFormData(provider: .data(productImage.pngData()!), name: "product_image_\(count)", fileName: "product_image\(Date().timeIntervalSince1970).png", mimeType: "image/png")
+                let imageData = MultipartFormData(provider: .data(productImage.jpegData(compressionQuality: 0.9)!), name: "image_\(count)", fileName: "image\(Date().timeIntervalSince1970).jpg", mimeType: "image/jpeg")
                 multipart.append(imageData)
                 count += 1
                 
@@ -160,7 +160,8 @@ struct LocationResponse: Codable {
     var code: String
 }
 struct ProductImageResponse: Codable {
-    var url: String
+    var image_url: String
+    var thumbnail_url: String
 }
 struct ArticleResponse: Codable {
     var id: Int

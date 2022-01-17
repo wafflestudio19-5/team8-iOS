@@ -30,8 +30,9 @@ class ArticleViewModel: ObservableObject {
                         price: articleResponse.price,
                         content: articleResponse.content,
                         productImages: articleResponse.product_images.map({ it in
-                            it.url
+                            it.image_url
                         }),
+                        thumbnailImage: articleResponse.product_images[0].thumbnail_url,
                         isSold: (articleResponse.buyer != nil)
                         
                     )
@@ -64,8 +65,8 @@ class ArticleViewModel: ObservableObject {
     func test_fetchDummyData(){
         print("fetchDummyData")
         let articles = [
-            Article(id: 1, title: "맥북 에어 미개봉", category: "디지털기기", price: 1000000, content: "맥북 에어 미개봉 팝니다", productImages: ["https://store.storeimages.cdn-apple.com/8756/as-images.apple.com/is/macbook-air-space-gray-select-201810?wid=904&hei=840&fmt=jpeg&qlt=80&.v=1633027804000"], isSold: false),
-            Article(id: 2, title: "아이폰 13", category: "디지털기기", price: 700000, content: "아이폰 13입니다. 사용감 거의 없습니다!", productImages: ["https://store.storeimages.cdn-apple.com/8756/as-images.apple.com/is/iphone-13-family-select-2021?wid=940&hei=1112&fmt=jpeg&qlt=80&.v=1629842667000"], isSold: false)
+            Article(id: 1, title: "맥북 에어 미개봉", category: "디지털기기", price: 1000000, content: "맥북 에어 미개봉 팝니다", productImages: ["https://store.storeimages.cdn-apple.com/8756/as-images.apple.com/is/macbook-air-space-gray-select-201810?wid=904&hei=840&fmt=jpeg&qlt=80&.v=1633027804000"], thumbnailImage: "https://store.storeimages.cdn-apple.com/8756/as-images.apple.com/is/macbook-air-space-gray-select-201810?wid=904&hei=840&fmt=jpeg&qlt=80&.v=1633027804000", isSold: false),
+            Article(id: 2, title: "아이폰 13", category: "디지털기기", price: 700000, content: "아이폰 13입니다. 사용감 거의 없습니다!", productImages: ["https://store.storeimages.cdn-apple.com/8756/as-images.apple.com/is/iphone-13-family-select-2021?wid=940&hei=1112&fmt=jpeg&qlt=80&.v=1629842667000"], thumbnailImage: "https://store.storeimages.cdn-apple.com/8756/as-images.apple.com/is/macbook-air-space-gray-select-201810?wid=904&hei=840&fmt=jpeg&qlt=80&.v=1633027804000", isSold: false)
         
         ]
         articleList.accept(articles)
@@ -323,15 +324,15 @@ class HomeViewController: UIViewController, UITableViewDelegate {
         viewModel.articleList.bind(to: articleTableView.rx.items(cellIdentifier: reuseIdentifier, cellType: ArticleCell.self)) { row, model, cell in
             print(model)
             cell.titleLabel.text = model.title
-            let comment = model.commentNum!
-            let like = model.likeNum!
+            let comment = model.commentNum ?? 0
+            let like = model.likeNum ?? 0
             cell.commentLikeLabel.text = "💬 " + String(comment) + "🧡 " + String(like)
             let price = model.price!
             cell.priceLabel.text = "₩ " + String(price)
             if model.isSold {
                 cell.priceLabel.text = "판매완료"
             }
-            cell.imageUrl = model.productImages[0]
+            cell.imageUrl = model.thumbnailImage
             cell.loadImage()
             
             

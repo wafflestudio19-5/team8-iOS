@@ -79,8 +79,14 @@ class ArticleViewController: UIViewController {
     }
     
     private func setProductImage() {
-        if let url = articleSelected?.productImages[0] {
-            CachedImageLoader().load(path: url, putOn: productImage)
+        let imageLoader = CachedImageLoader()
+        if let url = articleSelected?.thumbnailImage {
+            imageLoader.load(path: url, putOn: productImage){imageView, usedCache in
+                if let url = self.articleSelected?.productImages[0] {
+                    imageLoader.load(path: url, putOn: imageView)
+                }
+                
+            }
         }
         productImage.contentMode = .scaleAspectFit
         
