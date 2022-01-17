@@ -212,7 +212,7 @@ class SignUpViewController: UIViewController {
                     let decoder = JSONDecoder()
                     if let decoded = try? decoder.decode(CompleteAuthResponse.self, from:response.data) {
                         if decoded.authenticated {
-                            let vc = SetProfileViewController(accountType: .standalone, userId: self.authPhoneNumber)
+                            let vc = SetProfileViewController(userId: self.authPhoneNumber)
                             self.navigationController?.pushViewController(vc, animated:true)
                         } else {
                             

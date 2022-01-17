@@ -15,14 +15,9 @@ class SetProfileViewModel {
     let name = PublishRelay<String>()
     let saveBtnTouched = PublishRelay<Void>()
 }
-enum AccountType {
-    case social
-    case standalone
-}
-
 class SetProfileViewController: UIViewController {
     
-    
+    var isSignUp = true
     var profileImage: UIImage?
     var profileImageView: UIImageView = UIImageView()
     var picSelectBtn: UIButton = UIButton()
@@ -38,15 +33,15 @@ class SetProfileViewController: UIViewController {
     
     
     let disposeBag = DisposeBag()
-    var accountType: AccountType = .standalone
+
     var userId: String?
     
     let viewModel = SetProfileViewModel()
 
-    init(accountType: AccountType, userId: String){
+    init(userId: String? = nil, isSignUp: Bool = true){
         super.init(nibName: nil, bundle: nil)
-        self.accountType = accountType
         self.userId = userId
+        self.isSignUp = isSignUp
     }
     
     required init?(coder: NSCoder) {
@@ -160,7 +155,7 @@ class SetProfileViewController: UIViewController {
         profileSaveBtn.leadingAnchor.constraint(equalTo: nameField.leadingAnchor).isActive = true
         profileSaveBtn.trailingAnchor.constraint(equalTo: nameField.trailingAnchor).isActive = true
         
-        profileSaveBtn.setTitle("가입 완료", for: .normal)
+        profileSaveBtn.setTitle("완료", for: .normal)
         profileSaveBtn.backgroundColor = .orange
         profileSaveBtn.setTitleColor(.white, for: .normal)
         profileSaveBtn.layer.cornerRadius = 10
@@ -175,52 +170,63 @@ class SetProfileViewController: UIViewController {
                 return
             }
             // MARK: upload profile image
-            let profile = Profile(phoneNumber: self.userId!, userName: username, profileImage: profileImage)
-            WaffleAPI.signup(profile: profile).subscribe { response in
-                let decoder = JSONDecoder()
-                if (response.statusCode / 100) == 2 {
-                    if let decoded = try? decoder.decode(LoginResponse.self, from: response.data) {
-                        AccountManager.login(decoded, autologin: true)
-                        UserAPI.setProfile(profile: profile).subscribe { progressResponse in
-                            print(progressResponse.progress)
-                            self.progressView.progress = Float(progressResponse.progress)
-                            if progressResponse.completed {
-                                print(String(decoding: progressResponse.response!.data, as: UTF8.self))
-                                if (progressResponse.response!.statusCode/100) == 2 {
-                                    if decoded.location_exists {
-                                        let sceneDelegate = UIApplication.shared.connectedScenes.first?.delegate as? SceneDelegate
-                                        sceneDelegate?.changeRootViewController(MainTabBarController())
-                                    } else {
-                                        self.navigationController?.pushViewController(SetLocationViewController(), animated:true)
-                                    }
-                                    return
-                                }
-                                self.toast("오류가 발생했어요")
-                            }
-                        } onError: { error in
-                            self.toast("오류가 발생했어요")
-                        }.disposed(by: self.disposeBag)
-
-                        
+            
+            if self.isSignUp {
+                let profile = Profile(phoneNumber: self.userId!, userName: username, profileImage: profileImage)
+                WaffleAPI.signup(profile: profile).subscribe { response in
+                    let decoder = JSONDecoder()
+                    if (response.statusCode / 100) == 2 {
+                        if let decoded = try? decoder.decode(LoginResponse.self, from: response.data) {
+                            AccountManager.login(decoded, autologin: true)
+                            self.setProfile(profile: profile, location_exists: decoded.location_exists)
+                            return
+                        }
+                    }
+                    if let decoded = try? decoder.decode(NonFieldErrorsResponse.self, from: response.data){
+                        if decoded.non_field_errors.count >= 1 {
+                            self.toast(decoded.non_field_errors[0])
+                        }
                         return
                     }
-                }
-                if let decoded = try? decoder.decode(NonFieldErrorsResponse.self, from: response.data){
-                    if decoded.non_field_errors.count >= 1 {
-                        self.toast(decoded.non_field_errors[0])
+                    self.toast("오류가 발생했어요")
+                    
+                } onFailure: { error in
+                    
+                } onDisposed: {
+                    
+                }.disposed(by: self.disposeBag)
+            } else {
+                let profile = Profile(userName: username, profileImage: profileImage)
+                self.setProfile(profile: profile, location_exists: true)
+            }
+
+            
+        }.disposed(by: disposeBag)
+    }
+    private func setProfile(profile: Profile, location_exists: Bool){
+        UserAPI.setProfile(profile: profile).subscribe { progressResponse in
+            print(progressResponse.progress)
+            self.progressView.progress = Float(progressResponse.progress)
+            if progressResponse.completed {
+                print(String(decoding: progressResponse.response!.data, as: UTF8.self))
+                if (progressResponse.response!.statusCode/100) == 2 {
+                    if self.isSignUp {
+                        if location_exists {
+                            let sceneDelegate = UIApplication.shared.connectedScenes.first?.delegate as? SceneDelegate
+                            sceneDelegate?.changeRootViewController(MainTabBarController())
+                        } else {
+                            self.navigationController?.pushViewController(SetLocationViewController(), animated:true)
+                        }
+                    } else {
+                        self.dismiss(animated: true)
                     }
                     return
                 }
                 self.toast("오류가 발생했어요")
-                
-            } onFailure: { error in
-                
-            } onDisposed: {
-                
-            }.disposed(by: self.disposeBag)
-
-            
-        }.disposed(by: disposeBag)
+            }
+        } onError: { error in
+            self.toast("오류가 발생했어요")
+        }.disposed(by: self.disposeBag)
     }
     private func setProgressView(){
         progressView.translatesAutoresizingMaskIntoConstraints = false

@@ -33,7 +33,7 @@ class MypageViewController: UIViewController {
 
         var items = [MypageViewModelItem]()
         items.append(MypageViewModelImageButtonItem(image: UIImage(systemName: "pencil")!, title: "프로필 수정") {
-            self.toast("구현 예정입니다")
+            self.present(SetProfileViewController(isSignUp: false), animated: true)
         })
         items.append(MypageViewModelImageButtonItem(image: UIImage(systemName: "slider.horizontal.3")!, title: "관심 카테고리 설정") {
             self.navigationController?.pushViewController(SetInterestViewController(), animated: true)
