@@ -119,7 +119,9 @@ class SetLocationViewController: UIViewController, CLLocationManagerDelegate {
             }.disposed(by: disposeBag)
         
     
-        // self.viewModel.test_fetchDummyData()
+        if (APIConstants.TEST_ON_LOCAL) {
+            self.viewModel.test_fetchDummyData()
+        }
     }
     
     func locationManagerDidChangeAuthorization(_ manager: CLLocationManager) {
