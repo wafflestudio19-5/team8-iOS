@@ -16,10 +16,11 @@ class ArticleViewController: UIViewController {
     let titleLabel = UILabel()
     let categoryLabel = UILabel()
     let priceLabel = UILabel()
-    let contentLabel = UILabel()
+    let contentText = UILabel()
     let productImage = UIImageView()
-    let buyBtn = UIButton()
-    let likeBtn = UIButton()
+    let commentBtn = UIButton()
+    let chatBtn = UIButton()
+    let likeBtn = UIButton(type: .custom)
     let disposeBag = DisposeBag()
     var articleId = 0
     var articleSelected: Article?
@@ -50,7 +51,7 @@ class ArticleViewController: UIViewController {
         setTitleLabel()
         scrollView.addSubview(categoryLabel)
         setCategoryLabel()
-        scrollView.addSubview(contentLabel)
+        scrollView.addSubview(contentText)
         setContentLabel()
         
     }
@@ -67,8 +68,10 @@ class ArticleViewController: UIViewController {
         setLikeBtn()
         bottomView.addSubview(priceLabel)
         setPriceLabel()
-        bottomView.addSubview(buyBtn)
-        setBuyBtn()
+        bottomView.addSubview(commentBtn)
+        setCommentBtn()
+        //bottomView.addSubview(chatBtn)
+       // setChatBtn()
     
     }
     
@@ -80,21 +83,24 @@ class ArticleViewController: UIViewController {
     
     private func setProductImage() {
         let imageLoader = CachedImageLoader()
-        if let url = articleSelected?.thumbnailImage {
+        if let url = articleSelected!.thumbnailImage {
             imageLoader.load(path: url, putOn: productImage){imageView, usedCache in
-                if let url = self.articleSelected?.productImages[0] {
-                    imageLoader.load(path: url, putOn: imageView)
-                }
-                
+                let url = self.articleSelected!.productImages[0]
+                imageLoader.load(path: url, putOn: imageView)
             }
+        } else if self.articleSelected!.productImages.count > 0{
+            let url = self.articleSelected!.productImages[0]
+            imageLoader.load(path: url, putOn: productImage)
+        } else {
+            productImage.image = UIImage(named:"defaultProfileImage")
         }
         productImage.contentMode = .scaleAspectFit
         
         productImage.translatesAutoresizingMaskIntoConstraints = false
         productImage.leadingAnchor.constraint(equalTo: self.view.safeAreaLayoutGuide.leadingAnchor).isActive = true
-        productImage.topAnchor.constraint(equalTo: self.view.safeAreaLayoutGuide.topAnchor).isActive = true
+        productImage.topAnchor.constraint(equalTo: scrollView.contentLayoutGuide.topAnchor).isActive = true
         productImage.trailingAnchor.constraint(equalTo: self.view.safeAreaLayoutGuide.trailingAnchor).isActive = true
-        productImage.bottomAnchor.constraint(equalTo: self.view.safeAreaLayoutGuide.topAnchor, constant: 300).isActive = true
+        productImage.bottomAnchor.constraint(equalTo: scrollView.contentLayoutGuide.topAnchor, constant: 300).isActive = true
         
     }
     
@@ -125,27 +131,27 @@ class ArticleViewController: UIViewController {
     
     
     private func setContentLabel() {
-        contentLabel.text = articleSelected?.content
+        contentText.numberOfLines = 0
+        contentText.text = articleSelected?.content
         
-        contentLabel.translatesAutoresizingMaskIntoConstraints = false
-        contentLabel.leadingAnchor.constraint(equalTo: categoryLabel.leadingAnchor).isActive = true
-        contentLabel.topAnchor.constraint(equalTo: categoryLabel.bottomAnchor, constant: 15).isActive = true
-        contentLabel.trailingAnchor.constraint(equalTo: categoryLabel.trailingAnchor).isActive = true
-        contentLabel.bottomAnchor.constraint(equalTo: scrollView.bottomAnchor, constant: -10).isActive = true
+        contentText.translatesAutoresizingMaskIntoConstraints = false
+        contentText.leadingAnchor.constraint(equalTo: categoryLabel.leadingAnchor).isActive = true
+        contentText.topAnchor.constraint(equalTo: categoryLabel.bottomAnchor, constant: 15).isActive = true
+        contentText.trailingAnchor.constraint(equalTo: categoryLabel.trailingAnchor).isActive = true
+        contentText.bottomAnchor.constraint(equalTo: scrollView.bottomAnchor, constant: -10).isActive = true
         
-        contentLabel.font = .systemFont(ofSize: 15)
+        contentText.font = .systemFont(ofSize: 15)
     }
     
     private func setLikeBtn() {
         
         likeBtn.translatesAutoresizingMaskIntoConstraints = false
-        likeBtn.leadingAnchor.constraint(equalTo: bottomView.leadingAnchor, constant: 20).isActive = true
-        likeBtn.topAnchor.constraint(equalTo: bottomView.topAnchor, constant: 15).isActive = true
-        likeBtn.trailingAnchor.constraint(equalTo: bottomView.centerXAnchor).isActive = true
-        likeBtn.bottomAnchor.constraint(equalTo: bottomView.bottomAnchor, constant: -15).isActive = true
-        
-        likeBtn.setImage(UIImage(named: "heart"), for: .normal)
-        
+        likeBtn.leadingAnchor.constraint(lessThanOrEqualTo: bottomView.leadingAnchor, constant: 20).isActive = true
+        likeBtn.centerYAnchor.constraint(lessThanOrEqualTo: bottomView.centerYAnchor).isActive = true
+        likeBtn.widthAnchor.constraint(equalTo: bottomView.heightAnchor).isActive = true
+        likeBtn.heightAnchor.constraint(equalTo: bottomView.heightAnchor).isActive = true
+        likeBtn.tintColor = .systemPink
+        likeBtn.setImage(UIImage(systemName: "heart"), for: .normal)
         likeBtn.rx.tap.bind{
             print("click")
             self.isLiked = !self.isLiked
@@ -156,7 +162,7 @@ class ArticleViewController: UIViewController {
     
     private func animateHeart() {
         UIView.animate(withDuration: 0.1, animations: {
-            let newImage = self.isLiked ? UIImage(named: "heart.fill") : UIImage(named: "heart")
+            let newImage = self.isLiked ? UIImage(systemName: "heart.fill") : UIImage(systemName: "heart")
             self.likeBtn.transform = self.likeBtn.transform.scaledBy(x: 0.8, y: 0.8)
             self.likeBtn.setImage(newImage, for: .normal)
         }, completion: { _  in
@@ -182,26 +188,30 @@ class ArticleViewController: UIViewController {
         
     }
     
-    private func setBuyBtn() {
+    private func setCommentBtn() {
         
-        buyBtn.translatesAutoresizingMaskIntoConstraints = false
-        buyBtn.leadingAnchor.constraint(equalTo: priceLabel.trailingAnchor, constant: 20).isActive = true
-        buyBtn.topAnchor.constraint(equalTo: priceLabel.topAnchor).isActive = true
-        buyBtn.bottomAnchor.constraint(equalTo: priceLabel.bottomAnchor).isActive = true
-        buyBtn.trailingAnchor.constraint(equalTo: bottomView.trailingAnchor, constant: -20).isActive = true
+        commentBtn.translatesAutoresizingMaskIntoConstraints = false
+        commentBtn.leadingAnchor.constraint(equalTo: priceLabel.trailingAnchor, constant: 20).isActive = true
+        commentBtn.topAnchor.constraint(equalTo: priceLabel.topAnchor).isActive = true
+        commentBtn.bottomAnchor.constraint(equalTo: priceLabel.bottomAnchor).isActive = true
+        commentBtn.trailingAnchor.constraint(equalTo: bottomView.trailingAnchor, constant: -20).isActive = true
         
-        buyBtn.setTitle("댓글 작성하기", for: .normal)
-        buyBtn.backgroundColor = .orange
-        buyBtn.setTitleColor(.white, for: .normal)
-        buyBtn.layer.cornerRadius = 10
-        buyBtn.titleLabel?.font = .systemFont(ofSize: 15)
+        commentBtn.setTitle("댓글 작성하기", for: .normal)
+        commentBtn.backgroundColor = .orange
+        commentBtn.setTitleColor(.white, for: .normal)
+        commentBtn.layer.cornerRadius = 10
+        commentBtn.titleLabel?.font = .systemFont(ofSize: 15)
         
-        buyBtn.rx.tap.bind{
+        commentBtn.rx.tap.bind{
             print("click")
             let vc = CommentViewController()
             vc.articleId = self.articleId
             self.navigationController?.pushViewController(vc, animated: true)
         }.disposed(by: disposeBag)
+    }
+    private func setChatBtn(){
+        chatBtn.translatesAutoresizingMaskIntoConstraints = false
+
     }
 
     /*
