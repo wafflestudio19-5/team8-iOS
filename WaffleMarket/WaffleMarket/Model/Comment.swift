@@ -10,7 +10,7 @@ struct Comment{
     var id: Int
     var username: String
     var profile_image: String
-    var timestamp: Int
+    var timestamp: Double
     var content: String
     var isReply: Bool
     var deletable: Bool
