@@ -68,7 +68,7 @@ class CommentTableViewCell: UITableViewCell {
         super.init(coder: coder)
     }
     
-    func setData(isReply: Bool, username: String, profile_image: String, content: String, timestamp: String){
+    func setData(isReply: Bool, username: String, profile_image: String, content: String, timestamp: Int){
         if isReply {
             containerView.leadingAnchor.constraint(equalTo: self.contentView.leadingAnchor, constant: 40).isActive = true
         } else {
@@ -81,7 +81,9 @@ class CommentTableViewCell: UITableViewCell {
         }
         usernameLabel.text = username
         contentLabel.text = content
-        timestampLabel.text = timestamp
+        let formatter = DateFormatter()
+        formatter.dateFormat = "YYYY/MM/dd hh:mm"
+        timestampLabel.text = formatter.string(from: Date(timeIntervalSince1970: Double(timestamp)))
         contentLabel.heightAnchor.constraint(equalToConstant: content.getEstimatedFrame(with: contentLabel.font).size.height).isActive = true
         
     }

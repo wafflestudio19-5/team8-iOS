@@ -144,8 +144,8 @@ class ArticleAPI {
 struct CommentResponse: Codable {
     var id: Int
     var commenter: UserResponse
-    var created_at: String
-    var deleted_at: String?
+    var created_at: Int
+    var deleted_at: Int?
     var replies: [CommentResponse]?
     var content: String
     var delete_enable: Bool
@@ -172,8 +172,8 @@ struct ArticleResponse: Codable {
     var product_images: [ProductImageResponse]
     var category: String
     var price: Int
-    var created_at: String
-    var sold_at: String?
+    var created_at: Int
+    var sold_at: Int?
     var buyer: UserResponse?
     var deleted_at: String?
 }

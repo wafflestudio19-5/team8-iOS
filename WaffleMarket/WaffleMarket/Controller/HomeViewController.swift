@@ -41,6 +41,7 @@ class ArticleViewModel: ObservableObject {
                 print("articles count:", articles.count)
                 self.articleList.accept(self.articleList.value + articles)
             } else {
+                try! decoder.decode([ArticleResponse].self, from: response.data)
                 print("decoding failure")
             }
             self.isLoadingMoreData = false
