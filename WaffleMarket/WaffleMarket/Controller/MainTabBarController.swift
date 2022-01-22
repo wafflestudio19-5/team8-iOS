@@ -6,6 +6,7 @@
 //
 
 import UIKit
+import SwiftUI
 
 class MainTabBarController: UITabBarController, UITabBarControllerDelegate {
 
@@ -13,7 +14,8 @@ class MainTabBarController: UITabBarController, UITabBarControllerDelegate {
         super.viewDidLoad()
 
         let homeNavigationController = UINavigationController(rootViewController: HomeViewController())
-        let chatNavigationController = UINavigationController(rootViewController: ChatRoomListViewController())
+        
+        let chatNavigationController = UINavigationController(rootViewController: ChatroomListViewController())
         let mypageNavigationController = UINavigationController(rootViewController: MypageViewController())
         
         homeNavigationController.tabBarItem = UITabBarItem(title: "Home", image: UIImage(systemName: "house"), selectedImage: UIImage(systemName: "house.fill"))

@@ -55,7 +55,7 @@ extension UserService: TargetType {
     var task: Task {
         switch self {
         case let .setProfile(profile):
-            let imageData = MultipartFormData(provider: .data(profile.profileImage.jpegData(compressionQuality: 0.9)!), name: "profile_image", fileName: "profile_image\(Date().timeIntervalSince1970).jpg", mimeType: "image/jpeg")
+            let imageData = MultipartFormData(provider: .data(profile.profileImage!.jpegData(compressionQuality: 0.9)!), name: "profile_image", fileName: "profile_image\(Date().timeIntervalSince1970).jpg", mimeType: "image/jpeg")
             let userNameData = MultipartFormData(provider: .data(profile.userName!.data(using: .utf8)!), name: "username")
             let multipartData = [imageData, userNameData]
             return .uploadMultipart(multipartData)

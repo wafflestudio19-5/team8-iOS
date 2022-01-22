@@ -7,8 +7,10 @@
 
 import Foundation
 import UIKit
+import RxSwift
 class AccountManager {
     static var token: String?
+    static var userProfile: Profile?
     static func saveTokenForAutoLogin(){
         let keychainQuery: NSDictionary = [
             kSecClass : kSecClassGenericPassword,
@@ -20,11 +22,26 @@ class AccountManager {
         let status: OSStatus = SecItemAdd(keychainQuery, nil)
         assert(status == noErr, "failed to save jwt token: \(status)")
     }
-    static func login(_ data: LoginResponse, autologin: Bool = false) {
+    static func login(disposeBag: DisposeBag, _ data: LoginResponse, autologin: Bool = false, completion: @escaping(()->Void)) {
         token = data.token
         if autologin {
             saveTokenForAutoLogin()
         }
+        UserAPI.getProfile().subscribe { response in
+            print(String(decoding: response.data, as: UTF8.self))
+            let decoder = JSONDecoder()
+            if let decoded = try? decoder.decode(ProfileResponse.self, from:response.data){
+                self.userProfile = Profile(phoneNumber: decoded.phone_number, userName: decoded.username, profileImageUrl: decoded.profile_image, location: nil)
+                
+            } else {
+                
+            }
+            completion()
+        } onFailure: { error in
+            
+        } onDisposed: {
+            
+        }.disposed(by: disposeBag)
     }
     static func logout() {
         let keychainQuery: NSDictionary = [
@@ -37,7 +54,7 @@ class AccountManager {
             assert(status == noErr, "failed to delete jwt token: \(status)")
         }
     }
-    static func tryAutologin() -> Bool {
+    static func tryAutologin(disposeBag: DisposeBag, completion: @escaping((Bool)->Void)) -> Bool {
         let keychainQuery: NSDictionary = [
             kSecClass: kSecClassGenericPassword,
             kSecAttrService: "com.wafflestudio.team8.WaffleMarket",
@@ -51,10 +68,26 @@ class AccountManager {
             let retrievedData = dataTypeRef as! Data
             let value = String(data: retrievedData, encoding: .utf8)
             token = value
+            UserAPI.getProfile().subscribe { response in
+                print(String(decoding: response.data, as: UTF8.self))
+                let decoder = JSONDecoder()
+                if let decoded = try? decoder.decode(ProfileResponse.self, from:response.data){
+                    self.userProfile = Profile(phoneNumber: decoded.phone_number, userName: decoded.username, profileImageUrl: decoded.profile_image, location: nil)
+                    completion(true)
+                } else {
+                    completion(false)
+                }
+            } onFailure: { error in
+                
+            } onDisposed: {
+                
+            }.disposed(by: disposeBag)
+
             print("autologin success")
             return true
         } else {
             print("autologin failure")
+            completion(false)
             return false
         }
     }

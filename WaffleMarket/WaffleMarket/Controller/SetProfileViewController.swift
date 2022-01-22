@@ -187,8 +187,10 @@ class SetProfileViewController: UIViewController {
                     let decoder = JSONDecoder()
                     if (response.statusCode / 100) == 2 {
                         if let decoded = try? decoder.decode(LoginResponse.self, from: response.data) {
-                            AccountManager.login(decoded, autologin: true)
-                            self.setProfile(profile: profile, location_exists: decoded.location_exists)
+                            AccountManager.login(disposeBag: self.disposeBag, decoded, autologin: true){
+                                self.setProfile(profile: profile, location_exists: decoded.location_exists)
+                            }
+                            
                             return
                         }
                     }

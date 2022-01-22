@@ -11,7 +11,8 @@ import UIKit
 struct Profile {
     var phoneNumber: String?
     var userName: String?
-    var profileImage: UIImage
+    var profileImage: UIImage?
+    var profileImageUrl: String?
     var location: String?
     
 }

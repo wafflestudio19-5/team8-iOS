@@ -94,11 +94,6 @@ class LoginViewController: UIViewController {
         tap.cancelsTouchesInView = false
 
         view.addGestureRecognizer(tap)
-        if AccountManager.tryAutologin() {
-            let sceneDelegate = UIApplication.shared.connectedScenes.first?.delegate as? SceneDelegate
-            sceneDelegate?.changeRootViewController(MainTabBarController())
-            return
-        }
         
         
         self.view.addSubview(waffleLogoLabel)
@@ -263,13 +258,15 @@ class LoginViewController: UIViewController {
                 if (response.statusCode / 100) == 2{
                     let decoder = JSONDecoder()
                     if let decoded = try? decoder.decode(LoginResponse.self, from:response.data) {
-                        AccountManager.login(decoded, autologin: true)
-                        if decoded.location_exists {
-                            let sceneDelegate = UIApplication.shared.connectedScenes.first?.delegate as? SceneDelegate
-                            sceneDelegate?.changeRootViewController(MainTabBarController())
-                        } else {
-                            self.present(SetLocationViewController(), animated:true)
+                        AccountManager.login(disposeBag: self.disposeBag, decoded, autologin: true) {
+                            if decoded.location_exists {
+                                let sceneDelegate = UIApplication.shared.connectedScenes.first?.delegate as? SceneDelegate
+                                sceneDelegate?.changeRootViewController(MainTabBarController())
+                            } else {
+                                self.present(SetLocationViewController(), animated:true)
+                            }
                         }
+                        
                     } else {
                         let alert = UIAlertController(title: "알림", message: "가입되지 않은 전화번호입니다.", preferredStyle: .alert)
                         let close = UIAlertAction(title: "닫기", style: .cancel) { action in
@@ -313,11 +310,15 @@ class LoginViewController: UIViewController {
         googleLoginBtn.style = .wide
         googleLoginBtn.rx.controlEvent(.touchUpInside).bind{
             GoogleSignInAuthenticator.sharedInstance.signIn(presenting: self, disposeBag: self.disposeBag) { data in
-                AccountManager.login(data)
+                AccountManager.login(disposeBag: self.disposeBag, data) {
+                    
+                }
                 if data.location_exists {
-                    AccountManager.login(data, autologin: true)
-                    let sceneDelegate = UIApplication.shared.connectedScenes.first?.delegate as? SceneDelegate
-                    sceneDelegate?.changeRootViewController(MainTabBarController())
+                    AccountManager.login(disposeBag: self.disposeBag, data, autologin: true){
+                        let sceneDelegate = UIApplication.shared.connectedScenes.first?.delegate as? SceneDelegate
+                            
+                        sceneDelegate?.changeRootViewController(MainTabBarController())
+                    }
                 } else {
                     self.present(SetLocationViewController(), animated:true)
                 }

@@ -7,6 +7,7 @@
 
 import UIKit
 import RxSwift
+import SwiftUI
 
 class ArticleViewController: UIViewController {
 
@@ -19,6 +20,7 @@ class ArticleViewController: UIViewController {
     let contentText = UILabel()
     let productImage = UIImageView()
     let commentBtn = UIButton()
+    let btnStack = UIStackView()
     let chatBtn = UIButton()
     let likeBtn = UIButton(type: .custom)
     let disposeBag = DisposeBag()
@@ -68,10 +70,9 @@ class ArticleViewController: UIViewController {
         setLikeBtn()
         bottomView.addSubview(priceLabel)
         setPriceLabel()
-        bottomView.addSubview(commentBtn)
-        setCommentBtn()
-        //bottomView.addSubview(chatBtn)
-       // setChatBtn()
+        bottomView.addSubview(btnStack)
+        setBtnStack()
+        
     
     }
     
@@ -179,7 +180,7 @@ class ArticleViewController: UIViewController {
             priceLabel.text = "판매완료"
         }
         priceLabel.translatesAutoresizingMaskIntoConstraints = false
-        priceLabel.leadingAnchor.constraint(equalTo: likeBtn.trailingAnchor, constant: 20).isActive = true
+        priceLabel.leadingAnchor.constraint(lessThanOrEqualTo: likeBtn.trailingAnchor, constant: 10).isActive = true
         priceLabel.topAnchor.constraint(equalTo: likeBtn.topAnchor).isActive = true
         priceLabel.trailingAnchor.constraint(equalTo: bottomView.centerXAnchor).isActive = true
         priceLabel.bottomAnchor.constraint(equalTo: likeBtn.bottomAnchor).isActive = true
@@ -191,16 +192,14 @@ class ArticleViewController: UIViewController {
     private func setCommentBtn() {
         
         commentBtn.translatesAutoresizingMaskIntoConstraints = false
-        commentBtn.leadingAnchor.constraint(equalTo: priceLabel.trailingAnchor, constant: 20).isActive = true
-        commentBtn.topAnchor.constraint(equalTo: priceLabel.topAnchor).isActive = true
-        commentBtn.bottomAnchor.constraint(equalTo: priceLabel.bottomAnchor).isActive = true
-        commentBtn.trailingAnchor.constraint(equalTo: bottomView.trailingAnchor, constant: -20).isActive = true
+
         
-        commentBtn.setTitle("댓글 작성하기", for: .normal)
-        commentBtn.backgroundColor = .orange
-        commentBtn.setTitleColor(.white, for: .normal)
-        commentBtn.layer.cornerRadius = 10
-        commentBtn.titleLabel?.font = .systemFont(ofSize: 15)
+//        commentBtn.setTitle("댓글 작성하기", for: .normal)
+//        commentBtn.backgroundColor = .orange
+//        commentBtn.setTitleColor(.white, for: .normal)
+//        commentBtn.layer.cornerRadius = 10
+//        commentBtn.titleLabel?.font = .systemFont(ofSize: 15)
+        commentBtn.setImage(UIImage(systemName:"message"), for: .normal)
         
         commentBtn.rx.tap.bind{
             print("click")
@@ -211,7 +210,55 @@ class ArticleViewController: UIViewController {
     }
     private func setChatBtn(){
         chatBtn.translatesAutoresizingMaskIntoConstraints = false
+        
+//        chatBtn.setTitle("채팅하기", for: .normal)
+        chatBtn.setImage(UIImage(systemName:"text.bubble"), for: .normal)
+//        chatBtn.backgroundColor = .orange
+//        chatBtn.setTitleColor(.white, for: .normal)
+//        chatBtn.layer.cornerRadius = 10
+//        chatBtn.titleLabel?.font = .systemFont(ofSize: 15)
+        chatBtn.rx.tap.bind{
+            ChatAPI.create(article_id: self.articleId).subscribe { response in
+                let decoder = JSONDecoder()
+                print(String(decoding: response.data, as: UTF8.self))
+                if let decoded = try? decoder.decode(ChatroomResponse.self, from: response.data){
+                    let chatView = ChatView()
+                    if !ChatCommunicator.shared.checkConnection(roomName: decoded.roomname){
+                        ChatCommunicator.shared.connect(roomName: decoded.roomname)
+                    }
+                    let me = ChatUser(name: AccountManager.userProfile!.userName!, avatar: AccountManager.userProfile!.profileImageUrl!, isCurrentUser: true)
+                    let opponent = ChatUser(name: decoded.username, avatar: decoded.profile_image)
+                    let dataSource = DataSource(me:me, opponent: opponent, messages:[])
+                    let chatHelper = ChatHelper(roomName: decoded.roomname, dataSource: dataSource)
+                    
+                    let vc = UIHostingController(rootView: chatView.environmentObject(chatHelper))
+                    self.navigationController?.pushViewController(vc, animated: true)
+                } else {
+                    self.toast("오류가 발생했어요")
+                }
+            } onFailure: { error in
+                
+            } onDisposed: {
+                
+            }.disposed(by: self.disposeBag)
 
+            
+        }.disposed(by: disposeBag)
+    }
+    
+    private func setBtnStack(){
+        btnStack.translatesAutoresizingMaskIntoConstraints = false
+        btnStack.leadingAnchor.constraint(equalTo: priceLabel.trailingAnchor, constant: 20).isActive = true
+        btnStack.topAnchor.constraint(equalTo: bottomView.topAnchor).isActive = true
+        btnStack.bottomAnchor.constraint(equalTo: bottomView.bottomAnchor).isActive = true
+        btnStack.trailingAnchor.constraint(equalTo: bottomView.trailingAnchor, constant: -20).isActive = true
+        btnStack.axis = .horizontal
+        btnStack.spacing = 10
+        btnStack.distribution = .fillEqually
+        btnStack.addArrangedSubview(commentBtn)
+        setCommentBtn()
+        btnStack.addArrangedSubview(chatBtn)
+        setChatBtn()
     }
 
     /*
