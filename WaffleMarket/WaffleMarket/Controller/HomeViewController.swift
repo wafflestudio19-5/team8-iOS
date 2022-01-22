@@ -22,7 +22,12 @@ class ArticleViewModel: ObservableObject {
             let decoder = JSONDecoder()
             if let decoded = try? decoder.decode([ArticleResponse].self, from: response.data){
                 var articles: [Article] = []
+                
                 for articleResponse in decoded {
+                    var thumbnail: String? = nil
+                    if articleResponse.product_images.count > 0 {
+                        thumbnail = articleResponse.product_images[0].thumbnail_url
+                    }
                     let article = Article(
                         id: articleResponse.id,
                         title: articleResponse.title,
@@ -32,7 +37,7 @@ class ArticleViewModel: ObservableObject {
                         productImages: articleResponse.product_images.map({ it in
                             it.image_url
                         }),
-                        thumbnailImage: articleResponse.product_images[0].thumbnail_url,
+                        thumbnailImage: thumbnail,
                         isSold: (articleResponse.buyer != nil)
                         
                     )
@@ -117,7 +122,11 @@ class ArticleCell: UITableViewCell {
         
     }
     func loadImage(){
-        imageLoader.load(path: imageUrl!, putOn: productImage)
+        if imageUrl == nil {
+            productImage.image = UIImage(named: "defaultProfileImage")
+        } else {
+            imageLoader.load(path: imageUrl!, putOn: productImage)
+        }
     }
     
     private func setProductImage() {
