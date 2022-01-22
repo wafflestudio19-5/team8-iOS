@@ -184,6 +184,7 @@ private let reuseIdentifier = "Cell"
 class HomeViewController: UIViewController, UITableViewDelegate {
     
 
+    var prevSearchText = ""
 //    var signOutBtn = UIButton(type:.system) // MARK: this is for test. remove later
     let textSize: CGFloat = 16
     let writePostBtn = UIButton(type:.custom)
@@ -311,10 +312,15 @@ class HomeViewController: UIViewController, UITableViewDelegate {
         searchField.placeholder = "검색"
         searchField.autocapitalizationType = .none
         searchField.autocorrectionType = .no
-        searchField.rx.text.orEmpty.throttle(.milliseconds(800),latest: true ,scheduler: MainScheduler.instance).bind { value in
-            print("search")
-            self.viewModel.page = 1
-            self.viewModel.getArticleList(page: self.viewModel.page, category: self.selectedCategory, keyword: value)
+        searchField.rx.text.orEmpty.throttle(.milliseconds(800),latest: true ,scheduler: MainScheduler.instance).skip(1).distinctUntilChanged().bind{ value in
+            
+            if self.prevSearchText != value {
+                print("search")
+                self.viewModel.page = 1
+                self.viewModel.getArticleList(page: self.viewModel.page, category: self.selectedCategory, keyword: value)
+            }
+
+            self.prevSearchText = value
         }.disposed(by: disposeBag)
     }
     
