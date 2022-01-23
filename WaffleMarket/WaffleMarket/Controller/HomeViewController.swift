@@ -9,12 +9,13 @@ import UIKit
 import RxSwift
 import RxCocoa
 class ArticleViewModel: ObservableObject {
-    
+    var page = 1
     var articles = [Article]()
     let articleList = BehaviorRelay<[Article]>(value: [])
     let disposeBag = DisposeBag()
     var isLoadingMoreData = false
-    func getArticleList(page:Int, category: String? = nil, keyword: String? = nil) {
+    func getArticleList(page:Int, category: String? = nil, keyword: String? = nil, append: Bool = false) {
+        let prevPage = page - 1
         // 백엔드와 연결시 API 호출
         isLoadingMoreData = true
         ArticleAPI.list(page: page, category: category, keyword: keyword).subscribe { response in
@@ -44,7 +45,19 @@ class ArticleViewModel: ObservableObject {
                     articles.append(article)
                 }
                 print("articles count:", articles.count)
-                self.articleList.accept(self.articleList.value + articles)
+                if append {
+                    self.articleList.accept(self.articleList.value + articles)
+                } else {
+                    self.articleList.accept(articles)
+                }
+            } else if let decoded = try? decoder.decode(NonFieldErrorsResponse.self, from: response.data){
+                if decoded.non_field_errors.count>0 && decoded.non_field_errors[0] == "페이지 번호가 범위를 벗어났습니다." {
+                    self.page = prevPage
+                    if !append{
+                        self.articleList.accept([])
+                    }
+                }
+                
             } else {
                 print("decoding failure")
             }
@@ -171,6 +184,7 @@ private let reuseIdentifier = "Cell"
 class HomeViewController: UIViewController, UITableViewDelegate {
     
 
+    var prevSearchText = ""
 //    var signOutBtn = UIButton(type:.system) // MARK: this is for test. remove later
     let textSize: CGFloat = 16
     let writePostBtn = UIButton(type:.custom)
@@ -182,11 +196,10 @@ class HomeViewController: UIViewController, UITableViewDelegate {
     let disposeBag = DisposeBag()
     let viewModel = ArticleViewModel()
     
-    var page = 1
+    
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
-        self.viewModel.articleList.accept([])
-        self.viewModel.getArticleList(page: page, category: selectedCategory, keyword: self.searchField.text)
+        
     }
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -202,6 +215,7 @@ class HomeViewController: UIViewController, UITableViewDelegate {
         setWritePostBtn()
 
         articleTableView.register(ArticleCell.self, forCellReuseIdentifier: "Cell")
+        self.viewModel.getArticleList(page: viewModel.page, category: selectedCategory, keyword: self.searchField.text)
         
     }
     
@@ -210,8 +224,9 @@ class HomeViewController: UIViewController, UITableViewDelegate {
     }
     
     private func pagination() {
-        page += 1
-        viewModel.getArticleList(page: page, category: selectedCategory, keyword: self.searchField.text)
+        print("page: \(viewModel.page)")
+        viewModel.page += 1
+        viewModel.getArticleList(page: viewModel.page, category: selectedCategory, keyword: self.searchField.text, append: true)
         // articleCollectionView.reloadData()
     }
     
@@ -276,9 +291,9 @@ class HomeViewController: UIViewController, UITableViewDelegate {
                     self.selectedCategory = value
                 }
                 self.categoryBtn.setTitle(value, for: .normal)
-                self.page = 1
+                self.viewModel.page = 1
                 self.viewModel.articleList.accept([])
-                self.viewModel.getArticleList(page: self.page, category: self.selectedCategory, keyword: self.searchField.text)
+                self.viewModel.getArticleList(page: self.viewModel.page, category: self.selectedCategory, keyword: self.searchField.text)
             }).disposed(by: self.disposeBag)
             self.present(vc, animated: true)
         }.disposed(by: disposeBag)
@@ -297,10 +312,15 @@ class HomeViewController: UIViewController, UITableViewDelegate {
         searchField.placeholder = "검색"
         searchField.autocapitalizationType = .none
         searchField.autocorrectionType = .no
-        searchField.rx.text.orEmpty.throttle(.milliseconds(800),latest: true ,scheduler: MainScheduler.instance).bind { value in
-            self.viewModel.articleList.accept([])
-            self.page = 1
-            self.viewModel.getArticleList(page: self.page, category: self.selectedCategory, keyword: value)
+        searchField.rx.text.orEmpty.throttle(.milliseconds(800),latest: true ,scheduler: MainScheduler.instance).skip(1).distinctUntilChanged().bind{ value in
+            
+            if self.prevSearchText != value {
+                print("search")
+                self.viewModel.page = 1
+                self.viewModel.getArticleList(page: self.viewModel.page, category: self.selectedCategory, keyword: value)
+            }
+
+            self.prevSearchText = value
         }.disposed(by: disposeBag)
     }
     
