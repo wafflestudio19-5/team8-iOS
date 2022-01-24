@@ -7,12 +7,12 @@
 
 import UIKit
 import RxSwift
-
+import RxCocoa
 class ArticleViewController: UIViewController {
 
     let scrollView = UIScrollView()
     let bottomView = UIView()
-    let profileView = UIView()
+    let profileView = UIButton(type: .custom)
     
     let titleLabel = UILabel()
     let categoryLabel = UILabel()
@@ -23,7 +23,8 @@ class ArticleViewController: UIViewController {
     let chatBtn = UIButton()
     let likeBtn = UIButton(type: .custom)
     let profileImageView = UIImageView()
-    let profileBtn = UIButton()
+    
+    let usernameLabel = UILabel()
     let mannerTempLabel = UILabel()
     
     let disposeBag = DisposeBag()
@@ -36,8 +37,9 @@ class ArticleViewController: UIViewController {
         view.backgroundColor = .white
         
         view.addSubview(scrollView)
-        setScrollView()
         view.addSubview(bottomView)
+        setScrollView()
+        
         setBottomView()
         // Do any additional setup after loading the view.
     }
@@ -48,7 +50,7 @@ class ArticleViewController: UIViewController {
         scrollView.leadingAnchor.constraint(equalTo: self.view.safeAreaLayoutGuide.leadingAnchor).isActive = true
         scrollView.topAnchor.constraint(equalTo: self.view.safeAreaLayoutGuide.topAnchor).isActive = true
         scrollView.trailingAnchor.constraint(equalTo: self.view.safeAreaLayoutGuide.trailingAnchor).isActive = true
-        scrollView.bottomAnchor.constraint(equalTo: self.view.safeAreaLayoutGuide.bottomAnchor, constant: -60).isActive = true
+        scrollView.bottomAnchor.constraint(equalTo: self.bottomView.topAnchor).isActive = true
         
         scrollView.addSubview(productImage)
         setProductImage()
@@ -67,7 +69,7 @@ class ArticleViewController: UIViewController {
         
         bottomView.translatesAutoresizingMaskIntoConstraints = false
         bottomView.leadingAnchor.constraint(equalTo: self.view.safeAreaLayoutGuide.leadingAnchor).isActive = true
-        bottomView.topAnchor.constraint(equalTo: scrollView.bottomAnchor).isActive = true
+        bottomView.heightAnchor.constraint(equalToConstant: 60).isActive = true
         bottomView.trailingAnchor.constraint(equalTo: self.view.safeAreaLayoutGuide.trailingAnchor).isActive = true
         bottomView.bottomAnchor.constraint(equalTo: self.view.safeAreaLayoutGuide.bottomAnchor).isActive = true
         
@@ -119,8 +121,8 @@ class ArticleViewController: UIViewController {
             CachedImageLoader().load(path: profile_image, putOn: profileImageView)
         }
         
-        profileBtn.setTitle(username, for: .normal)
-        mannerTempLabel.text = String(mannerTemp) + "°C ☺️"
+        usernameLabel.text = username
+        mannerTempLabel.text = String(mannerTemp) + "°C"
     }
     
     private func setProfileView() {
@@ -131,27 +133,41 @@ class ArticleViewController: UIViewController {
         profileView.leadingAnchor.constraint(equalTo: productImage.leadingAnchor).isActive = true
         profileView.topAnchor.constraint(equalTo: productImage.bottomAnchor).isActive = true
         profileView.trailingAnchor.constraint(equalTo: productImage.trailingAnchor).isActive = true
-        profileView.bottomAnchor.constraint(equalTo: productImage.bottomAnchor, constant: 70).isActive = true
+        profileView.heightAnchor.constraint(equalToConstant: 70).isActive = true
         
         profileView.addSubview(profileImageView)
         profileImageView.translatesAutoresizingMaskIntoConstraints = false
         profileImageView.leadingAnchor.constraint(equalTo: profileView.leadingAnchor, constant: 20).isActive = true
-        profileImageView.centerXAnchor.constraint(equalTo: profileView.centerXAnchor).isActive = true
+        profileImageView.topAnchor.constraint(equalTo: profileView.topAnchor).isActive = true
+        profileImageView.bottomAnchor.constraint(equalTo: profileView.bottomAnchor).isActive = true
+        profileImageView.widthAnchor.constraint(equalTo: profileView.heightAnchor).isActive = true
+        profileImageView.image = UIImage(named: "defaultProfileImage")
+        profileImageView.isUserInteractionEnabled = false
         
-        profileView.addSubview(profileBtn)
-        profileBtn.leadingAnchor.constraint(equalTo: profileImageView.trailingAnchor, constant: 10).isActive = true
-        profileBtn.centerXAnchor.constraint(equalTo: profileImageView.centerXAnchor).isActive = true
-        
-        profileBtn.rx.tap.bind{
+        profileView.rx.tap.bind{
             let vc = ProfileViewController()
             // TODO: article에서 id 받아와서 프로필 찾고 보내기
             self.present(vc, animated: true)
         }.disposed(by: disposeBag)
 
-        
+        profileView.addSubview(usernameLabel)
         profileView.addSubview(mannerTempLabel)
+        usernameLabel.isUserInteractionEnabled = false
+        usernameLabel.translatesAutoresizingMaskIntoConstraints = false
+        usernameLabel.leadingAnchor.constraint(equalTo: profileImageView.trailingAnchor, constant: 10).isActive = true
+        usernameLabel.trailingAnchor.constraint(equalTo: mannerTempLabel.leadingAnchor, constant: -10).isActive = true
+        usernameLabel.topAnchor.constraint(equalTo: profileView.topAnchor).isActive = true
+        usernameLabel.bottomAnchor.constraint(equalTo: profileView.bottomAnchor).isActive = true
+        usernameLabel.text = "WaffleMarket"
+        
+        
+        mannerTempLabel.isUserInteractionEnabled = false
+        mannerTempLabel.translatesAutoresizingMaskIntoConstraints = false
         mannerTempLabel.trailingAnchor.constraint(equalTo: profileView.trailingAnchor, constant: 20).isActive = true
-        mannerTempLabel.centerXAnchor.constraint(equalTo: profileBtn.centerXAnchor).isActive = true
+        mannerTempLabel.topAnchor.constraint(equalTo: profileView.topAnchor).isActive = true
+        mannerTempLabel.bottomAnchor.constraint(equalTo: profileView.bottomAnchor).isActive = true
+        mannerTempLabel.widthAnchor.constraint(equalToConstant: 80).isActive = true
+        mannerTempLabel.text = "36.5°C"
         
     }
     
