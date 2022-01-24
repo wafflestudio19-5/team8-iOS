@@ -59,9 +59,11 @@ class AccountManager {
             kSecClass: kSecClassGenericPassword,
             kSecAttrService: "com.wafflestudio.team8.WaffleMarket",
             kSecAttrAccount: "userToken",
-            kSecReturnData: kCFBooleanTrue,
+            kSecReturnData: kCFBooleanTrue!,
             kSecMatchLimit: kSecMatchLimitOne
         ]
+        
+        
         var dataTypeRef: AnyObject?
         let status = SecItemCopyMatching(keychainQuery, &dataTypeRef)
         if status == errSecSuccess {

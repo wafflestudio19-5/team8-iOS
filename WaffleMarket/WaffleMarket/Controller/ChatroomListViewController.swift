@@ -62,12 +62,16 @@ class ChatroomListViewController: UIViewController {
     private func updateList(){
         ChatAPI.listByUser().subscribe { response in
             let decoder = JSONDecoder()
-            let decoded = try! decoder.decode([ChatroomResponse].self, from: response.data)
-            var temp: [Chatroom] = []
-            for item in decoded{
-                temp.append(Chatroom(roomName: item.roomname, userName: item.username, profileImageUrl: item.profile_image, productImageUrl: item.product_image.thumbnail_url, lastChat: "sample"))
+            if let decoded = try? decoder.decode([ChatroomResponse].self, from: response.data) {
+                var temp: [Chatroom] = []
+                for item in decoded{
+                    temp.append(Chatroom(roomName: item.roomname, userName: item.username, profileImageUrl: item.profile_image, productImageUrl: item.product_image.thumbnail_url, lastChat: "sample"))
+                }
+                self.chatroomList.accept(temp)
+            } else {
+                self.toast("채팅방 목록을 불러오는데 실패했어요")
+                print(String(decoding: response.data, as: UTF8.self))
             }
-            self.chatroomList.accept(temp)
         } onFailure: { error in
             
         } onDisposed: {
