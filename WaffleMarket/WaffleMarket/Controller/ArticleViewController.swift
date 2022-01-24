@@ -131,7 +131,7 @@ class ArticleViewController: UIViewController {
         profileView.leadingAnchor.constraint(equalTo: productImage.leadingAnchor).isActive = true
         profileView.topAnchor.constraint(equalTo: productImage.bottomAnchor).isActive = true
         profileView.trailingAnchor.constraint(equalTo: productImage.trailingAnchor).isActive = true
-        profileView.bottomAnchor.constraint(equalTo: productImage.topAnchor, constant: 70).isActive = true
+        profileView.bottomAnchor.constraint(equalTo: productImage.bottomAnchor, constant: 70).isActive = true
         
         profileView.addSubview(profileImageView)
         profileImageView.translatesAutoresizingMaskIntoConstraints = false
