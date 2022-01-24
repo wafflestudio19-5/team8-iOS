@@ -197,7 +197,7 @@ class ArticleViewController: UIViewController {
     private func setLikeBtn() {
         
         likeBtn.translatesAutoresizingMaskIntoConstraints = false
-        likeBtn.leadingAnchor.constraint(lessThanOrEqualTo: bottomView.leadingAnchor, constant: 20).isActive = true
+        likeBtn.leadingAnchor.constraint(lessThanOrEqualTo: bottomView.leadingAnchor, constant: 10).isActive = true
         likeBtn.centerYAnchor.constraint(lessThanOrEqualTo: bottomView.centerYAnchor).isActive = true
         likeBtn.widthAnchor.constraint(equalTo: bottomView.heightAnchor).isActive = true
         likeBtn.heightAnchor.constraint(equalTo: bottomView.heightAnchor).isActive = true
@@ -225,12 +225,12 @@ class ArticleViewController: UIViewController {
     
     private func setPriceLabel() {
         let price = articleSelected?.price
-        priceLabel.text = "| ₩ " + String(price!)
+        priceLabel.text = "₩ " + String(price!)
         if articleSelected?.isSold == true {
             priceLabel.text = "판매완료"
         }
         priceLabel.translatesAutoresizingMaskIntoConstraints = false
-        priceLabel.leadingAnchor.constraint(equalTo: likeBtn.trailingAnchor, constant: 20).isActive = true
+        priceLabel.leadingAnchor.constraint(equalTo: likeBtn.trailingAnchor, constant: 10).isActive = true
         priceLabel.topAnchor.constraint(equalTo: likeBtn.topAnchor).isActive = true
         priceLabel.trailingAnchor.constraint(equalTo: bottomView.centerXAnchor).isActive = true
         priceLabel.bottomAnchor.constraint(equalTo: likeBtn.bottomAnchor).isActive = true
@@ -243,8 +243,8 @@ class ArticleViewController: UIViewController {
         
         commentBtn.translatesAutoresizingMaskIntoConstraints = false
         commentBtn.leadingAnchor.constraint(equalTo: priceLabel.trailingAnchor, constant: 20).isActive = true
-        commentBtn.topAnchor.constraint(equalTo: priceLabel.topAnchor).isActive = true
-        commentBtn.bottomAnchor.constraint(equalTo: priceLabel.bottomAnchor).isActive = true
+        commentBtn.topAnchor.constraint(equalTo: priceLabel.topAnchor, constant: 10).isActive = true
+        commentBtn.bottomAnchor.constraint(equalTo: priceLabel.bottomAnchor, constant: -10).isActive = true
         commentBtn.trailingAnchor.constraint(equalTo: bottomView.trailingAnchor, constant: -20).isActive = true
         
         commentBtn.setTitle("댓글 작성하기", for: .normal)
