@@ -75,10 +75,11 @@ class AccountManager {
                     self.userProfile = Profile(phoneNumber: decoded.phone_number, userName: decoded.username, profileImageUrl: decoded.profile_image, location: nil)
                     completion(true)
                 } else {
+                    print("profile decoding failure")
                     completion(false)
                 }
             } onFailure: { error in
-                
+                print("profile decoding failure")
             } onDisposed: {
                 
             }.disposed(by: disposeBag)
