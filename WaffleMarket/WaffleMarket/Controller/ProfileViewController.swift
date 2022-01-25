@@ -44,15 +44,20 @@ class ProfileViewController: UIViewController, UITableViewDelegate {
         profileImageView.bottomAnchor.constraint(equalTo: self.view.safeAreaLayoutGuide.topAnchor, constant: 100).isActive = true
         profileImageView.widthAnchor.constraint(equalToConstant: 80).isActive = true
         profileImageView.heightAnchor.constraint(equalToConstant: 80).isActive = true
+        profileImageView.image = UIImage(named: "defaultProfileImage")
+        profileImageView.isUserInteractionEnabled = false
         
     }
     
     private func setProfileLabel() {
         
         profileLabel.translatesAutoresizingMaskIntoConstraints = false
+        profileLabel.isUserInteractionEnabled = false
         profileLabel.leadingAnchor.constraint(equalTo: profileImageView.trailingAnchor, constant: 20).isActive = true
         profileLabel.trailingAnchor.constraint(equalTo: self.view.safeAreaLayoutGuide.trailingAnchor, constant: -20).isActive = true
-        profileLabel.centerXAnchor.constraint(equalTo: profileImageView.centerXAnchor).isActive = true
+        profileLabel.bottomAnchor.constraint(equalTo: profileImageView.bottomAnchor).isActive = true
+        profileLabel.text = "Waffle Market"
+        profileLabel.textColor = .black
         
     }
     
@@ -65,6 +70,12 @@ class ProfileViewController: UIViewController, UITableViewDelegate {
         mannerBtn.bottomAnchor.constraint(equalTo: profileImageView.bottomAnchor, constant: 50).isActive = true
         mannerBtn.widthAnchor.constraint(equalToConstant: 150).isActive = true
         mannerBtn.heightAnchor.constraint(equalToConstant: 30).isActive = true
+        
+        mannerBtn.setTitle("매너평가 남기기", for: .normal)
+        mannerBtn.titleLabel?.font = .systemFont(ofSize: 15)
+        mannerBtn.backgroundColor = .orange
+        mannerBtn.layer.cornerRadius = 10
+        mannerBtn.titleLabel?.textColor = .white
         
         mannerBtn.rx.tap.bind{
             let alert = UIAlertController(title: "", message: "매너평가를 남기시겠어요?", preferredStyle: UIAlertController.Style.alert)
@@ -94,6 +105,8 @@ class ProfileViewController: UIViewController, UITableViewDelegate {
         mannerTempLabel.topAnchor.constraint(equalTo: mannerBtn.bottomAnchor, constant: 20).isActive = true
         mannerTempLabel.trailingAnchor.constraint(equalTo: profileLabel.trailingAnchor).isActive = true
         mannerTempLabel.bottomAnchor.constraint(equalTo: mannerBtn.bottomAnchor, constant: 50).isActive = true
+        
+        mannerTempLabel.text = "36.5°C"
         
     }
     

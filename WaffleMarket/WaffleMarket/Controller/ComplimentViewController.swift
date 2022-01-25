@@ -39,6 +39,7 @@ class ComplimentViewController: UIViewController, UITableViewDelegate, UITableVi
         
         complimentLabel.translatesAutoresizingMaskIntoConstraints = false
         complimentLabel.centerYAnchor.constraint(equalTo: self.view.safeAreaLayoutGuide.centerYAnchor).isActive = true
+        complimentLabel.leadingAnchor.constraint(equalTo: self.view.safeAreaLayoutGuide.leadingAnchor, constant: 20).isActive = true
         complimentLabel.topAnchor.constraint(equalTo: self.view.safeAreaLayoutGuide.topAnchor, constant: 20).isActive = true
         complimentLabel.bottomAnchor.constraint(equalTo: self.view.safeAreaLayoutGuide.topAnchor, constant: 100).isActive = true
         
