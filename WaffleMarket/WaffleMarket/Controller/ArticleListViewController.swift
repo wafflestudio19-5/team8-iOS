@@ -179,8 +179,7 @@ class ArticleListViewController: UIViewController, UITableViewDelegate {
         let controller = ArticleViewController()
         controller.articleId = article.id
         controller.articleSelected = article
-        let navVC = ArticleViewController()
-        self.present(navVC, animated: true)
+        self.navigationController?.pushViewController(controller, animated: true)
     }
     
     func getArticleImage(urlString: String) -> UIImage {

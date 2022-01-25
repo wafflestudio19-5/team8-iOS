@@ -115,9 +115,9 @@ class MypageViewController: UIViewController {
     private func sendList(listName: String) {
         print("sendList")
         let controller = ArticleListViewController()
+
         controller.listName = listName
-        let navVC = ArticleListViewController()
-        self.present(navVC, animated: true)
+        self.navigationController?.pushViewController(controller, animated: true)
     }
     
     private func setTableView(){
