@@ -53,7 +53,7 @@ class ChatCommunicator: NSObject{
             case .error(let error):
                 self.isConnected[roomName] = false
                 self.didReceive[roomName] = nil
-                print("WAFFLESOCK: error \(roomName): \(String(describing: error))")
+                print("WAFFLESOCK: error \(roomName): \(String(describing: error!))")
             }
         }
         sock.connect()
