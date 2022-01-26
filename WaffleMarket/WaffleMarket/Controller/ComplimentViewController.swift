@@ -42,7 +42,7 @@ class ComplimentViewController: UIViewController, UITableViewDelegate, UITableVi
         complimentLabel.leadingAnchor.constraint(equalTo: self.view.safeAreaLayoutGuide.leadingAnchor, constant: 20).isActive = true
         complimentLabel.topAnchor.constraint(equalTo: self.view.safeAreaLayoutGuide.topAnchor, constant: 20).isActive = true
         complimentLabel.bottomAnchor.constraint(equalTo: self.view.safeAreaLayoutGuide.topAnchor, constant: 100).isActive = true
-        
+        complimentLabel.numberOfLines = 2
         complimentLabel.text = "남기고 싶은 칭찬을 선택해 주세요.\n(칭찬 인사를 남기면 상대방의 매너 온도가 올라갑니다)"
         complimentLabel.baselineAdjustment = .alignCenters
         
