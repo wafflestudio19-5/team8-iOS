@@ -62,9 +62,14 @@ class ChatroomListTableViewCell: UITableViewCell {
     required init?(coder: NSCoder) {
         super.init(coder: coder)
     }
-    func setData(userName: String, profileImageUrl: String, lastChat: String, productImageUrl: String) {
+    func setData(userName: String, profileImageUrl: String?, lastChat: String, productImageUrl: String) {
         userNameLabel.text = userName
-        profileImageLoader.load(path: profileImageUrl, putOn: profileImageView)
+        if let profileImageUrl = profileImageUrl {
+            profileImageLoader.load(path: profileImageUrl, putOn: profileImageView)
+        } else {
+            profileImageView.image = UIImage(named: "defaultProfileImage")
+        }
+        
         productImageLoader.load(path: productImageUrl, putOn: productImageView)
         lastChatLabel.text = lastChat
         

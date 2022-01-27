@@ -15,7 +15,7 @@ import SwiftUI
 struct Chatroom {
     var roomName: String
     var userName: String
-    var profileImageUrl: String
+    var profileImageUrl: String?
     var productImageUrl: String
     var lastChat: String
     

@@ -69,30 +69,36 @@ struct MessageView: View {
     var body: some View {
         HStack(alignment: .bottom, spacing: 15) {
             if !currentMessage.user.isCurrentUser {
-                AsyncImage(
-                    url: URL(string: currentMessage.user.avatar!)!,
-                    content: { phase in
-                        switch phase {
-                        case .empty:
-                            Image("defaultProfileImage")
-                                .aspectRatio(contentMode: .fit)
-                                .frame(width: 40, height: 40, alignment: .center)
-                                .cornerRadius(20)
-                        case .success(let image):
-                            image.resizable()
-                                .aspectRatio(contentMode: .fit)
-                                .frame(width: 40, height: 40, alignment: .center)
-                                .cornerRadius(20)
-                        case .failure:
-                            Image("defaultProfileImage")
-                                .aspectRatio(contentMode: .fit)
-                                .frame(width: 40, height: 40, alignment: .center)
-                                .cornerRadius(20)
-                        default:
-                            EmptyView()
+                if currentMessage.user.avatar == nil {
+                    Image("defaultProfileImage").aspectRatio(contentMode: .fit)
+                        .frame(width: 40, height: 40, alignment: .center)
+                        .cornerRadius(20)
+                } else {
+                    AsyncImage(
+                        url: URL(string: currentMessage.user.avatar!)!,
+                        content: { phase in
+                            switch phase {
+                            case .empty:
+                                Image("defaultProfileImage")
+                                    .aspectRatio(contentMode: .fit)
+                                    .frame(width: 40, height: 40, alignment: .center)
+                                    .cornerRadius(20)
+                            case .success(let image):
+                                image.resizable()
+                                    .aspectRatio(contentMode: .fit)
+                                    .frame(width: 40, height: 40, alignment: .center)
+                                    .cornerRadius(20)
+                            case .failure:
+                                Image("defaultProfileImage")
+                                    .aspectRatio(contentMode: .fit)
+                                    .frame(width: 40, height: 40, alignment: .center)
+                                    .cornerRadius(20)
+                            default:
+                                EmptyView()
+                            }
                         }
-                    }
-                ).frame(width: 40, height: 40)
+                    ).frame(width: 40, height: 40)
+                }
                     
             } else {
                 Spacer()

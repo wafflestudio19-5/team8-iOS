@@ -66,7 +66,7 @@ struct ChatroomResponse: Decodable {
     var roomname: String
     var username: String
     var location: LocationResponse
-    var profile_image: String
+    var profile_image: String?
     var article_id: Int
     var product_image: ProductImageResponse
 }

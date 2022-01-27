@@ -226,7 +226,7 @@ class ArticleViewController: UIViewController {
                     if !ChatCommunicator.shared.checkConnection(roomName: decoded.roomname){
                         ChatCommunicator.shared.connect(roomName: decoded.roomname)
                     }
-                    let me = ChatUser(name: AccountManager.userProfile!.userName!, avatar: AccountManager.userProfile!.profileImageUrl!, isCurrentUser: true)
+                    let me = ChatUser(name: AccountManager.userProfile!.userName!, avatar: AccountManager.userProfile!.profileImageUrl, isCurrentUser: true)
                     let opponent = ChatUser(name: decoded.username, avatar: decoded.profile_image)
                     let dataSource = DataSource(me:me, opponent: opponent, messages:[])
                     let chatHelper = ChatHelper(roomName: decoded.roomname, dataSource: dataSource)
