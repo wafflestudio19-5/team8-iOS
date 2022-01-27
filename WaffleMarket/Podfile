@@ -18,6 +18,8 @@ target 'WaffleMarket' do
   pod 'RxCoreLocation'
   pod 'YPImagePicker'
   pod 'Starscream', '~> 4.0.0'
+  pod 'Firebase/Messaging'
+  pod 'Firebase/Analytics'
 end
 
 post_install do |installer|
