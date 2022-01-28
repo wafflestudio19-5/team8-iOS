@@ -123,7 +123,7 @@ class ProfileViewController: UIViewController, UITableViewDelegate {
         showReviewBtn.translatesAutoresizingMaskIntoConstraints = false
         showReviewBtn.leadingAnchor.constraint(equalTo: mannerBtn.leadingAnchor).isActive = true
         showReviewBtn.topAnchor.constraint(equalTo: mannerBtn.bottomAnchor, constant: 10).isActive = true
-        showReviewBtn.trailingAnchor.constraint(equalTo: mannerBtn.leadingAnchor).isActive = true
+        showReviewBtn.trailingAnchor.constraint(equalTo: mannerBtn.trailingAnchor).isActive = true
         showReviewBtn.bottomAnchor.constraint(equalTo: mannerBtn.bottomAnchor, constant: 40).isActive = true
         showReviewBtn.widthAnchor.constraint(equalToConstant: 150).isActive = true
         showReviewBtn.heightAnchor.constraint(equalToConstant: 30).isActive = true
@@ -137,7 +137,7 @@ class ProfileViewController: UIViewController, UITableViewDelegate {
         showReviewBtn.rx.tap.bind {
             let vc = ReviewViewController()
             self.present(vc, animated: true)
-        }
+        }.disposed(by: disposeBag)
     }
     
     private func setMannerTempLabel() {
@@ -163,11 +163,11 @@ class ProfileViewController: UIViewController, UITableViewDelegate {
         reviewView.addSubview(mannerReviewLabel)
         mannerReviewLabel.translatesAutoresizingMaskIntoConstraints = false
         mannerReviewLabel.leadingAnchor.constraint(equalTo: reviewView.leadingAnchor, constant: 20).isActive = true
-        mannerReviewLabel.topAnchor.constraint(equalTo: reviewView.topAnchor, constant: 20).isActive = true
+        mannerReviewLabel.topAnchor.constraint(equalTo: reviewView.topAnchor).isActive = true
         mannerReviewLabel.trailingAnchor.constraint(equalTo: reviewView.trailingAnchor).isActive = true
         
-        mannerReviewLabel.numberOfLines = 4
-        mannerReviewLabel.text = "받은 매너 평가\n👥 " + String(kind) + "  친절하고 매너가 좋아요\n👥 " + String(fast) + " 응답이 빨라요\n👥 " + String(time) + " 시간 약속을 잘 지켜요"
+        mannerReviewLabel.numberOfLines = 5
+        mannerReviewLabel.text = "받은 매너 평가\n\n👥 " + String(kind) + "  친절하고 매너가 좋아요\n👥 " + String(fast) + " 응답이 빨라요\n👥 " + String(time) + " 시간 약속을 잘 지켜요"
         
     }
     
