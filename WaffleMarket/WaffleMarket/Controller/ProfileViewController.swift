@@ -103,21 +103,27 @@ class ProfileViewController: UIViewController, UITableViewDelegate {
         mannerBtn.titleLabel?.textColor = .white
         
         mannerBtn.rx.tap.bind{
-            let alert = UIAlertController(title: "", message: "매너평가를 남기시겠어요?", preferredStyle: UIAlertController.Style.alert)
+            let alert = UIAlertController(title: "", message: "매너평가를 남기시겠어요?", preferredStyle: .actionSheet)
             
-            let goodMannerAction = UIAlertAction(title: "매너 칭찬 남기기", style: UIAlertAction.Style.default) {(_) in
+            let goodMannerAction = UIAlertAction(title: "매너 칭찬 남기기", style: .default) {(_) in
                 let vc = ComplimentViewController()
+                vc.userId = self.user!.id!
                 self.present(vc, animated: true)
             }
             
-            let badMannerAction = UIAlertAction(title: "비매너 평가하기", style: UIAlertAction.Style.destructive) {(_) in
+            let badMannerAction = UIAlertAction(title: "비매너 평가하기", style: .destructive) {(_) in
                 let vc = ComplainViewController()
+                vc.userId = self.user!.id!
                 self.present(vc, animated: true)
+            }
+            let cancelAction = UIAlertAction(title: "취소", style: .cancel) { _ in
+                alert.dismiss(animated: true)
             }
             
             alert.addAction(goodMannerAction)
             alert.addAction(badMannerAction)
-            self.present(alert, animated: false)
+            alert.addAction(cancelAction)
+            self.present(alert, animated: true)
             
         }.disposed(by: disposeBag)
         
@@ -174,8 +180,27 @@ class ProfileViewController: UIViewController, UITableViewDelegate {
         mannerReviewLabel.topAnchor.constraint(equalTo: reviewView.topAnchor).isActive = true
         mannerReviewLabel.trailingAnchor.constraint(equalTo: reviewView.trailingAnchor).isActive = true
         
-        mannerReviewLabel.numberOfLines = 5
-        mannerReviewLabel.text = "받은 매너 평가\n\n👥 " + String(kind) + "  친절하고 매너가 좋아요\n👥 " + String(fast) + " 응답이 빨라요\n👥 " + String(time) + " 시간 약속을 잘 지켜요"
+        mannerReviewLabel.numberOfLines = 0
+        ReviewAPI.getManner(userId: user!.id!).subscribe { response in
+            let decoder = JSONDecoder()
+            if let decoded = try? decoder.decode(MannerResponse.self, from: response.data){
+                var text = ""
+                for (key, value) in decoded.manner {
+                    text += "\(value)  \(key)\n"
+                }
+                DispatchQueue.main.async {
+                    self.mannerReviewLabel.text = "받은 매너 평가\n"+text;
+                }
+            } else {
+                print(String(decoding: response.data, as: UTF8.self))
+            }
+        } onFailure: { error in
+            
+        } onDisposed: {
+            
+        }.disposed(by: disposeBag)
+
+        
         
     }
     
