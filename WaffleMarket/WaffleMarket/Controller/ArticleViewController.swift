@@ -158,7 +158,7 @@ class ArticleViewController: UIViewController {
         profileImageView.topAnchor.constraint(equalTo: profileView.topAnchor).isActive = true
         profileImageView.bottomAnchor.constraint(equalTo: profileView.bottomAnchor).isActive = true
         profileImageView.widthAnchor.constraint(equalTo: profileView.heightAnchor).isActive = true
-        if let url = articleSelected?.seller?.profileImageUrl {
+        if let url = articleSelected?.seller.profile_image {
             CachedImageLoader().load(path: url, putOn: profileImageView)
         } else {
             profileImageView.image = UIImage(named: "defaultProfileImage")
@@ -177,7 +177,7 @@ class ArticleViewController: UIViewController {
         usernameLabel.trailingAnchor.constraint(lessThanOrEqualTo: mannerTempLabel.leadingAnchor).isActive = true
         usernameLabel.topAnchor.constraint(equalTo: profileView.topAnchor).isActive = true
         usernameLabel.bottomAnchor.constraint(equalTo: profileView.bottomAnchor).isActive = true
-        usernameLabel.text = articleSelected?.seller?.userName ?? "Waffle Market"
+        usernameLabel.text = articleSelected?.seller.username ?? "Waffle Market"
         
         usernameLabel.textColor = .black
         
@@ -188,7 +188,11 @@ class ArticleViewController: UIViewController {
         mannerTempLabel.trailingAnchor.constraint(equalTo: profileView.trailingAnchor, constant: -80).isActive = true
         mannerTempLabel.topAnchor.constraint(equalTo: profileView.topAnchor).isActive = true
         mannerTempLabel.bottomAnchor.constraint(equalTo: profileView.bottomAnchor).isActive = true
-        mannerTempLabel.text = "36.5"
+        mannerTempLabel.text = "--°C";
+        if let temperature = articleSelected?.seller.temparature {
+            mannerTempLabel.text = "\(temperature)°C"
+        }
+        
         
         
         showProfileBtn.translatesAutoresizingMaskIntoConstraints = false
@@ -200,6 +204,7 @@ class ArticleViewController: UIViewController {
         
         showProfileBtn.rx.tap.bind{
             let vc = ProfileViewController()
+            vc.user = self.articleSelected?.seller
             // TODO: article에서 id 받아와서 프로필 찾고 보내기
             self.present(vc, animated: true)
         }.disposed(by: disposeBag)

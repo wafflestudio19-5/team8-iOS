@@ -11,6 +11,7 @@ import RxCocoa
 
 class ProfileViewController: UIViewController, UITableViewDelegate {
     
+    var user: UserResponse?
     let scrollView = UIScrollView()
     let profileImageView = UIImageView()
     let profileLabel = UILabel()
@@ -64,7 +65,11 @@ class ProfileViewController: UIViewController, UITableViewDelegate {
         profileImageView.bottomAnchor.constraint(equalTo: scrollView.topAnchor, constant: 100).isActive = true
         profileImageView.widthAnchor.constraint(equalToConstant: 80).isActive = true
         profileImageView.heightAnchor.constraint(equalToConstant: 80).isActive = true
-        profileImageView.image = UIImage(named: "defaultProfileImage")
+        if let url = user?.profile_image {
+            CachedImageLoader().load(path: url, putOn: profileImageView)
+        } else {
+            profileImageView.image = UIImage(named: "defaultProfileImage")
+        }
         profileImageView.isUserInteractionEnabled = false
         
     }
@@ -76,7 +81,7 @@ class ProfileViewController: UIViewController, UITableViewDelegate {
         profileLabel.leadingAnchor.constraint(equalTo: profileImageView.trailingAnchor, constant: 20).isActive = true
         profileLabel.trailingAnchor.constraint(equalTo: scrollView.trailingAnchor, constant: -20).isActive = true
         profileLabel.bottomAnchor.constraint(equalTo: profileImageView.bottomAnchor).isActive = true
-        profileLabel.text = "Waffle Market"
+        profileLabel.text = user?.username ?? "Waffle Market"
         profileLabel.textColor = .black
         
     }
@@ -148,7 +153,10 @@ class ProfileViewController: UIViewController, UITableViewDelegate {
         mannerTempLabel.trailingAnchor.constraint(equalTo: showReviewBtn.trailingAnchor).isActive = true
         mannerTempLabel.bottomAnchor.constraint(equalTo: showReviewBtn.bottomAnchor, constant: 50).isActive = true
         
-        mannerTempLabel.text = "36.5°C"
+        mannerTempLabel.text = "--°C"
+        if let temperature = user?.temparature {
+            mannerTempLabel.text = "\(temperature)°C"
+        }
         
     }
     
