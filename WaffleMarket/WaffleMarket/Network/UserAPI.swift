@@ -11,10 +11,11 @@ import RxAlamofire
 import Moya
 enum UserService{
     
-    case setProfile(profile: Profile)
+    case setProfile(profile: SetProfileRequest)
     case getProfile
     case setCategory(category: String, enabled: Bool)
     case getCategory
+    case getLiked
 }
 
 extension UserService: TargetType {
@@ -33,7 +34,8 @@ extension UserService: TargetType {
             return "/category/"
         case .getCategory:
             return "/category/"
-
+        case .getLiked:
+            return "/liked/"
     
         }
     }
@@ -48,7 +50,8 @@ extension UserService: TargetType {
             return .put
         case .getCategory:
             return .get
-            
+        case .getLiked:
+            return .get
         }
     }
     
@@ -56,7 +59,7 @@ extension UserService: TargetType {
         switch self {
         case let .setProfile(profile):
             let imageData = MultipartFormData(provider: .data(profile.profileImage.jpegData(compressionQuality: 0.9)!), name: "profile_image", fileName: "profile_image\(Date().timeIntervalSince1970).jpg", mimeType: "image/jpeg")
-            let userNameData = MultipartFormData(provider: .data(profile.userName!.data(using: .utf8)!), name: "username")
+            let userNameData = MultipartFormData(provider: .data(profile.userName.data(using: .utf8)!), name: "username")
             let multipartData = [imageData, userNameData]
             return .uploadMultipart(multipartData)
         case .getProfile:
@@ -64,6 +67,8 @@ extension UserService: TargetType {
         case let .setCategory(category, enabled):
             return .requestJSONEncodable(SetCategoryRequest(category: category, enabled: enabled))
         case .getCategory:
+            return .requestPlain
+        case .getLiked:
             return .requestPlain
         }
     }
@@ -77,6 +82,16 @@ extension UserService: TargetType {
         
     }
 }
+
+struct SetProfileRequest {
+    var phoneNumber: String?
+    var userName: String
+    
+    var profileImage: UIImage
+    var location: String?
+    
+}
+
 struct SetCategoryRequest: Codable{
     var category: String
     var enabled: Bool
@@ -88,14 +103,14 @@ struct ProfileResponse: Codable{
     var id: Int
     var phone_number: String?
     var username: String
-    var profile_image: String
+    var profile_image: String?
 }
 class UserAPI {
     static var provider = MoyaProvider<UserService>(plugins: [AuthPlugin()])
     
 
     
-    static func setProfile(profile: Profile) -> Observable<ProgressResponse> {
+    static func setProfile(profile: SetProfileRequest) -> Observable<ProgressResponse> {
         return provider.rx.requestWithProgress(.setProfile(profile: profile))
     }
     static func getProfile() -> Single<Response> {
@@ -107,5 +122,9 @@ class UserAPI {
     
     static func getCategory() -> Single<Response> {
         return provider.rx.request(.getCategory)
+    }
+    
+    static func getLiked() -> Single<Response> {
+        return provider.rx.request(.getLiked)
     }
 }

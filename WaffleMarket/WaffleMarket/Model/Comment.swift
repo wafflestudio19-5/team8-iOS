@@ -9,7 +9,7 @@ import Foundation
 struct Comment{
     var id: Int
     var username: String
-    var profile_image: String
+    var profile_image: String?
     var timestamp: Double
     var content: String
     var isReply: Bool

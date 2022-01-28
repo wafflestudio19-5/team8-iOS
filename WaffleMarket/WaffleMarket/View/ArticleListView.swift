@@ -96,15 +96,15 @@ class ArticleCell: UITableViewCell {
     
     func setData(_ model: Article){
         self.titleLabel.text = model.title
-        let comment = model.commentNum ?? 0
-        let like = model.likeNum ?? 0
-        self.commentLikeLabel.text = "💬 " + String(comment) + "🧡 " + String(like)
-        let price = model.price!
+        
+        let like = model.like ?? 0
+        self.commentLikeLabel.text = "🧡 " + String(like)
+        let price = model.price
         self.priceLabel.text = "₩ " + String(price)
-        if model.isSold {
+        if model.sold_at != nil {
             self.priceLabel.text = "판매완료"
         }
-        self.imageUrl = model.thumbnailImage
+        self.imageUrl = model.product_images[0].thumbnail_url
         self.loadImage()
     }
     

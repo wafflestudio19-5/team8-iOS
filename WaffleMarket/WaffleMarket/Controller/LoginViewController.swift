@@ -26,7 +26,7 @@ class LoginViewController: UIViewController {
     
 
     
-    var waffleLogoLabel: UILabel = UILabel()
+    var waffleLogoImage: UIImageView = UIImageView()
     var welcomeLabel: UILabel! = UILabel()
     var idField: UITextField = UITextField()
     let idText = BehaviorSubject(value: "")
@@ -94,15 +94,10 @@ class LoginViewController: UIViewController {
         tap.cancelsTouchesInView = false
 
         view.addGestureRecognizer(tap)
-        if AccountManager.tryAutologin() {
-            let sceneDelegate = UIApplication.shared.connectedScenes.first?.delegate as? SceneDelegate
-            sceneDelegate?.changeRootViewController(MainTabBarController())
-            return
-        }
         
         
-        self.view.addSubview(waffleLogoLabel)
-        setWaffleLogoLabel()
+        self.view.addSubview(waffleLogoImage)
+        setWaffleLogo()
         self.view.addSubview(welcomeLabel)
         setWelcomeLabel()
         self.view.addSubview(idField)
@@ -135,19 +130,24 @@ class LoginViewController: UIViewController {
         // Do any additional setup after loading the view.
     }
     
-    private func setWaffleLogoLabel(){
-        waffleLogoLabel.translatesAutoresizingMaskIntoConstraints = false
-        waffleLogoLabel.centerXAnchor.constraint(equalTo: self.view.safeAreaLayoutGuide.centerXAnchor).isActive = true
-        waffleLogoLabel.topAnchor.constraint(lessThanOrEqualTo: self.view.safeAreaLayoutGuide.topAnchor, constant: 200).isActive = true
-        waffleLogoLabel.topAnchor.constraint(greaterThanOrEqualTo: self.view.safeAreaLayoutGuide.topAnchor).isActive = true
-        waffleLogoLabel.text = "🧇"
-        waffleLogoLabel.font = .systemFont(ofSize: 100)
+    private func setWaffleLogo(){
+        waffleLogoImage.translatesAutoresizingMaskIntoConstraints = false
+    
+        waffleLogoImage.topAnchor.constraint(lessThanOrEqualTo: self.view.safeAreaLayoutGuide.topAnchor, constant: 200).isActive = true
+        waffleLogoImage.topAnchor.constraint(greaterThanOrEqualTo: self.view.safeAreaLayoutGuide.topAnchor).isActive = true
+        waffleLogoImage.leadingAnchor.constraint(equalTo: self.view.safeAreaLayoutGuide.leadingAnchor).isActive = true
+        waffleLogoImage.trailingAnchor.constraint(equalTo: self.view.safeAreaLayoutGuide.trailingAnchor).isActive = true
+        waffleLogoImage.heightAnchor.constraint(equalToConstant: 200).isActive = true
+        waffleLogoImage.contentMode = .scaleAspectFit
+        waffleLogoImage.image = UIImage(named: "Fufuri")
+        
+
     }
     
     private func setWelcomeLabel(){
         welcomeLabel.translatesAutoresizingMaskIntoConstraints = false
         welcomeLabel.centerXAnchor.constraint(equalTo: self.view.safeAreaLayoutGuide.centerXAnchor).isActive = true
-        welcomeLabel.topAnchor.constraint(equalTo: waffleLogoLabel.bottomAnchor, constant: 30).isActive = true
+        welcomeLabel.topAnchor.constraint(equalTo: waffleLogoImage.bottomAnchor, constant: 30).isActive = true
         
         welcomeLabel.text = "당신 근처의 와플마켓을 시작해보세요!"
     }
@@ -263,13 +263,14 @@ class LoginViewController: UIViewController {
                 if (response.statusCode / 100) == 2{
                     let decoder = JSONDecoder()
                     if let decoded = try? decoder.decode(LoginResponse.self, from:response.data) {
-                        AccountManager.login(decoded, autologin: true)
+                        AccountManager.login(disposeBag: self.disposeBag, decoded, autologin: true)
                         if decoded.location_exists {
                             let sceneDelegate = UIApplication.shared.connectedScenes.first?.delegate as? SceneDelegate
                             sceneDelegate?.changeRootViewController(MainTabBarController())
                         } else {
                             self.present(SetLocationViewController(), animated:true)
                         }
+                        
                     } else {
                         let alert = UIAlertController(title: "알림", message: "가입되지 않은 전화번호입니다.", preferredStyle: .alert)
                         let close = UIAlertAction(title: "닫기", style: .cancel) { action in
@@ -313,10 +314,12 @@ class LoginViewController: UIViewController {
         googleLoginBtn.style = .wide
         googleLoginBtn.rx.controlEvent(.touchUpInside).bind{
             GoogleSignInAuthenticator.sharedInstance.signIn(presenting: self, disposeBag: self.disposeBag) { data in
-                AccountManager.login(data)
+                AccountManager.login(disposeBag: self.disposeBag, data)
+                print("1", data)
                 if data.location_exists {
-                    AccountManager.login(data, autologin: true)
+                    AccountManager.login(disposeBag: self.disposeBag, data, autologin: true)
                     let sceneDelegate = UIApplication.shared.connectedScenes.first?.delegate as? SceneDelegate
+                        
                     sceneDelegate?.changeRootViewController(MainTabBarController())
                 } else {
                     self.present(SetLocationViewController(), animated:true)

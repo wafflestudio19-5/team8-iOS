@@ -13,7 +13,7 @@ enum WaffleService{
     case ping
     case startAuth(phoneNumber: String)
     case completeAuth(phoneNumber: String, authNumber: String)
-    case signup(profile: Profile)
+    case signup(profile: SetProfileRequest)
     case googleLogin(idToken: [String: String])
     case leave
 }
@@ -67,7 +67,7 @@ extension WaffleService: TargetType{
         case let .completeAuth(phoneNumber, authNumber):
             return .requestJSONEncodable(["phone_number": phoneNumber, "auth_number": authNumber])
         case let .signup(profile):
-            return .requestJSONEncodable(["phone_number": profile.phoneNumber, "username": profile.userName])
+            return .requestJSONEncodable(["phone_number": profile.phoneNumber!, "username": profile.userName])
         case let .googleLogin(idToken):
             return .requestJSONEncodable(idToken)
         case .leave:
@@ -89,11 +89,9 @@ struct NonFieldErrorsResponse: Codable {
     var non_field_errors: [String]
 }
 struct LoginResponse: Codable {
-    var username: String
-    var phone_number: String?
+    var user: ProfileResponse
     var logined: Bool?
     var first_login: Bool?
-    var email: String?
     var token: String
     var location_exists: Bool
 }
@@ -123,7 +121,7 @@ class WaffleAPI{
         return provider.rx.request(.completeAuth(phoneNumber: phoneNumber, authNumber: authNumber))
     }
     
-    static func signup(profile: Profile) -> Single<Response> {
+    static func signup(profile: SetProfileRequest) -> Single<Response> {
         return provider.rx.request(.signup(profile: profile))
     }
     

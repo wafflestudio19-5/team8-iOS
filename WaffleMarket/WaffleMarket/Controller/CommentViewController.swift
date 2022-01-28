@@ -22,6 +22,7 @@ class CommentViewController: UIViewController {
     let comments = BehaviorRelay<[Comment]>(value:[])
     var articleId = 0
     var isReplyMode = false
+    var isOwner = false
     var replyCommentId = 0
 
     
@@ -127,6 +128,7 @@ class CommentViewController: UIViewController {
                     
                 }
                 self.comments.accept(comments)
+                self.commentTableView.reloadData()
             } else {
                 print("failed to parse comments")
             }
@@ -190,7 +192,9 @@ class CommentViewController: UIViewController {
                 alert.addAction(deleteAction)
             }
             alert.addAction(replyAction)
-            alert.addAction(sellAction)
+            if self.isOwner {
+                alert.addAction(sellAction)
+            }
             alert.addAction(cancelAction)
             self.present(alert, animated: true)
         }.disposed(by: disposeBag)

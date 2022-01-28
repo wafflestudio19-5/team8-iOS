@@ -141,12 +141,18 @@ class MypageViewController: UIViewController {
                     let username = decoded.username
                     let profileImage = decoded.profile_image
                     let profileImageView = UIImageView()
-                    CachedImageLoader().load(path: profileImage, putOn: profileImageView) { imageView, usedCache in
-                        DispatchQueue.main.async {
-                            self.present(SetProfileViewController(isSignUp: false, username: username, profileImage: profileImageView.image), animated: true)
+                    if let profileImage = profileImage {
+                        CachedImageLoader().load(path: profileImage, putOn: profileImageView) { imageView, usedCache in
+                            DispatchQueue.main.async {
+                                self.present(SetProfileViewController(isSignUp: false, username: username, profileImage: profileImageView.image), animated: true)
+                            }
+                            
                         }
-                        
+                    } else {
+                        self.present(SetProfileViewController(isSignUp: false, username: username, profileImage: UIImage(named: "defaultProfileImage")), animated: true)
                     }
+                } else {
+                    self.toast("오류가 발생했어요")
                 }
             } onFailure: { error in
                 
