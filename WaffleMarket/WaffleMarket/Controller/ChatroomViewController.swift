@@ -10,6 +10,7 @@ import SwiftUI
 import Combine
 import RxSwift
 
+
 final class KeyboardResponder: ObservableObject {
     private var notificationCenter: NotificationCenter
     @Published private(set) var currentHeight: CGFloat = 0
@@ -36,13 +37,14 @@ final class KeyboardResponder: ObservableObject {
 }
 
 struct ChatMessage: Hashable {
+    var id = UUID()
     var content: String
     var user: ChatUser
 }
 
 struct ChatUser: Hashable {
     var name: String
-    var avatar: String?
+    var avatar: UIImage?
     var isCurrentUser: Bool = false
 }
 
@@ -50,6 +52,9 @@ struct DataSource {
     let me: ChatUser
     let opponent: ChatUser
     var messages: [ChatMessage]
+    var productImage: String
+    
+
 }
 
 struct MessageContentView: View {
@@ -68,42 +73,30 @@ struct MessageView: View {
     var currentMessage: ChatMessage
     var body: some View {
         HStack(alignment: .bottom, spacing: 15) {
+            
             if !currentMessage.user.isCurrentUser {
                 if currentMessage.user.avatar == nil {
-                    Image("defaultProfileImage").aspectRatio(contentMode: .fit)
+                    Image("defaultProfileImage")
+                        .resizable()
+                        .aspectRatio(contentMode: .fit)
                         .frame(width: 40, height: 40, alignment: .center)
                         .cornerRadius(20)
                 } else {
-                    AsyncImage(
-                        url: URL(string: currentMessage.user.avatar!)!,
-                        content: { phase in
-                            switch phase {
-                            case .empty:
-                                Image("defaultProfileImage")
-                                    .aspectRatio(contentMode: .fit)
-                                    .frame(width: 40, height: 40, alignment: .center)
-                                    .cornerRadius(20)
-                            case .success(let image):
-                                image.resizable()
-                                    .aspectRatio(contentMode: .fit)
-                                    .frame(width: 40, height: 40, alignment: .center)
-                                    .cornerRadius(20)
-                            case .failure:
-                                Image("defaultProfileImage")
-                                    .aspectRatio(contentMode: .fit)
-                                    .frame(width: 40, height: 40, alignment: .center)
-                                    .cornerRadius(20)
-                            default:
-                                EmptyView()
-                            }
-                        }
-                    ).frame(width: 40, height: 40)
+                    Image(uiImage: currentMessage.user.avatar!)
+                        .resizable()
+                        .aspectRatio(contentMode: .fit)
+                            .frame(width: 40, height: 40, alignment: .center)
+                            .cornerRadius(20)
                 }
                     
             } else {
                 Spacer()
             }
             MessageContentView(content: currentMessage.content, isCurrentUser: currentMessage.user.isCurrentUser)
+                .frame(minWidth: 10)
+            if !currentMessage.user.isCurrentUser{
+                Spacer()
+            }
         }
     }
 }
@@ -127,6 +120,7 @@ class ChatHelper: ObservableObject {
                     
                     self.realTimeMessages.append(ChatMessage(content: item.content, user: item.is_sender ? dataSource.me : dataSource.opponent))
                 }
+                ChatCommunicator.shared.chatLog[self.roomName] = self.realTimeMessages
                     
             }
             
@@ -146,7 +140,7 @@ class ChatHelper: ObservableObject {
 }
 
 struct ChatView: View {
-    
+
     @State var typingMessage: String = ""
     @EnvironmentObject var chatHelper: ChatHelper
     @ObservedObject private var keyboard = KeyboardResponder()
@@ -156,38 +150,75 @@ struct ChatView: View {
         UITableView.appearance().tableFooterView = UIView()
     }
     var body: some View {
-        NavigationView{
-            VStack {
-                List {
-                    ForEach(chatHelper.realTimeMessages, id: \.self) { msg in
-                        MessageView(currentMessage: msg).listRowSeparator(.hidden)
+        HStack(alignment: .center) {
+            AsyncImage(
+                url: URL(string: chatHelper.dataSource.productImage)!,
+                content: { phase in
+                    switch phase {
+                    case .empty:
+                        ProgressView()
+                    case .success(let image):
+                        image.resizable()
+                            .aspectRatio(contentMode: .fit)
+                            .frame(maxWidth: 100, maxHeight: 100)
+                    case .failure:
+                        Image(systemName: "photo")
+                    @unknown default:
+                        EmptyView()
                     }
-                }.listStyle(PlainListStyle())
-                HStack {
-                    TextField("메시지를 입력하세요", text: $typingMessage)
-                        .textFieldStyle(RoundedBorderTextFieldStyle())
-                        .frame(minHeight: CGFloat(30))
-                    Button(action: sendMessage) {
-                        Text("전송")
-                    }
-                }.padding(.horizontal, 10)
-            }.navigationBarTitle(Text(chatHelper.dataSource.opponent.name), displayMode: .inline)
-                .padding(.bottom, keyboard.currentHeight)
-                .edgesIgnoringSafeArea(keyboard.currentHeight == 0.0 ? .leading : .bottom)
+                    
+                    
+                }
+            )
+            
+            
+        }.frame(height: 100)
+        VStack {
+            ScrollViewReader { scrollView in
+                ScrollView{
+                    LazyVStack{
+                        ForEach(chatHelper.realTimeMessages, id: \.self) { msg in
+                            MessageView(currentMessage: msg).listRowSeparator(.hidden)
+                        }
+                    }.padding(.horizontal, 10)
+                        .onAppear {
+                            scrollView.scrollTo(chatHelper.realTimeMessages.last)
+                        }
+                }.onChange(of: chatHelper.realTimeMessages.count) { _ in
+                    scrollView.scrollTo(chatHelper.realTimeMessages[chatHelper.realTimeMessages.endIndex-1])
+                }
+                
+            }
+            HStack {
+                TextField("메시지를 입력하세요", text: $typingMessage)
+                    .disableAutocorrection(true)
+                    .textFieldStyle(RoundedBorderTextFieldStyle())
+                    .frame(minHeight: CGFloat(30))
+                Button(action: sendMessage) {
+                    Text("전송")
+                }
+            }.padding(.horizontal, 10)
+                
         }.onTapGesture {
             self.endEditing(true)
         }
+            .padding(.bottom, keyboard.currentHeight)
+            .edgesIgnoringSafeArea(keyboard.currentHeight == 0.0 ? .leading : .bottom)
+            
     }
     
     func sendMessage(){
+        if typingMessage.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty {
+            return
+        }
         chatHelper.sendMessage(ChatMessage(content: typingMessage, user: chatHelper.dataSource.me))
         typingMessage = ""
     }
 }
 
 
-struct ChatView_Previews: PreviewProvider {
-    static var previews: some View {
-        ChatView().environmentObject(ChatHelper(roomName: "11", dataSource: DataSource(me: ChatUser(name: "AJW", avatar: "defaultProfileImage", isCurrentUser: true), opponent: ChatUser(name:"Test", avatar: "defaultProfileImage"), messages: [])))
-    }
-}
+//struct ChatView_Previews: PreviewProvider {
+//    static var previews: some View {
+//        ChatView().environmentObject(ChatHelper(roomName: "11", dataSource: DataSource(me: ChatUser(name: "AJW", avatar: UIImage(named:"defaultProfileImage"), isCurrentUser: true), opponent: ChatUser(name:"Test", avatar: UIImage(named:"defaultProfileImage")), messages: [])))
+//    }
+//}

@@ -297,17 +297,24 @@ class ArticleViewController: UIViewController {
                 let decoder = JSONDecoder()
                 print(String(decoding: response.data, as: UTF8.self))
                 if let decoded = try? decoder.decode(ChatroomResponse.self, from: response.data){
-                    let chatView = ChatView()
-                    if !ChatCommunicator.shared.checkConnection(roomName: decoded.roomname){
-                        ChatCommunicator.shared.connect(roomName: decoded.roomname)
-                    }
-                    let me = ChatUser(name: AccountManager.userProfile!.userName!, avatar: AccountManager.userProfile!.profileImageUrl, isCurrentUser: true)
-                    let opponent = ChatUser(name: decoded.username, avatar: decoded.profile_image)
-                    let dataSource = DataSource(me:me, opponent: opponent, messages:[])
-                    let chatHelper = ChatHelper(roomName: decoded.roomname, dataSource: dataSource)
                     
-                    let vc = UIHostingController(rootView: chatView.environmentObject(chatHelper))
-                    self.navigationController?.pushViewController(vc, animated: true)
+                    let imageView = UIImageView()
+                    CachedImageLoader().load(path: decoded.profile_image, putOn: imageView) { imageView, usedCache in
+                        DispatchQueue.main.async{
+                            let chatView = ChatView()
+                            if !ChatCommunicator.shared.checkConnection(roomName: decoded.roomname){
+                                ChatCommunicator.shared.connect(roomName: decoded.roomname)
+                            }
+                            let me = ChatUser(name: AccountManager.userProfile!.userName!, avatar: nil, isCurrentUser: true)
+                            let opponent = ChatUser(name: decoded.username, avatar: imageView.image)
+                            let dataSource = DataSource(me:me, opponent: opponent, messages: ChatCommunicator.shared.chatLog[decoded.roomname] ?? [], productImage: decoded.product_image.image_url)
+                            let chatHelper = ChatHelper(roomName: decoded.roomname, dataSource: dataSource)
+                            let vc = UIHostingController(rootView: chatView.environmentObject(chatHelper))
+                            vc.navigationItem.title = decoded.username
+                            self.navigationController?.pushViewController(vc, animated: true)
+                        }
+                    }
+                    
                 } else {
                     self.toast("오류가 발생했어요")
                 }
