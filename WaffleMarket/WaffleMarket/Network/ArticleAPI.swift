@@ -164,6 +164,7 @@ struct UserResponse: Codable {
     var id: Int?
     var username: String
     var profile_image: String?
+    var temparature: Double?
 }
 struct LocationResponse: Codable {
     var place_name: String

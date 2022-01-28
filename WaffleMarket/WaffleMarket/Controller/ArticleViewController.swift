@@ -158,29 +158,43 @@ class ArticleViewController: UIViewController {
         profileImageView.topAnchor.constraint(equalTo: profileView.topAnchor).isActive = true
         profileImageView.bottomAnchor.constraint(equalTo: profileView.bottomAnchor).isActive = true
         profileImageView.widthAnchor.constraint(equalTo: profileView.heightAnchor).isActive = true
-        profileImageView.image = UIImage(named: "defaultProfileImage")
+        if let url = articleSelected?.seller.profile_image {
+            CachedImageLoader().load(path: url, putOn: profileImageView)
+        } else {
+            profileImageView.image = UIImage(named: "defaultProfileImage")
+        }
+        
         profileImageView.isUserInteractionEnabled = false
 
         profileView.addSubview(usernameLabel)
+        profileView.addSubview(mannerTempLabel)
+        profileView.addSubview(showProfileBtn)
+        usernameLabel.adjustsFontSizeToFitWidth = false
+        usernameLabel.lineBreakMode = .byTruncatingTail
         usernameLabel.isUserInteractionEnabled = false
         usernameLabel.translatesAutoresizingMaskIntoConstraints = false
         usernameLabel.leadingAnchor.constraint(equalTo: profileView.leadingAnchor, constant: 110).isActive = true
-        usernameLabel.trailingAnchor.constraint(lessThanOrEqualTo: profileView.trailingAnchor, constant: 250).isActive = true
+        usernameLabel.trailingAnchor.constraint(lessThanOrEqualTo: mannerTempLabel.leadingAnchor).isActive = true
         usernameLabel.topAnchor.constraint(equalTo: profileView.topAnchor).isActive = true
         usernameLabel.bottomAnchor.constraint(equalTo: profileView.bottomAnchor).isActive = true
-        usernameLabel.text = "Waffle Market"
+        usernameLabel.text = articleSelected?.seller.username ?? "Waffle Market"
+        
         usernameLabel.textColor = .black
         
-        profileView.addSubview(mannerTempLabel)
+        
         mannerTempLabel.isUserInteractionEnabled = false
         mannerTempLabel.translatesAutoresizingMaskIntoConstraints = false
         mannerTempLabel.leadingAnchor.constraint(equalTo: profileView.trailingAnchor, constant: -150).isActive = true
         mannerTempLabel.trailingAnchor.constraint(equalTo: profileView.trailingAnchor, constant: -80).isActive = true
         mannerTempLabel.topAnchor.constraint(equalTo: profileView.topAnchor).isActive = true
         mannerTempLabel.bottomAnchor.constraint(equalTo: profileView.bottomAnchor).isActive = true
-        mannerTempLabel.text = "36.5°C"
+        mannerTempLabel.text = "--°C";
+        if let temperature = articleSelected?.seller.temparature {
+            mannerTempLabel.text = "\(temperature)°C"
+        }
         
-        profileView.addSubview(showProfileBtn)
+        
+        
         showProfileBtn.translatesAutoresizingMaskIntoConstraints = false
         showProfileBtn.leadingAnchor.constraint(equalTo: mannerTempLabel.trailingAnchor).isActive = true
         showProfileBtn.trailingAnchor.constraint(equalTo: profileView.trailingAnchor, constant: -20).isActive = true
@@ -190,6 +204,7 @@ class ArticleViewController: UIViewController {
         
         showProfileBtn.rx.tap.bind{
             let vc = ProfileViewController()
+            vc.user = self.articleSelected?.seller
             // TODO: article에서 id 받아와서 프로필 찾고 보내기
             self.present(vc, animated: true)
         }.disposed(by: disposeBag)
