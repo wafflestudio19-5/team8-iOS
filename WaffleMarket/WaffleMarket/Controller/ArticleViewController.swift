@@ -143,29 +143,39 @@ class ArticleViewController: UIViewController {
         profileImageView.topAnchor.constraint(equalTo: profileView.topAnchor).isActive = true
         profileImageView.bottomAnchor.constraint(equalTo: profileView.bottomAnchor).isActive = true
         profileImageView.widthAnchor.constraint(equalTo: profileView.heightAnchor).isActive = true
-        profileImageView.image = UIImage(named: "defaultProfileImage")
+        if let url = articleSelected?.seller?.profileImageUrl {
+            CachedImageLoader().load(path: url, putOn: profileImageView)
+        } else {
+            profileImageView.image = UIImage(named: "defaultProfileImage")
+        }
+        
         profileImageView.isUserInteractionEnabled = false
 
         profileView.addSubview(usernameLabel)
+        profileView.addSubview(mannerTempLabel)
+        profileView.addSubview(showProfileBtn)
+        usernameLabel.adjustsFontSizeToFitWidth = false
+        usernameLabel.lineBreakMode = .byTruncatingTail
         usernameLabel.isUserInteractionEnabled = false
         usernameLabel.translatesAutoresizingMaskIntoConstraints = false
         usernameLabel.leadingAnchor.constraint(equalTo: profileView.leadingAnchor, constant: 110).isActive = true
-        usernameLabel.trailingAnchor.constraint(lessThanOrEqualTo: profileView.trailingAnchor, constant: 250).isActive = true
+        usernameLabel.trailingAnchor.constraint(lessThanOrEqualTo: mannerTempLabel.leadingAnchor).isActive = true
         usernameLabel.topAnchor.constraint(equalTo: profileView.topAnchor).isActive = true
         usernameLabel.bottomAnchor.constraint(equalTo: profileView.bottomAnchor).isActive = true
-        usernameLabel.text = "Waffle Market"
+        usernameLabel.text = articleSelected?.seller?.userName ?? "Waffle Market"
+        
         usernameLabel.textColor = .black
         
-        profileView.addSubview(mannerTempLabel)
+        
         mannerTempLabel.isUserInteractionEnabled = false
         mannerTempLabel.translatesAutoresizingMaskIntoConstraints = false
         mannerTempLabel.leadingAnchor.constraint(equalTo: profileView.trailingAnchor, constant: -150).isActive = true
         mannerTempLabel.trailingAnchor.constraint(equalTo: profileView.trailingAnchor, constant: -80).isActive = true
         mannerTempLabel.topAnchor.constraint(equalTo: profileView.topAnchor).isActive = true
         mannerTempLabel.bottomAnchor.constraint(equalTo: profileView.bottomAnchor).isActive = true
-        mannerTempLabel.text = "36.5°C"
+        mannerTempLabel.text = "36.5"
         
-        profileView.addSubview(showProfileBtn)
+        
         showProfileBtn.translatesAutoresizingMaskIntoConstraints = false
         showProfileBtn.leadingAnchor.constraint(equalTo: mannerTempLabel.trailingAnchor).isActive = true
         showProfileBtn.trailingAnchor.constraint(equalTo: profileView.trailingAnchor, constant: -20).isActive = true

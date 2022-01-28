@@ -14,5 +14,6 @@ struct Profile: Codable {
     
     var profileImageUrl: String?
     var location: String?
+    var temperature: String?
     
 }
