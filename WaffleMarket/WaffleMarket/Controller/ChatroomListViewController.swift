@@ -21,12 +21,32 @@ struct Chatroom {
     
 }
 class ChatroomListViewController: UIViewController {
+    var prevRoomNames: Set<String> = Set<String> ()
     let tableView = UITableView()
     let chatroomList = BehaviorRelay<[Chatroom]>(value: [])
     let disposeBag = DisposeBag()
+    var poller: Observable<Int>?
+    var subscription: Disposable?
     override func viewDidAppear(_ animated: Bool) {
         updateList()
+        
+        poller = Observable<Int>.interval(.seconds(3), scheduler: MainScheduler.instance)
+        subscription = poller?.subscribe {_ in
+            print("poll")
+            self.updateList()
+        } onError: { error in
+            
+        } onCompleted: {
+            
+        } onDisposed: {
+            
+        }
+        
     }
+    override func viewDidDisappear(_ animated: Bool) {
+        subscription?.dispose()
+    }
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         self.view.backgroundColor = .white
@@ -35,6 +55,8 @@ class ChatroomListViewController: UIViewController {
         let longPressGesture = UILongPressGestureRecognizer(target: self, action: #selector(handleLongPress))
         longPressGesture.minimumPressDuration = 0.5
         self.tableView.addGestureRecognizer(longPressGesture)
+        
+        
     
     }
     @objc func handleLongPress(longPressGesture: UILongPressGestureRecognizer) {
@@ -118,10 +140,16 @@ class ChatroomListViewController: UIViewController {
             let decoder = JSONDecoder()
             if let decoded = try? decoder.decode([ChatroomResponse].self, from: response.data) {
                 var temp: [Chatroom] = []
+                var roomNames = Set<String>()
                 for item in decoded{
-                    temp.append(Chatroom(roomName: item.roomname, userName: item.username, profileImageUrl: item.profile_image, productImageUrl: item.product_image.thumbnail_url, lastChat: ChatCommunicator.shared.chatLog[item.roomname]?.last?.content ?? " "))
+                    let lastChat = ChatCommunicator.shared.chatLog[item.roomname]?.last?.content ?? " "
+                    roomNames.insert(item.roomname+lastChat)
+                    temp.append(Chatroom(roomName: item.roomname, userName: item.username, profileImageUrl: item.profile_image, productImageUrl: item.product_image.thumbnail_url, lastChat: lastChat))
                 }
-                self.chatroomList.accept(temp)
+                if roomNames != self.prevRoomNames {
+                    self.chatroomList.accept(temp)
+                    self.prevRoomNames = roomNames
+                }
             } else {
                 self.toast("채팅방 목록을 불러오는데 실패했어요")
                 print(String(decoding: response.data, as: UTF8.self))
