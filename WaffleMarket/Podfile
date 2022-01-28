@@ -20,6 +20,8 @@ target 'WaffleMarket' do
   pod 'Starscream', '~> 4.0.0'
   pod 'Firebase/Messaging'
   pod 'Firebase/Analytics'
+  pod 'ImageSlideshow', '~> 1.9.0'
+  pod "ImageSlideshow/Alamofire"
 end
 
 post_install do |installer|

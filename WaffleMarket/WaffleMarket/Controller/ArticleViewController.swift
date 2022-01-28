@@ -9,6 +9,8 @@ import UIKit
 import RxSwift
 import SwiftUI
 import RxCocoa
+import ImageSlideshow
+class UIImageSlideshow: ImageSlideshow{}
 class ArticleViewController: UIViewController {
 
     let scrollView = UIScrollView()
@@ -19,7 +21,7 @@ class ArticleViewController: UIViewController {
     let categoryLabel = UILabel()
     let priceLabel = UILabel()
     let contentText = UILabel()
-    let productImage = UIImageView()
+    let slideshow = UIImageSlideshow()
     let commentBtn = UIButton()
     let btnStack = UIStackView()
     let chatBtn = UIButton()
@@ -57,7 +59,7 @@ class ArticleViewController: UIViewController {
         scrollView.trailingAnchor.constraint(equalTo: self.view.safeAreaLayoutGuide.trailingAnchor).isActive = true
         scrollView.bottomAnchor.constraint(equalTo: self.bottomView.topAnchor).isActive = true
         
-        scrollView.addSubview(productImage)
+        scrollView.addSubview(slideshow)
         setProductImage()
         scrollView.addSubview(profileView)
         setProfileView()
@@ -96,21 +98,35 @@ class ArticleViewController: UIViewController {
     
     private func setProductImage() {
         let imageLoader = CachedImageLoader()
-        if self.articleSelected!.product_images.count > 0{
-            imageLoader.load(path: self.articleSelected!.product_images[0].thumbnail_url, putOn: productImage){imageView, usedCache in
-                let url = self.articleSelected!.product_images[0].image_url
-                imageLoader.load(path: url, putOn: imageView)
+        let tempImageView = UIImageView()
+        imageLoader.load(path: self.articleSelected!.product_images[0].thumbnail_url, putOn: tempImageView){imageView, usedCache in
+            DispatchQueue.main.async{
+                var inputs: [AlamofireSource] = []
+                var first = true
+                for productImage in self.articleSelected!.product_images {
+                    let url = productImage.image_url
+                    inputs.append(AlamofireSource(urlString: url, placeholder: first ? tempImageView.image : UIImage(systemName: "photo"))!)
+                    first = false
+                }
+                self.slideshow.setImageInputs(inputs)
             }
-        } else {
-            productImage.image = UIImage(named:"defaultProfileImage")
         }
-        productImage.contentMode = .scaleAspectFit
         
-        productImage.translatesAutoresizingMaskIntoConstraints = false
-        productImage.leadingAnchor.constraint(equalTo: self.view.safeAreaLayoutGuide.leadingAnchor).isActive = true
-        productImage.topAnchor.constraint(equalTo: scrollView.contentLayoutGuide.topAnchor).isActive = true
-        productImage.trailingAnchor.constraint(equalTo: self.view.safeAreaLayoutGuide.trailingAnchor).isActive = true
-        productImage.bottomAnchor.constraint(equalTo: scrollView.contentLayoutGuide.topAnchor, constant: 300).isActive = true
+//        if self.articleSelected!.product_images.count > 0{
+//            imageLoader.load(path: self.articleSelected!.product_images[0].thumbnail_url, putOn: productImage){imageView, usedCache in
+//                let url = self.articleSelected!.product_images[0].image_url
+//                imageLoader.load(path: url, putOn: imageView)
+//            }
+//        } else {
+//            productImage.image = UIImage(named:"defaultProfileImage")
+//        }
+       //slideshow.contentMode = .scaleAspectFit
+        
+        slideshow.translatesAutoresizingMaskIntoConstraints = false
+        slideshow.leadingAnchor.constraint(equalTo: self.view.safeAreaLayoutGuide.leadingAnchor).isActive = true
+        slideshow.topAnchor.constraint(equalTo: scrollView.contentLayoutGuide.topAnchor).isActive = true
+        slideshow.trailingAnchor.constraint(equalTo: self.view.safeAreaLayoutGuide.trailingAnchor).isActive = true
+        slideshow.bottomAnchor.constraint(equalTo: scrollView.contentLayoutGuide.topAnchor, constant: 300).isActive = true
         
     }
     
@@ -131,9 +147,9 @@ class ArticleViewController: UIViewController {
         profileView.backgroundColor = .white
         
         profileView.translatesAutoresizingMaskIntoConstraints = false
-        profileView.leadingAnchor.constraint(equalTo: productImage.leadingAnchor).isActive = true
-        profileView.topAnchor.constraint(equalTo: productImage.bottomAnchor, constant: 30).isActive = true
-        profileView.trailingAnchor.constraint(equalTo: productImage.trailingAnchor).isActive = true
+        profileView.leadingAnchor.constraint(equalTo: slideshow.leadingAnchor).isActive = true
+        profileView.topAnchor.constraint(equalTo: slideshow.bottomAnchor, constant: 30).isActive = true
+        profileView.trailingAnchor.constraint(equalTo: slideshow.trailingAnchor).isActive = true
         profileView.heightAnchor.constraint(equalToConstant: 70).isActive = true
         
         profileView.addSubview(profileImageView)
