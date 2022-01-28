@@ -11,13 +11,27 @@ import RxCocoa
 
 class ReviewViewModel: ObservableObject {
     
+    var page = 1
+    var reviews = [Review]()
+    let reviewList = BehaviorRelay<[Review]>(value: [])
+    let disposeBag = DisposeBag()
+    var isLoadingMoreData = false
+    
+    func getReviewList(page:Int, seller: Profile) {
+    }
+    
 }
 
 class ReviewCell: UITableViewCell {
     
+    let viewModel = ReviewViewModel()
+    let imageLoader = CachedImageLoader()
+    let disposeBag = DisposeBag()
+    var imageUrl: String?
     var profileImage = UIImageView()
     var usernameLabel = UILabel()
     var reviewContent = UILabel()
+    
     
     override func prepareForReuse() {
         super.prepareForReuse()
@@ -46,6 +60,14 @@ class ReviewCell: UITableViewCell {
         self.contentView.addSubview(reviewContent)
         setReviewContent()
         
+    }
+    
+    func loadImage(){
+        if imageUrl == nil {
+            profileImage.image = UIImage(named: "defaultProfileImage")
+        } else {
+            imageLoader.load(path: imageUrl!, putOn: profileImage)
+        }
     }
     
     private func setProfileImage() {
@@ -88,17 +110,65 @@ private let reuseIdentifier = "Cell"
 class ReviewViewController: UIViewController, UITableViewDelegate {
     
     let reviewTableView = UITableView()
+    let imageLoader = CachedImageLoader()
     let disposeBag = DisposeBag()
+    let viewModel = ReviewViewModel()
 
     override func viewDidLoad() {
         super.viewDidLoad()
         self.view.backgroundColor = .white
         self.view.addSubview(reviewTableView)
-//        setReviewTableView()
+        setReviewTableView()
         reviewTableView.register(ReviewCell.self, forCellReuseIdentifier: "Cell")
     }
     
+    private func pagination() {
+        print("page: \(viewModel.page)")
+        viewModel.page += 1
+    }
+    
+    private func setReviewTableView() {
+        
+        reviewTableView.translatesAutoresizingMaskIntoConstraints = false
+        reviewTableView.leadingAnchor.constraint(equalTo: self.view.safeAreaLayoutGuide.leadingAnchor).isActive = true
+        reviewTableView.trailingAnchor.constraint(equalTo: self.view.safeAreaLayoutGuide.trailingAnchor).isActive = true
+        reviewTableView.topAnchor.constraint(equalTo: self.view.safeAreaLayoutGuide.topAnchor).isActive = true
+        reviewTableView.bottomAnchor.constraint(equalTo: self.view.safeAreaLayoutGuide.bottomAnchor).isActive = true
+        reviewTableView.heightAnchor.constraint(equalTo:self.view.safeAreaLayoutGuide.heightAnchor).isActive = true
+        reviewTableView.widthAnchor.constraint(equalTo: self.view.safeAreaLayoutGuide.widthAnchor).isActive = true
+    
+        bindTableArticleData()
+        
+    }
+    
+    private func bindTableArticleData() {
+        
+        reviewTableView.rx.didScroll.bind{
+            let offset = self.reviewTableView.contentOffset.y + self.reviewTableView.frame.height
+            let height = self.reviewTableView.contentSize.height
+            if offset > height-10 && !self.viewModel.isLoadingMoreData {
+                self.pagination()
+            }
+        }.disposed(by: disposeBag)
+        
+        viewModel.reviewList.bind(to: reviewTableView.rx.items(cellIdentifier: reuseIdentifier, cellType: ReviewCell.self)) { row, model, cell in
+            print(model)
+            cell.imageUrl = model.buyer.profileImageUrl
+            cell.usernameLabel.text = model.buyer.userName
+            cell.reviewContent.text = model.content
 
+        }.disposed(by: disposeBag)
+        
+        reviewTableView.rx.setDelegate(self).disposed(by: disposeBag)
+        
+    }
+    
+//    func getProfileImage(urlString: String) -> UIImage {
+//        let url = URL(string: urlString)
+//        guard let data = try? Data(contentsOf: url!) else {return UIImage(named: "noImageAvailable") ?? UIImage(named: "noImageAvailable")!}
+//        return UIImage(data: data) ?? UIImage(named: "noImageAvailable")!
+//    }
+    
     /*
     // MARK: - Navigation
 
