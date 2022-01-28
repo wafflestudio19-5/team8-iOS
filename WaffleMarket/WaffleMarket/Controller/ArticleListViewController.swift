@@ -28,6 +28,7 @@ class ArticleListViewModel: ObservableObject {
 
 class ArticleListViewController: UIViewController, UITableViewDelegate {
 
+    var listName: String?
     let articleListView = ArticleListView()
     let imageLoader = CachedImageLoader()
     let disposeBag = DisposeBag()
