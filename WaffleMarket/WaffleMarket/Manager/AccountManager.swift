@@ -10,8 +10,11 @@ import UIKit
 import RxSwift
 class AccountManager {
     static var token: String?
-    static var userProfile: Profile?
+    static var userProfile: Profile!
     static func saveTokenForAutoLogin(){
+        let encoder = JSONEncoder()
+        let encoded = try! encoder.encode(userProfile)
+        UserDefaults.standard.set(encoded, forKey: "userProfile")
         let keychainQuery: NSDictionary = [
             kSecClass : kSecClassGenericPassword,
             kSecAttrService: "com.wafflestudio.team8.WaffleMarket",
@@ -24,24 +27,12 @@ class AccountManager {
     }
     static func login(disposeBag: DisposeBag, _ data: LoginResponse, autologin: Bool = false, completion: @escaping(()->Void)) {
         token = data.token
+        userProfile = Profile(phoneNumber: data.user.phone_number, userName: data.user.username, profileImageUrl: data.user.profile_image, location: nil)
         if autologin {
             saveTokenForAutoLogin()
         }
-        UserAPI.getProfile().subscribe { response in
-            print(String(decoding: response.data, as: UTF8.self))
-            let decoder = JSONDecoder()
-            if let decoded = try? decoder.decode(ProfileResponse.self, from:response.data){
-                self.userProfile = Profile(phoneNumber: decoded.phone_number, userName: decoded.username, profileImageUrl: decoded.profile_image, location: nil)
-                
-            } else {
-                
-            }
-            completion()
-        } onFailure: { error in
-            
-        } onDisposed: {
-            
-        }.disposed(by: disposeBag)
+
+        
     }
     static func logout() {
         let keychainQuery: NSDictionary = [
@@ -53,6 +44,7 @@ class AccountManager {
         if status != errSecItemNotFound {
             assert(status == noErr, "failed to delete jwt token: \(status)")
         }
+        UserDefaults.standard.removeObject(forKey: "userProfile")
     }
     static func tryAutologin(disposeBag: DisposeBag, completion: @escaping((Bool)->Void)) -> Bool {
         let keychainQuery: NSDictionary = [
@@ -70,24 +62,16 @@ class AccountManager {
             let retrievedData = dataTypeRef as! Data
             let value = String(data: retrievedData, encoding: .utf8)
             token = value
-            UserAPI.getProfile().subscribe { response in
-                print(String(decoding: response.data, as: UTF8.self))
+            if let savedValue = UserDefaults.standard.object(forKey: "userProfile") as? Data{
                 let decoder = JSONDecoder()
-                if let decoded = try? decoder.decode(ProfileResponse.self, from:response.data){
-                    self.userProfile = Profile(phoneNumber: decoded.phone_number, userName: decoded.username, profileImageUrl: decoded.profile_image, location: nil)
-                    completion(true)
-                } else {
-                    print("profile decoding failure")
-                    completion(false)
+                if let userProfile = try? decoder.decode(Profile.self, from: savedValue) {
+                    self.userProfile = userProfile
+                    print("autologin success")
+                    return true
                 }
-            } onFailure: { error in
-                print("profile decoding failure")
-            } onDisposed: {
-                
-            }.disposed(by: disposeBag)
-
-            print("autologin success")
-            return true
+            }
+            print("autologin failure")
+            return false
         } else {
             print("autologin failure")
             completion(false)

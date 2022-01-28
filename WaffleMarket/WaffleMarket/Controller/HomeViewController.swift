@@ -33,7 +33,7 @@ class ArticleViewModel: ObservableObject {
                     let article = Article(
                         id: articleResponse.id,
                         title: articleResponse.title,
-                        seller: Profile(phoneNumber: nil, userName: articleResponse.seller.username, profileImage: nil, profileImageUrl: articleResponse.seller.profile_image, location: nil),
+                        seller: Profile(phoneNumber: nil, userName: articleResponse.seller.username, profileImageUrl: articleResponse.seller.profile_image, location: nil),
                         category: articleResponse.category,
                         price: articleResponse.price,
                         content: articleResponse.content,

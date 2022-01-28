@@ -11,7 +11,7 @@ import RxAlamofire
 import Moya
 enum UserService{
     
-    case setProfile(profile: Profile)
+    case setProfile(profile: SetProfileRequest)
     case getProfile
     case setCategory(category: String, enabled: Bool)
     case getCategory
@@ -55,8 +55,8 @@ extension UserService: TargetType {
     var task: Task {
         switch self {
         case let .setProfile(profile):
-            let imageData = MultipartFormData(provider: .data(profile.profileImage!.jpegData(compressionQuality: 0.9)!), name: "profile_image", fileName: "profile_image\(Date().timeIntervalSince1970).jpg", mimeType: "image/jpeg")
-            let userNameData = MultipartFormData(provider: .data(profile.userName!.data(using: .utf8)!), name: "username")
+            let imageData = MultipartFormData(provider: .data(profile.profileImage.jpegData(compressionQuality: 0.9)!), name: "profile_image", fileName: "profile_image\(Date().timeIntervalSince1970).jpg", mimeType: "image/jpeg")
+            let userNameData = MultipartFormData(provider: .data(profile.userName.data(using: .utf8)!), name: "username")
             let multipartData = [imageData, userNameData]
             return .uploadMultipart(multipartData)
         case .getProfile:
@@ -77,6 +77,16 @@ extension UserService: TargetType {
         
     }
 }
+
+struct SetProfileRequest {
+    var phoneNumber: String?
+    var userName: String
+    
+    var profileImage: UIImage
+    var location: String?
+    
+}
+
 struct SetCategoryRequest: Codable{
     var category: String
     var enabled: Bool
@@ -95,7 +105,7 @@ class UserAPI {
     
 
     
-    static func setProfile(profile: Profile) -> Observable<ProgressResponse> {
+    static func setProfile(profile: SetProfileRequest) -> Observable<ProgressResponse> {
         return provider.rx.requestWithProgress(.setProfile(profile: profile))
     }
     static func getProfile() -> Single<Response> {

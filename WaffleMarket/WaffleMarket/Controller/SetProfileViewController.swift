@@ -182,7 +182,7 @@ class SetProfileViewController: UIViewController {
             // MARK: upload profile image
             
             if self.isSignUp {
-                let profile = Profile(phoneNumber: self.userId!, userName: username, profileImage: profileImage)
+                let profile = SetProfileRequest(phoneNumber: self.userId!, userName: username, profileImage: profileImage)
                 WaffleAPI.signup(profile: profile).subscribe { response in
                     let decoder = JSONDecoder()
                     if (response.statusCode / 100) == 2 {
@@ -208,14 +208,14 @@ class SetProfileViewController: UIViewController {
                     
                 }.disposed(by: self.disposeBag)
             } else {
-                let profile = Profile(userName: username, profileImage: profileImage)
+                let profile = SetProfileRequest(userName: username, profileImage: profileImage)
                 self.setProfile(profile: profile, location_exists: true)
             }
 
             
         }.disposed(by: disposeBag)
     }
-    private func setProfile(profile: Profile, location_exists: Bool){
+    private func setProfile(profile: SetProfileRequest, location_exists: Bool){
         UserAPI.setProfile(profile: profile).subscribe { progressResponse in
             print(progressResponse.progress)
             self.progressView.progress = Float(progressResponse.progress)
