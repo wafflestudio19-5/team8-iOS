@@ -27,7 +27,7 @@ class AccountManager {
     }
     static func login(disposeBag: DisposeBag, _ data: LoginResponse, autologin: Bool = false) {
         token = data.token
-        userProfile = Profile(phoneNumber: data.user.phone_number, userName: data.user.username, profileImageUrl: data.user.profile_image, location: nil, temperature: data.user.temparature)
+        userProfile = Profile(id: data.user.id, phoneNumber: data.user.phone_number, userName: data.user.username, profileImageUrl: data.user.profile_image, location: nil, temperature: data.user.temparature)
         if autologin {
             saveTokenForAutoLogin()
         }

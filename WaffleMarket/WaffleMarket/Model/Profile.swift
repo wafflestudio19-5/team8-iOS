@@ -9,6 +9,7 @@ import Foundation
 import UIKit
 
 struct Profile: Codable {
+    var id: Int?
     var phoneNumber: String?
     var userName: String?
     
