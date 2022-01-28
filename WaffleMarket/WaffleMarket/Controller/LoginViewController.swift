@@ -26,7 +26,7 @@ class LoginViewController: UIViewController {
     
 
     
-    var waffleLogoLabel: UILabel = UILabel()
+    var waffleLogoImage: UIImageView = UIImageView()
     var welcomeLabel: UILabel! = UILabel()
     var idField: UITextField = UITextField()
     let idText = BehaviorSubject(value: "")
@@ -96,8 +96,8 @@ class LoginViewController: UIViewController {
         view.addGestureRecognizer(tap)
         
         
-        self.view.addSubview(waffleLogoLabel)
-        setWaffleLogoLabel()
+        self.view.addSubview(waffleLogoImage)
+        setWaffleLogo()
         self.view.addSubview(welcomeLabel)
         setWelcomeLabel()
         self.view.addSubview(idField)
@@ -130,19 +130,24 @@ class LoginViewController: UIViewController {
         // Do any additional setup after loading the view.
     }
     
-    private func setWaffleLogoLabel(){
-        waffleLogoLabel.translatesAutoresizingMaskIntoConstraints = false
-        waffleLogoLabel.centerXAnchor.constraint(equalTo: self.view.safeAreaLayoutGuide.centerXAnchor).isActive = true
-        waffleLogoLabel.topAnchor.constraint(lessThanOrEqualTo: self.view.safeAreaLayoutGuide.topAnchor, constant: 200).isActive = true
-        waffleLogoLabel.topAnchor.constraint(greaterThanOrEqualTo: self.view.safeAreaLayoutGuide.topAnchor).isActive = true
-        waffleLogoLabel.text = "🧇"
-        waffleLogoLabel.font = .systemFont(ofSize: 100)
+    private func setWaffleLogo(){
+        waffleLogoImage.translatesAutoresizingMaskIntoConstraints = false
+    
+        waffleLogoImage.topAnchor.constraint(lessThanOrEqualTo: self.view.safeAreaLayoutGuide.topAnchor, constant: 200).isActive = true
+        waffleLogoImage.topAnchor.constraint(greaterThanOrEqualTo: self.view.safeAreaLayoutGuide.topAnchor).isActive = true
+        waffleLogoImage.leadingAnchor.constraint(equalTo: self.view.safeAreaLayoutGuide.leadingAnchor).isActive = true
+        waffleLogoImage.trailingAnchor.constraint(equalTo: self.view.safeAreaLayoutGuide.trailingAnchor).isActive = true
+        waffleLogoImage.heightAnchor.constraint(equalToConstant: 200).isActive = true
+        waffleLogoImage.contentMode = .scaleAspectFit
+        waffleLogoImage.image = UIImage(named: "Fufuri")
+        
+
     }
     
     private func setWelcomeLabel(){
         welcomeLabel.translatesAutoresizingMaskIntoConstraints = false
         welcomeLabel.centerXAnchor.constraint(equalTo: self.view.safeAreaLayoutGuide.centerXAnchor).isActive = true
-        welcomeLabel.topAnchor.constraint(equalTo: waffleLogoLabel.bottomAnchor, constant: 30).isActive = true
+        welcomeLabel.topAnchor.constraint(equalTo: waffleLogoImage.bottomAnchor, constant: 30).isActive = true
         
         welcomeLabel.text = "당신 근처의 와플마켓을 시작해보세요!"
     }

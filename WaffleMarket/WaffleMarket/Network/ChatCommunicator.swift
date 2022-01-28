@@ -14,6 +14,7 @@ class ChatCommunicator: NSObject{
     private var sockets: [String: WebSocket] = [:]
     private var isConnected: [String: Bool] = [:]
     var didReceive: [String: PublishRelay<String>] = [:]
+    public var chatLog: [String: [ChatMessage]] = [:]
     public static let shared = ChatCommunicator()
     private override init(){
         super.init()

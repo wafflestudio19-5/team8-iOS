@@ -9,6 +9,8 @@ import UIKit
 import RxSwift
 import SwiftUI
 import RxCocoa
+import ImageSlideshow
+class UIImageSlideshow: ImageSlideshow{}
 class ArticleViewController: UIViewController {
 
     let scrollView = UIScrollView()
@@ -19,13 +21,13 @@ class ArticleViewController: UIViewController {
     let categoryLabel = UILabel()
     let priceLabel = UILabel()
     let contentText = UILabel()
-    let productImage = UIImageView()
+    let slideshow = UIImageSlideshow()
     let commentBtn = UIButton()
     let btnStack = UIStackView()
     let chatBtn = UIButton()
     let likeBtn = UIButton(type: .custom)
     let profileImageView = UIImageView()
-    
+    var isProcessingLike = false
     let usernameLabel = UILabel()
     let mannerTempLabel = UILabel()
     let showProfileBtn = UIButton()
@@ -37,6 +39,8 @@ class ArticleViewController: UIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        
+        isLiked = articleSelected?.user_liked ?? false
         view.backgroundColor = .white
         
         view.addSubview(scrollView)
@@ -55,7 +59,7 @@ class ArticleViewController: UIViewController {
         scrollView.trailingAnchor.constraint(equalTo: self.view.safeAreaLayoutGuide.trailingAnchor).isActive = true
         scrollView.bottomAnchor.constraint(equalTo: self.bottomView.topAnchor).isActive = true
         
-        scrollView.addSubview(productImage)
+        scrollView.addSubview(slideshow)
         setProductImage()
         scrollView.addSubview(profileView)
         setProfileView()
@@ -94,24 +98,35 @@ class ArticleViewController: UIViewController {
     
     private func setProductImage() {
         let imageLoader = CachedImageLoader()
-        if let url = articleSelected!.thumbnailImage {
-            imageLoader.load(path: url, putOn: productImage){imageView, usedCache in
-                let url = self.articleSelected!.productImages[0]
-                imageLoader.load(path: url, putOn: imageView)
+        let tempImageView = UIImageView()
+        imageLoader.load(path: self.articleSelected!.product_images[0].thumbnail_url, putOn: tempImageView){imageView, usedCache in
+            DispatchQueue.main.async{
+                var inputs: [AlamofireSource] = []
+                var first = true
+                for productImage in self.articleSelected!.product_images {
+                    let url = productImage.image_url
+                    inputs.append(AlamofireSource(urlString: url, placeholder: first ? tempImageView.image : UIImage(systemName: "photo"))!)
+                    first = false
+                }
+                self.slideshow.setImageInputs(inputs)
             }
-        } else if self.articleSelected!.productImages.count > 0{
-            let url = self.articleSelected!.productImages[0]
-            imageLoader.load(path: url, putOn: productImage)
-        } else {
-            productImage.image = UIImage(named:"defaultProfileImage")
         }
-        productImage.contentMode = .scaleAspectFit
         
-        productImage.translatesAutoresizingMaskIntoConstraints = false
-        productImage.leadingAnchor.constraint(equalTo: self.view.safeAreaLayoutGuide.leadingAnchor).isActive = true
-        productImage.topAnchor.constraint(equalTo: scrollView.contentLayoutGuide.topAnchor).isActive = true
-        productImage.trailingAnchor.constraint(equalTo: self.view.safeAreaLayoutGuide.trailingAnchor).isActive = true
-        productImage.bottomAnchor.constraint(equalTo: scrollView.contentLayoutGuide.topAnchor, constant: 300).isActive = true
+//        if self.articleSelected!.product_images.count > 0{
+//            imageLoader.load(path: self.articleSelected!.product_images[0].thumbnail_url, putOn: productImage){imageView, usedCache in
+//                let url = self.articleSelected!.product_images[0].image_url
+//                imageLoader.load(path: url, putOn: imageView)
+//            }
+//        } else {
+//            productImage.image = UIImage(named:"defaultProfileImage")
+//        }
+       //slideshow.contentMode = .scaleAspectFit
+        
+        slideshow.translatesAutoresizingMaskIntoConstraints = false
+        slideshow.leadingAnchor.constraint(equalTo: self.view.safeAreaLayoutGuide.leadingAnchor).isActive = true
+        slideshow.topAnchor.constraint(equalTo: scrollView.contentLayoutGuide.topAnchor).isActive = true
+        slideshow.trailingAnchor.constraint(equalTo: self.view.safeAreaLayoutGuide.trailingAnchor).isActive = true
+        slideshow.bottomAnchor.constraint(equalTo: scrollView.contentLayoutGuide.topAnchor, constant: 300).isActive = true
         
     }
     
@@ -132,9 +147,9 @@ class ArticleViewController: UIViewController {
         profileView.backgroundColor = .white
         
         profileView.translatesAutoresizingMaskIntoConstraints = false
-        profileView.leadingAnchor.constraint(equalTo: productImage.leadingAnchor).isActive = true
-        profileView.topAnchor.constraint(equalTo: productImage.bottomAnchor, constant: 30).isActive = true
-        profileView.trailingAnchor.constraint(equalTo: productImage.trailingAnchor).isActive = true
+        profileView.leadingAnchor.constraint(equalTo: slideshow.leadingAnchor).isActive = true
+        profileView.topAnchor.constraint(equalTo: slideshow.bottomAnchor, constant: 30).isActive = true
+        profileView.trailingAnchor.constraint(equalTo: slideshow.trailingAnchor).isActive = true
         profileView.heightAnchor.constraint(equalToConstant: 70).isActive = true
         
         profileView.addSubview(profileImageView)
@@ -238,11 +253,31 @@ class ArticleViewController: UIViewController {
         likeBtn.widthAnchor.constraint(equalTo: bottomView.heightAnchor).isActive = true
         likeBtn.heightAnchor.constraint(equalTo: bottomView.heightAnchor).isActive = true
         likeBtn.tintColor = .systemPink
-        likeBtn.setImage(UIImage(systemName: "heart"), for: .normal)
+        likeBtn.setImage(UIImage(systemName: isLiked ? "heart.fill" : "heart"), for: .normal)
         likeBtn.rx.tap.bind{
+            if self.isProcessingLike {
+                self.toast("처리중이에요")
+                return
+            }
+            self.isProcessingLike = true
             print("click")
-            self.isLiked = !self.isLiked
-            self.animateHeart()
+            ArticleAPI.like(articleId: self.articleId).subscribe { response in
+                let decoder = JSONDecoder()
+                if let decoded = try? decoder.decode(Article.self, from: response.data) {
+                    self.isLiked = decoded.user_liked
+                    DispatchQueue.main.async {
+                        self.animateHeart()
+                    }
+                }
+                self.isProcessingLike = false
+            } onFailure: { error in
+                self.isProcessingLike = false
+            } onDisposed: {
+                
+            }.disposed(by: self.disposeBag)
+
+            
+            
         }.disposed(by: disposeBag)
         
     }
@@ -262,7 +297,7 @@ class ArticleViewController: UIViewController {
     private func setPriceLabel() {
         let price = articleSelected?.price
         priceLabel.text = "₩ " + String(price!)
-        if articleSelected?.isSold == true {
+        if articleSelected?.sold_at != nil {
             priceLabel.text = "판매완료"
         }
         priceLabel.translatesAutoresizingMaskIntoConstraints = false
@@ -284,11 +319,12 @@ class ArticleViewController: UIViewController {
 //        commentBtn.setTitleColor(.white, for: .normal)
 //        commentBtn.layer.cornerRadius = 10
 //        commentBtn.titleLabel?.font = .systemFont(ofSize: 15)
-        commentBtn.setImage(UIImage(systemName:"message"), for: .normal)
+        commentBtn.setImage(UIImage(systemName:"text.bubble"), for: .normal)
         
         commentBtn.rx.tap.bind{
             print("click")
             let vc = CommentViewController()
+            vc.isOwner = self.articleSelected?.delete_enable ?? false
             vc.articleId = self.articleId
             self.navigationController?.pushViewController(vc, animated: true)
         }.disposed(by: disposeBag)
@@ -297,7 +333,7 @@ class ArticleViewController: UIViewController {
         chatBtn.translatesAutoresizingMaskIntoConstraints = false
         
 //        chatBtn.setTitle("채팅하기", for: .normal)
-        chatBtn.setImage(UIImage(systemName:"text.bubble"), for: .normal)
+        chatBtn.setImage(UIImage(systemName:"message"), for: .normal)
 //        chatBtn.backgroundColor = .orange
 //        chatBtn.setTitleColor(.white, for: .normal)
 //        chatBtn.layer.cornerRadius = 10
@@ -307,17 +343,24 @@ class ArticleViewController: UIViewController {
                 let decoder = JSONDecoder()
                 print(String(decoding: response.data, as: UTF8.self))
                 if let decoded = try? decoder.decode(ChatroomResponse.self, from: response.data){
-                    let chatView = ChatView()
-                    if !ChatCommunicator.shared.checkConnection(roomName: decoded.roomname){
-                        ChatCommunicator.shared.connect(roomName: decoded.roomname)
-                    }
-                    let me = ChatUser(name: AccountManager.userProfile!.userName!, avatar: AccountManager.userProfile!.profileImageUrl, isCurrentUser: true)
-                    let opponent = ChatUser(name: decoded.username, avatar: decoded.profile_image)
-                    let dataSource = DataSource(me:me, opponent: opponent, messages:[])
-                    let chatHelper = ChatHelper(roomName: decoded.roomname, dataSource: dataSource)
                     
-                    let vc = UIHostingController(rootView: chatView.environmentObject(chatHelper))
-                    self.navigationController?.pushViewController(vc, animated: true)
+                    let imageView = UIImageView()
+                    CachedImageLoader().load(path: decoded.profile_image, putOn: imageView) { imageView, usedCache in
+                        DispatchQueue.main.async{
+                            let chatView = ChatView()
+                            if !ChatCommunicator.shared.checkConnection(roomName: decoded.roomname){
+                                ChatCommunicator.shared.connect(roomName: decoded.roomname)
+                            }
+                            let me = ChatUser(name: AccountManager.userProfile!.userName!, avatar: nil, isCurrentUser: true)
+                            let opponent = ChatUser(name: decoded.username, avatar: imageView.image)
+                            let dataSource = DataSource(me:me, opponent: opponent, messages: ChatCommunicator.shared.chatLog[decoded.roomname] ?? [], productImage: decoded.product_image.image_url)
+                            let chatHelper = ChatHelper(roomName: decoded.roomname, dataSource: dataSource)
+                            let vc = UIHostingController(rootView: chatView.environmentObject(chatHelper))
+                            vc.navigationItem.title = decoded.username
+                            self.navigationController?.pushViewController(vc, animated: true)
+                        }
+                    }
+                    
                 } else {
                     self.toast("오류가 발생했어요")
                 }

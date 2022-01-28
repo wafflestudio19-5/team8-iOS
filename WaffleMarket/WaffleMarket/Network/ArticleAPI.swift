@@ -17,6 +17,7 @@ enum ArticleService {
     case postReply(articleId: Int, commentId: Int, content: String)
     case deleteComment(articleId: Int, commentId: Int)
     case registerBuyer(articleId: Int, buyer_id: Int)
+    case like(articleId: Int)
 }
 extension ArticleService: TargetType {
     var baseURL: URL {
@@ -39,6 +40,8 @@ extension ArticleService: TargetType {
             return "/\(articleId)/comment/\(commentId)/"
         case let .registerBuyer(articleId, _):
             return "/\(articleId)/buyer/"
+        case let .like(articleId):
+            return "/\(articleId)/like/"
         }
     }
     
@@ -57,6 +60,8 @@ extension ArticleService: TargetType {
         case .deleteComment:
             return .delete
         case .registerBuyer:
+            return .put
+        case .like:
             return .put
         }
     }
@@ -100,6 +105,8 @@ extension ArticleService: TargetType {
             return .requestPlain
         case let .registerBuyer(articleId, buyer_id):
             return .requestJSONEncodable(["buyer_id": buyer_id])
+        case .like:
+            return .requestPlain
         }
         
         
@@ -140,6 +147,9 @@ class ArticleAPI {
     static func registerBuyer(articleId: Int, buyer_id: Int) -> Single<Response> {
         return provider.rx.request(.registerBuyer(articleId: articleId, buyer_id: buyer_id))
     }
+    static func like(articleId: Int) -> Single<Response> {
+        return provider.rx.request(.like(articleId: articleId))
+    }
 }
 struct CommentResponse: Codable {
     var id: Int
@@ -164,10 +174,11 @@ struct ProductImageResponse: Codable {
     var image_url: String
     var thumbnail_url: String
 }
-struct ArticleResponse: Codable {
+struct Article: Codable {
     var id: Int
     var seller: UserResponse
     var location: LocationResponse
+    var delete_enable: Bool
     var title: String
     var content: String
     var product_images: [ProductImageResponse]
@@ -177,4 +188,7 @@ struct ArticleResponse: Codable {
     var sold_at: Double?
     var buyer: UserResponse?
     var deleted_at: String?
+    var hit: Int?
+    var like: Int?
+    var user_liked: Bool
 }

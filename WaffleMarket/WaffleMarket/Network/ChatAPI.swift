@@ -14,6 +14,7 @@ enum ChatService {
     case create(article_id: Int)
     case listByUser
     case listByArticle(article_id: Int)
+    case leave(roomname: String)
 }
 extension ChatService: TargetType {
     var baseURL: URL {
@@ -28,6 +29,8 @@ extension ChatService: TargetType {
             return "/"
         case let .listByArticle(article_id):
             return "/\(article_id)/"
+        case let .leave(roomname):
+            return "/\(roomname)/"
         }
     }
     
@@ -39,6 +42,8 @@ extension ChatService: TargetType {
             return .get
         case .listByArticle:
             return .get
+        case .leave:
+            return .delete
         }
     }
     
@@ -49,6 +54,8 @@ extension ChatService: TargetType {
         case .listByUser:
             return .requestPlain
         case .listByArticle:
+            return .requestPlain
+        case .leave:
             return .requestPlain
         }
     }
@@ -83,5 +90,8 @@ class ChatAPI {
     }
     static func listByArticle(article_id: Int) -> Single<Response> {
         return provider.rx.request(.listByArticle(article_id: article_id))
+    }
+    static func leave(roomName: String) -> Single<Response> {
+        return provider.rx.request(.leave(roomname: roomName))
     }
 }
