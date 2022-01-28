@@ -80,7 +80,7 @@ class MypageViewController: UIViewController {
 
         showProfileBtn.rx.tap.bind{
             let vc = ProfileViewController()
-            vc.user = UserResponse(username: AccountManager.userProfile.userName!, profile_image: AccountManager.userProfile.profileImageUrl, temparature: AccountManager.userProfile.temperature)
+            vc.user = UserResponse(id: AccountManager.userProfile.id ,username: AccountManager.userProfile.userName!, profile_image: AccountManager.userProfile.profileImageUrl, temparature: AccountManager.userProfile.temperature)
             // TODO: article에서 id 받아와서 프로필 찾고 보내기
             self.present(vc, animated: true)
         }.disposed(by: disposeBag)
