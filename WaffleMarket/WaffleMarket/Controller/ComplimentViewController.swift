@@ -10,13 +10,13 @@ import RxSwift
 import RxCocoa
 
 class ComplimentViewController: UIViewController, UITableViewDelegate, UITableViewDataSource {
-
+    var userId: Int!
     let complimentLabel = UILabel()
     let complimentTableView = UITableView()
     let buttonView = UIView()
     let completeBtn = UIButton()
-    let cancelBtn = UIButton()
-    let compliments: [String] = ["친절하고 매너가 좋아요", "시간 약속을 잘 지켜요", "응답이 빨라요"]
+    
+    let compliments: [String] = ["친절하고 매너가 좋아요.", "시간 약속을 잘 지켜요.", "응답이 빨라요."]
     let disposeBag = DisposeBag()
     
     override func viewDidLoad() {
@@ -60,35 +60,35 @@ class ComplimentViewController: UIViewController, UITableViewDelegate, UITableVi
     
     private func setButtonView() {
         
-        buttonView.addSubview(cancelBtn)
-        buttonView.addSubview(completeBtn)
         
-        cancelBtn.translatesAutoresizingMaskIntoConstraints = false
-        cancelBtn.leadingAnchor.constraint(equalTo: self.view.safeAreaLayoutGuide.leadingAnchor).isActive = true
-        cancelBtn.topAnchor.constraint(equalTo: complimentTableView.bottomAnchor).isActive = true
-        cancelBtn.trailingAnchor.constraint(equalTo: buttonView.centerXAnchor).isActive = true
-        cancelBtn.bottomAnchor.constraint(equalTo: self.view.safeAreaLayoutGuide.bottomAnchor).isActive = true
-        
-        cancelBtn.backgroundColor = .gray
-        cancelBtn.setTitle("취소", for: .normal)
-        
-        cancelBtn.rx.tap.bind{
-            let vc = ProfileViewController()
-            self.present(vc, animated: true)
-        }.disposed(by: disposeBag)
-        
+        view.addSubview(completeBtn)
+
         completeBtn.translatesAutoresizingMaskIntoConstraints = false
-        completeBtn.leadingAnchor.constraint(equalTo: cancelBtn.trailingAnchor).isActive = true
-        completeBtn.topAnchor.constraint(equalTo: cancelBtn.topAnchor).isActive = true
+        completeBtn.leadingAnchor.constraint(equalTo: self.view.safeAreaLayoutGuide.leadingAnchor).isActive = true
+        
         completeBtn.trailingAnchor.constraint(equalTo: self.view.safeAreaLayoutGuide.trailingAnchor).isActive = true
-        completeBtn.bottomAnchor.constraint(equalTo: cancelBtn.bottomAnchor).isActive = true
+        completeBtn.bottomAnchor.constraint(equalTo: self.view.safeAreaLayoutGuide.bottomAnchor).isActive = true
+        completeBtn.heightAnchor.constraint(equalToConstant: 80).isActive = true
         
         completeBtn.backgroundColor = .orange
         completeBtn.setTitle("평가완료", for: .normal)
         
         completeBtn.rx.tap.bind{
-            let vc = ProfileViewController()
-            self.present(vc, animated: true)
+            print("완료")
+            if let row = self.complimentTableView.indexPathForSelectedRow?.row {
+                ReviewAPI.updateManner(userId: self.userId, type: "good", mannerList: [self.compliments[row]]).subscribe { response in
+                    print(String(decoding: response.data, as: UTF8.self))
+                    if response.statusCode / 100 == 2 {
+                        self.dismiss(animated: true)
+                    }
+                } onFailure: { error in
+                    
+                } onDisposed: {
+                    
+                }.disposed(by: self.disposeBag)
+
+                
+            }
         }.disposed(by: disposeBag)
         
     }
