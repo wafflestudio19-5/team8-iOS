@@ -24,12 +24,55 @@ class ChatroomListViewController: UIViewController {
     let tableView = UITableView()
     let chatroomList = BehaviorRelay<[Chatroom]>(value: [])
     let disposeBag = DisposeBag()
+    override func viewDidAppear(_ animated: Bool) {
+        updateList()
+    }
     override func viewDidLoad() {
         super.viewDidLoad()
         self.view.backgroundColor = .white
         self.view.addSubview(tableView)
         setTableView()
-        updateList()
+        let longPressGesture = UILongPressGestureRecognizer(target: self, action: #selector(handleLongPress))
+        longPressGesture.minimumPressDuration = 0.5
+        self.tableView.addGestureRecognizer(longPressGesture)
+    
+    }
+    @objc func handleLongPress(longPressGesture: UILongPressGestureRecognizer) {
+        let p = longPressGesture.location(in: self.tableView)
+        let indexPath = self.tableView.indexPathForRow(at: p)
+        if indexPath == nil {
+            print("Long press on table view, not row.")
+        } else if longPressGesture.state == UIGestureRecognizer.State.began {
+            print("Long press on row, at \(indexPath!.row)")
+            let chatroom = chatroomList.value[indexPath!.row]
+            
+            let alert = UIAlertController(title: chatroom.userName, message: "", preferredStyle: .actionSheet)
+            let leave = UIAlertAction(title: "나가기", style: .destructive) { action in
+                ChatAPI.leave(roomName: chatroom.roomName).subscribe { response in
+                    print(String(decoding: response.data, as: UTF8.self ))
+                    print(chatroom.roomName)
+                    if response.statusCode / 100 == 2 {
+                        self.updateList()
+                        alert.dismiss(animated: true)
+                    } else {
+                        self.toast("오류가 발생했어요")
+                    }
+                    
+                } onFailure: { error in
+                    
+                } onDisposed: {
+                    
+                }.disposed(by: self.disposeBag)
+
+                
+            }
+            let cancel = UIAlertAction(title: "취소", style: .cancel) { action in
+                alert.dismiss(animated: true)
+            }
+            alert.addAction(leave)
+            alert.addAction(cancel)
+            self.present(alert, animated: true)
+        }
     }
     private func setTableView(){
         tableView.delegate = self
@@ -44,19 +87,30 @@ class ChatroomListViewController: UIViewController {
             
         }.disposed(by: disposeBag)
         tableView.rx.itemSelected.bind{indexPath in
-            let chatroom = self.chatroomList.value[indexPath.item]
-            self.tableView.deselectRow(at: indexPath, animated: true)
-            let chatView = ChatView()
-            if !ChatCommunicator.shared.checkConnection(roomName: chatroom.roomName){
-                ChatCommunicator.shared.connect(roomName: chatroom.roomName)
-            }
-            let me = ChatUser(name: AccountManager.userProfile!.userName!, avatar: AccountManager.userProfile!.profileImageUrl!, isCurrentUser: true)
-            let opponent = ChatUser(name: chatroom.userName, avatar: chatroom.profileImageUrl)
-            let dataSource = DataSource(me:me, opponent: opponent, messages:[])
-            let chatHelper = ChatHelper(roomName: chatroom.roomName, dataSource: dataSource)
             
-            let vc = UIHostingController(rootView: chatView.environmentObject(chatHelper))
-            self.navigationController?.pushViewController(vc, animated: true)
+            self.tableView.deselectRow(at: indexPath, animated: true)
+            let chatroom = self.chatroomList.value[indexPath.item]
+            let imageView = UIImageView()
+        
+            CachedImageLoader().load(path: chatroom.profileImageUrl, putOn: imageView) { imageView, usedCache in
+                DispatchQueue.main.async{
+                    
+                    let chatView = ChatView()
+                    
+                    if !ChatCommunicator.shared.checkConnection(roomName: chatroom.roomName){
+                        ChatCommunicator.shared.connect(roomName: chatroom.roomName)
+                    }
+                    let me = ChatUser(name: AccountManager.userProfile!.userName!, avatar: nil, isCurrentUser: true)
+                    let opponent = ChatUser(name: chatroom.userName, avatar: imageView.image)
+                    let dataSource = DataSource(me:me, opponent: opponent, messages: ChatCommunicator.shared.chatLog[chatroom.roomName] ?? [], productImage: chatroom.productImageUrl)
+                    let chatHelper = ChatHelper(roomName: chatroom.roomName, dataSource: dataSource)
+                    let vc = UIHostingController(rootView: chatView.environmentObject(chatHelper))
+                    vc.navigationItem.title = chatroom.userName
+                    self.navigationController?.pushViewController(vc, animated: true)
+                }
+                
+            }
+            
         }.disposed(by: disposeBag)
     }
     private func updateList(){
@@ -65,7 +119,7 @@ class ChatroomListViewController: UIViewController {
             if let decoded = try? decoder.decode([ChatroomResponse].self, from: response.data) {
                 var temp: [Chatroom] = []
                 for item in decoded{
-                    temp.append(Chatroom(roomName: item.roomname, userName: item.username, profileImageUrl: item.profile_image, productImageUrl: item.product_image.thumbnail_url, lastChat: "sample"))
+                    temp.append(Chatroom(roomName: item.roomname, userName: item.username, profileImageUrl: item.profile_image, productImageUrl: item.product_image.thumbnail_url, lastChat: ChatCommunicator.shared.chatLog[item.roomname]?.last?.content ?? " "))
                 }
                 self.chatroomList.accept(temp)
             } else {
@@ -85,4 +139,5 @@ extension ChatroomListViewController: UITableViewDelegate {
     func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
         return 60
     }
+
 }

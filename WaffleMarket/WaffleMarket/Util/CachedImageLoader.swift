@@ -11,7 +11,12 @@ class CachedImageLoader{
     private static var imageCache: NSCache<NSString, UIImage> = NSCache()
     private var task: URLSessionDataTask?
     private let taskQueue = DispatchQueue(label:"imageDownload")
-    func load(path: String, putOn: UIImageView, completion: ((UIImageView, _ usedCache:Bool)->Void)? = nil) {
+    func load(path: String?, putOn: UIImageView, completion: ((UIImageView, _ usedCache:Bool)->Void)? = nil) {
+        guard let path = path else {
+            putOn.image = nil
+            completion?(putOn, false)
+            return
+        }
         taskQueue.async {
             if let image = CachedImageLoader.imageCache.object(forKey: path as NSString) {
                 DispatchQueue.main.async {
