@@ -39,8 +39,10 @@ class GoogleSignInAuthenticator{
                     }
                     let decoder = JSONDecoder()
                     if let decoded = try? decoder.decode(LoginResponse.self, from: response.data) {
+                        
                         onSuccess(decoded)
                     } else {
+                        print(String(decoding: response.data, as: UTF8.self))
                         presenting.toast("로그인에 실패했어요")
                     }
                     

@@ -40,11 +40,16 @@ class MypageViewController: UIViewController {
                     let username = decoded.username
                     let profileImage = decoded.profile_image
                     let profileImageView = UIImageView()
-                    CachedImageLoader().load(path: profileImage, putOn: profileImageView) { imageView, usedCache in
-                        DispatchQueue.main.async {
-                            self.present(SetProfileViewController(isSignUp: false, username: username, profileImage: profileImageView.image), animated: true)
+                    if let profileImage = profileImage {
+                        CachedImageLoader().load(path: profileImage, putOn: profileImageView) { imageView, usedCache in
+                            DispatchQueue.main.async {
+                                self.present(SetProfileViewController(isSignUp: false, username: username, profileImage: profileImageView.image), animated: true)
+                            }
+                            
                         }
-                        
+                    } else {
+                        profileImageView.image = UIImage(named: "defaultProfileImage")
+                        self.present(SetProfileViewController(isSignUp: false, username: username, profileImage: profileImageView.image), animated: true)
                     }
                 }
             } onFailure: { error in

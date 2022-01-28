@@ -88,7 +88,7 @@ struct ProfileResponse: Codable{
     var id: Int
     var phone_number: String?
     var username: String
-    var profile_image: String
+    var profile_image: String?
 }
 class UserAPI {
     static var provider = MoyaProvider<UserService>(plugins: [AuthPlugin()])
