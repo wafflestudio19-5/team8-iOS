@@ -15,6 +15,7 @@ enum UserService{
     case getProfile
     case setCategory(category: String, enabled: Bool)
     case getCategory
+    case getLiked
 }
 
 extension UserService: TargetType {
@@ -33,7 +34,8 @@ extension UserService: TargetType {
             return "/category/"
         case .getCategory:
             return "/category/"
-
+        case .getLiked:
+            return "/liked/"
     
         }
     }
@@ -48,7 +50,8 @@ extension UserService: TargetType {
             return .put
         case .getCategory:
             return .get
-            
+        case .getLiked:
+            return .get
         }
     }
     
@@ -64,6 +67,8 @@ extension UserService: TargetType {
         case let .setCategory(category, enabled):
             return .requestJSONEncodable(SetCategoryRequest(category: category, enabled: enabled))
         case .getCategory:
+            return .requestPlain
+        case .getLiked:
             return .requestPlain
         }
     }
@@ -117,5 +122,9 @@ class UserAPI {
     
     static func getCategory() -> Single<Response> {
         return provider.rx.request(.getCategory)
+    }
+    
+    static func getLiked() -> Single<Response> {
+        return provider.rx.request(.getLiked)
     }
 }
