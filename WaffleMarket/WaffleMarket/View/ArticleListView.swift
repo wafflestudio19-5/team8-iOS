@@ -94,6 +94,20 @@ class ArticleCell: UITableViewCell {
         commentLikeLabel.bottomAnchor.constraint(equalTo: contentView.bottomAnchor).isActive = true
     }
     
+    func setData(_ model: Article){
+        self.titleLabel.text = model.title
+        let comment = model.commentNum ?? 0
+        let like = model.likeNum ?? 0
+        self.commentLikeLabel.text = "💬 " + String(comment) + "🧡 " + String(like)
+        let price = model.price!
+        self.priceLabel.text = "₩ " + String(price)
+        if model.isSold {
+            self.priceLabel.text = "판매완료"
+        }
+        self.imageUrl = model.thumbnailImage
+        self.loadImage()
+    }
+    
     
 }
 

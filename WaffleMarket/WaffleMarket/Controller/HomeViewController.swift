@@ -245,17 +245,9 @@ class HomeViewController: UIViewController, UITableViewDelegate {
         
         viewModel.articleList.bind(to: tableView.rx.items(cellIdentifier: reuseIdentifier, cellType: ArticleCell.self)) { row, model, cell in
             print(model)
-            cell.titleLabel.text = model.title
-            let comment = model.commentNum ?? 0
-            let like = model.likeNum ?? 0
-            cell.commentLikeLabel.text = "💬 " + String(comment) + "🧡 " + String(like)
-            let price = model.price!
-            cell.priceLabel.text = "₩ " + String(price)
-            if model.isSold {
-                cell.priceLabel.text = "판매완료"
-            }
-            cell.imageUrl = model.thumbnailImage
-            cell.loadImage()
+
+            cell.setData(model)
+            
             
             
         }.disposed(by: disposeBag)
