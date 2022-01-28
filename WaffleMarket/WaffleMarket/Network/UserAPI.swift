@@ -16,6 +16,8 @@ enum UserService{
     case setCategory(category: String, enabled: Bool)
     case getCategory
     case getLiked
+    case getBought
+    case getSold
 }
 
 extension UserService: TargetType {
@@ -36,7 +38,10 @@ extension UserService: TargetType {
             return "/category/"
         case .getLiked:
             return "/liked/"
-    
+        case .getBought:
+            return "/history/1/"
+        case .getSold:
+            return "/history/2/"
         }
     }
     var method: Moya.Method {
@@ -51,6 +56,10 @@ extension UserService: TargetType {
         case .getCategory:
             return .get
         case .getLiked:
+            return .get
+        case .getBought:
+            return .get
+        case .getSold:
             return .get
         }
     }
@@ -69,6 +78,10 @@ extension UserService: TargetType {
         case .getCategory:
             return .requestPlain
         case .getLiked:
+            return .requestPlain
+        case .getBought:
+            return .requestPlain
+        case .getSold:
             return .requestPlain
         }
     }
@@ -104,6 +117,7 @@ struct ProfileResponse: Codable{
     var phone_number: String?
     var username: String
     var profile_image: String?
+    var temparature: Double?
 }
 class UserAPI {
     static var provider = MoyaProvider<UserService>(plugins: [AuthPlugin()])
@@ -126,5 +140,11 @@ class UserAPI {
     
     static func getLiked() -> Single<Response> {
         return provider.rx.request(.getLiked)
+    }
+    static func getBought() -> Single<Response> {
+        return provider.rx.request(.getBought)
+    }
+    static func getSold() -> Single<Response> {
+        return provider.rx.request(.getSold)
     }
 }

@@ -17,7 +17,6 @@ class ArticleCell: UITableViewCell {
     var priceLabel: UILabel = UILabel()
     var commentLikeLabel: UILabel = UILabel()
     let imageLoader = CachedImageLoader()
-    let viewModel = ArticleViewModel()
     let disposeBag = DisposeBag()
     
     override func prepareForReuse() {
@@ -117,7 +116,7 @@ class ArticleListView: UIView {
     let articleTableView = UITableView()
     let imageLoader = CachedImageLoader()
     let disposeBag = DisposeBag()
-    let viewModel = ArticleViewModel()
+    var viewModel: ArticleListViewModel?
     var listName: String?
 
     override init(frame: CGRect) {

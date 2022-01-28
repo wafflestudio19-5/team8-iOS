@@ -13,6 +13,7 @@ import RxSwift
 class MypageViewController: UIViewController {
     
     let topView = UIView()
+    let topStackView = UIStackView()
     let tableView = UITableView()
     
     let profileImageView = UIImageView()
@@ -37,7 +38,7 @@ class MypageViewController: UIViewController {
     }
     
     private func setTopView() {
-        
+    
         topView.translatesAutoresizingMaskIntoConstraints = false
         topView.leadingAnchor.constraint(equalTo: self.view.safeAreaLayoutGuide.leadingAnchor).isActive = true
         topView.trailingAnchor.constraint(equalTo: self.view.safeAreaLayoutGuide.trailingAnchor).isActive = true
@@ -50,7 +51,14 @@ class MypageViewController: UIViewController {
         profileImageView.topAnchor.constraint(equalTo: topView.topAnchor).isActive = true
         profileImageView.bottomAnchor.constraint(equalTo: topView.topAnchor, constant: 60).isActive = true
         profileImageView.trailingAnchor.constraint(equalTo: topView.leadingAnchor, constant: 80).isActive = true
-        profileImageView.image = UIImage(named: "defaultProfileImage")
+        
+        if let url = AccountManager.userProfile.profileImageUrl {
+            CachedImageLoader().load(path: url, putOn: profileImageView)
+        } else {
+            profileImageView.image = UIImage(named: "defaultProfileImage")
+        }
+        
+        
         profileImageView.isUserInteractionEnabled = false
         
         topView.addSubview(usernameLabel)
@@ -59,7 +67,7 @@ class MypageViewController: UIViewController {
         usernameLabel.trailingAnchor.constraint(equalTo: topView.trailingAnchor, constant: -20).isActive = true
         usernameLabel.topAnchor.constraint(equalTo: topView.topAnchor, constant: 15).isActive = true
         usernameLabel.bottomAnchor.constraint(equalTo: profileImageView.bottomAnchor).isActive = true
-        usernameLabel.text = "WaffleMarket"
+        usernameLabel.text = AccountManager.userProfile.userName ?? "WaffleMarket"
         usernameLabel.textColor = .black
         
         topView.addSubview(showProfileBtn)
@@ -70,39 +78,38 @@ class MypageViewController: UIViewController {
         showProfileBtn.bottomAnchor.constraint(equalTo: usernameLabel.bottomAnchor).isActive = true
         showProfileBtn.setImage(UIImage(systemName: "arrow.forward"), for: .normal)
 
-//        showProfileBtn.rx.tap.bind{
-//            let vc = ProfileViewController()
-//            // TODO: article에서 id 받아와서 프로필 찾고 보내기
-//            self.present(vc, animated: true)
-//        }.disposed(by: disposeBag)
-        
-        topView.addSubview(sellListBtn)
+        showProfileBtn.rx.tap.bind{
+            let vc = ProfileViewController()
+            vc.user = UserResponse(username: AccountManager.userProfile.userName!, profile_image: AccountManager.userProfile.profileImageUrl, temparature: AccountManager.userProfile.temperature)
+            // TODO: article에서 id 받아와서 프로필 찾고 보내기
+            self.present(vc, animated: true)
+        }.disposed(by: disposeBag)
+        topView.addSubview(topStackView)
+        topStackView.translatesAutoresizingMaskIntoConstraints = false
+        topStackView.leadingAnchor.constraint(equalTo: self.view.safeAreaLayoutGuide.leadingAnchor, constant: 50).isActive = true
+        topStackView.trailingAnchor.constraint(equalTo: self.view.safeAreaLayoutGuide.trailingAnchor, constant: -50).isActive = true
+        topStackView.topAnchor.constraint(equalTo: usernameLabel.bottomAnchor, constant: 20).isActive = true
+        topStackView.axis = .horizontal
+        topStackView.distribution = .equalSpacing
         sellListBtn.translatesAutoresizingMaskIntoConstraints = false
-        sellListBtn.leadingAnchor.constraint(equalTo: topView.centerXAnchor, constant: -110).isActive = true
-        sellListBtn.trailingAnchor.constraint(equalTo: topView.centerXAnchor, constant: -60).isActive = true
-        sellListBtn.topAnchor.constraint(equalTo: showProfileBtn.bottomAnchor, constant: 20).isActive = true
+        topStackView.addArrangedSubview(sellListBtn)
         sellListBtn.setImage(UIImage(systemName: "line.horizontal.3.circle.fill", withConfiguration: largeConfig), for: .normal)
         
         sellListBtn.rx.tap.bind {
             self.sendList(listName: "sell")
         }.disposed(by: disposeBag)
         
-        topView.addSubview(buyListBtn)
         buyListBtn.translatesAutoresizingMaskIntoConstraints = false
-        buyListBtn.leadingAnchor.constraint(equalTo: sellListBtn.trailingAnchor, constant: 20).isActive = true
-        buyListBtn.trailingAnchor.constraint(equalTo: sellListBtn.trailingAnchor, constant: 80).isActive = true
-        buyListBtn.topAnchor.constraint(equalTo: sellListBtn.topAnchor).isActive = true
+        topStackView.addArrangedSubview(buyListBtn)
         buyListBtn.setImage(UIImage(systemName: "bag.circle.fill", withConfiguration: largeConfig), for: .normal)
         
         buyListBtn.rx.tap.bind {
             self.sendList(listName: "buy")
         }.disposed(by: disposeBag)
         
-        topView.addSubview(likeListBtn)
         likeListBtn.translatesAutoresizingMaskIntoConstraints = false
-        likeListBtn.leadingAnchor.constraint(equalTo: buyListBtn.trailingAnchor, constant: 20).isActive = true
-        likeListBtn.trailingAnchor.constraint(equalTo: buyListBtn.trailingAnchor, constant: 80).isActive = true
-        likeListBtn.topAnchor.constraint(equalTo: buyListBtn.topAnchor).isActive = true
+        topStackView.addArrangedSubview(likeListBtn)
+        
         likeListBtn.setImage(UIImage(systemName: "heart.circle.fill", withConfiguration: largeConfig), for: .normal)
         
         likeListBtn.rx.tap.bind {
@@ -115,7 +122,16 @@ class MypageViewController: UIViewController {
     private func sendList(listName: String) {
         print("sendList")
         let controller = ArticleListViewController()
-
+        switch listName{
+        case "buy":
+            controller.viewModel = BoughtListViewModel()
+        case "sell":
+            controller.viewModel = SoldListViewModel()
+        case "like":
+            controller.viewModel = LikedListViewModel()
+        default:
+            break
+        }
         controller.listName = listName
         self.navigationController?.pushViewController(controller, animated: true)
     }

@@ -11,28 +11,13 @@ import RxCocoa
 
 private let reuseIdentifier = "Cell"
 
-class ArticleListViewModel: ObservableObject {
-    var page = 1
-    var articles = [Article]()
-    let articleList = BehaviorRelay<[Article]>(value: [])
-    let disposeBag = DisposeBag()
-    var isLoadingMoreData = false
-    
-    func getArticleAt(_ index: IndexPath) -> Article?{
-        
-        let article = articleList.value[index.item]
-        return article
-    }
-}
-
-
 class ArticleListViewController: UIViewController, UITableViewDelegate {
 
     var listName: String?
     let articleListView = ArticleListView()
     let imageLoader = CachedImageLoader()
     let disposeBag = DisposeBag()
-    let viewModel = ArticleListViewModel()
+    var viewModel: ArticleListViewModel!
     
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
@@ -96,7 +81,7 @@ class ArticleListViewController: UIViewController, UITableViewDelegate {
             
         }.disposed(by: disposeBag)
 
-        //viewModel.getArticleList(page: page)
+        viewModel.getArticleList(page: viewModel.page)
         
     }
     
