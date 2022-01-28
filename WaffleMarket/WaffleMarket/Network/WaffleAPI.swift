@@ -89,11 +89,9 @@ struct NonFieldErrorsResponse: Codable {
     var non_field_errors: [String]
 }
 struct LoginResponse: Codable {
-    var username: String
-    var phone_number: String?
+    var user: ProfileResponse
     var logined: Bool?
     var first_login: Bool?
-    var email: String?
     var token: String
     var location_exists: Bool
 }

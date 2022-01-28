@@ -175,7 +175,7 @@ class ArticleCell: UITableViewCell {
     private func setCommentLikeLabel() {
         commentLikeLabel.translatesAutoresizingMaskIntoConstraints = false
         commentLikeLabel.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -20).isActive = true
-        commentLikeLabel.bottomAnchor.constraint(equalTo: contentView.bottomAnchor).isActive = true
+        commentLikeLabel.bottomAnchor.constraint(equalTo: contentView.bottomAnchor, constant: -10).isActive = true
     }
     
     
@@ -357,7 +357,7 @@ class HomeViewController: UIViewController, UITableViewDelegate {
             cell.titleLabel.text = model.title
             let comment = model.commentNum ?? 0
             let like = model.likeNum ?? 0
-            cell.commentLikeLabel.text = "💬 " + String(comment) + "🧡 " + String(like)
+            cell.commentLikeLabel.text = "💬 " + String(comment) + " 🧡 " + String(like)
             let price = model.price!
             cell.priceLabel.text = "₩ " + String(price)
             if model.isSold {

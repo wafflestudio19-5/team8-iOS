@@ -313,6 +313,7 @@ class LoginViewController: UIViewController {
                 AccountManager.login(disposeBag: self.disposeBag, data) {
                     
                 }
+                print("1", data)
                 if data.location_exists {
                     AccountManager.login(disposeBag: self.disposeBag, data, autologin: true){
                         let sceneDelegate = UIApplication.shared.connectedScenes.first?.delegate as? SceneDelegate
