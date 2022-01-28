@@ -15,20 +15,16 @@ class CommentTableViewCell: UITableViewCell {
     let usernameLabel = UILabel()
     let timestampLabel = UILabel()
     let containerView = UIView()
+    var left: NSLayoutConstraint?
     var height: CGFloat {
         get{
             return contentLabel.text?.getEstimatedFrame(with: contentLabel.font).size.height ?? 0
             
         }
     }
-    override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
-        super.init(style: style, reuseIdentifier: reuseIdentifier)
-        self.contentView.addSubview(containerView)
-        
-        containerView.addSubview(profileImageView)
-        containerView.addSubview(usernameLabel)
-        containerView.addSubview(contentLabel)
-        containerView.addSubview(timestampLabel)
+    override func layoutSubviews() {
+        super.layoutSubviews()
+
         containerView.translatesAutoresizingMaskIntoConstraints = false
         
         containerView.topAnchor.constraint(equalTo: self.contentView.topAnchor).isActive = true
@@ -39,11 +35,15 @@ class CommentTableViewCell: UITableViewCell {
         profileImageView.topAnchor.constraint(equalTo: containerView.topAnchor, constant: 15).isActive = true
         profileImageView.widthAnchor.constraint(equalToConstant: 50).isActive = true
         profileImageView.heightAnchor.constraint(equalToConstant: 50).isActive = true
+        profileImageView.contentMode = .scaleAspectFill
+        profileImageView.clipsToBounds = true
+        profileImageView.layer.cornerRadius = 25
+        
         usernameLabel.translatesAutoresizingMaskIntoConstraints = false
         usernameLabel.topAnchor.constraint(equalTo: containerView.topAnchor, constant: 15).isActive = true
         usernameLabel.leadingAnchor.constraint(equalTo: profileImageView.trailingAnchor, constant: 15).isActive = true
-        usernameLabel.trailingAnchor.constraint(equalTo: containerView.trailingAnchor).isActive = true
         usernameLabel.heightAnchor.constraint(equalToConstant: 30).isActive = true
+        usernameLabel.trailingAnchor.constraint(equalTo: containerView.trailingAnchor).isActive = true
         usernameLabel.font = .systemFont(ofSize: 18)
         contentLabel.translatesAutoresizingMaskIntoConstraints = false
         contentLabel.topAnchor.constraint(equalTo: usernameLabel.bottomAnchor, constant: 5).isActive = true
@@ -54,15 +54,24 @@ class CommentTableViewCell: UITableViewCell {
         contentLabel.font = .systemFont(ofSize: 12)
         
         timestampLabel.translatesAutoresizingMaskIntoConstraints = false
-        timestampLabel.topAnchor.constraint(greaterThanOrEqualTo: containerView.bottomAnchor, constant: 15).isActive = true
-        timestampLabel.topAnchor.constraint(greaterThanOrEqualTo: profileImageView.bottomAnchor, constant: 15).isActive = true
+        
+        timestampLabel.topAnchor.constraint(greaterThanOrEqualTo: contentLabel.bottomAnchor, constant: 15).isActive = true
         timestampLabel.bottomAnchor.constraint(equalTo: containerView.bottomAnchor, constant: -15).isActive = true
         timestampLabel.leadingAnchor.constraint(equalTo: containerView.leadingAnchor, constant: 15).isActive = true
         timestampLabel.trailingAnchor.constraint(equalTo: containerView.trailingAnchor).isActive = true
         timestampLabel.heightAnchor.constraint(equalToConstant: 20).isActive = true
         timestampLabel.font = .systemFont(ofSize: 10)
         timestampLabel.textColor = .lightGray
+
+    }
+    override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
+        super.init(style: style, reuseIdentifier: reuseIdentifier)
+        self.contentView.addSubview(containerView)
         
+        containerView.addSubview(profileImageView)
+        containerView.addSubview(usernameLabel)
+        containerView.addSubview(contentLabel)
+        containerView.addSubview(timestampLabel)
     }
     required init?(coder: NSCoder) {
         super.init(coder: coder)
@@ -70,9 +79,13 @@ class CommentTableViewCell: UITableViewCell {
     
     func setData(isReply: Bool, username: String, profile_image: String?, content: String, timestamp: Double){
         if isReply {
-            containerView.leadingAnchor.constraint(equalTo: self.contentView.leadingAnchor, constant: 40).isActive = true
+            left?.isActive = false
+            left = containerView.leadingAnchor.constraint(equalTo: self.contentView.leadingAnchor, constant: 40)
+            left?.isActive = true
         } else {
-            containerView.leadingAnchor.constraint(equalTo: self.contentView.leadingAnchor).isActive = true
+            left?.isActive = false
+            left = containerView.leadingAnchor.constraint(equalTo: self.contentView.leadingAnchor)
+            left?.isActive = true
         }
         if profile_image == "default" {
             profileImageView.image = UIImage(named: "defaultProfileImage")

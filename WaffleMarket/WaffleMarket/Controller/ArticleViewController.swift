@@ -274,7 +274,7 @@ class ArticleViewController: UIViewController {
 //        commentBtn.setTitleColor(.white, for: .normal)
 //        commentBtn.layer.cornerRadius = 10
 //        commentBtn.titleLabel?.font = .systemFont(ofSize: 15)
-        commentBtn.setImage(UIImage(systemName:"message"), for: .normal)
+        commentBtn.setImage(UIImage(systemName:"text.bubble"), for: .normal)
         
         commentBtn.rx.tap.bind{
             print("click")
@@ -287,7 +287,7 @@ class ArticleViewController: UIViewController {
         chatBtn.translatesAutoresizingMaskIntoConstraints = false
         
 //        chatBtn.setTitle("채팅하기", for: .normal)
-        chatBtn.setImage(UIImage(systemName:"text.bubble"), for: .normal)
+        chatBtn.setImage(UIImage(systemName:"message"), for: .normal)
 //        chatBtn.backgroundColor = .orange
 //        chatBtn.setTitleColor(.white, for: .normal)
 //        chatBtn.layer.cornerRadius = 10

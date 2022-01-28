@@ -127,6 +127,7 @@ class CommentViewController: UIViewController {
                     
                 }
                 self.comments.accept(comments)
+                self.commentTableView.reloadData()
             } else {
                 print("failed to parse comments")
             }
