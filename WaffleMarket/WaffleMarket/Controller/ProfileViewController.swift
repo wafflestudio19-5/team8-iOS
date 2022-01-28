@@ -11,11 +11,17 @@ import RxCocoa
 
 class ProfileViewController: UIViewController, UITableViewDelegate {
     
+    let scrollView = UIScrollView()
     let profileImageView = UIImageView()
     let profileLabel = UILabel()
     let mannerTempLabel = UILabel()
     let mannerBtn = UIButton()
-    let reviewTableView = UITableView()
+    let showReviewBtn = UIButton()
+    let reviewView = UIView()
+    let mannerReviewLabel = UILabel()
+    var time = 0
+    var kind = 0
+    var fast = 0
     let disposeBag = DisposeBag()
 
     override func viewDidLoad() {
@@ -23,25 +29,39 @@ class ProfileViewController: UIViewController, UITableViewDelegate {
         view.backgroundColor = .white
         self.navigationController?.navigationBar.topItem?.title = "프로필"
         
-        self.view.addSubview(profileImageView)
+        self.view.addSubview(scrollView)
+        setScrollView()
+    }
+    
+    private func setScrollView() {
+        
+        scrollView.translatesAutoresizingMaskIntoConstraints = false
+        scrollView.leadingAnchor.constraint(equalTo: self.view.safeAreaLayoutGuide.leadingAnchor).isActive = true
+        scrollView.trailingAnchor.constraint(equalTo: self.view.safeAreaLayoutGuide.trailingAnchor).isActive = true
+        scrollView.topAnchor.constraint(equalTo: self.view.safeAreaLayoutGuide.topAnchor).isActive = true
+        scrollView.bottomAnchor.constraint(equalTo: self.view.safeAreaLayoutGuide.bottomAnchor).isActive = true
+        
+        scrollView.addSubview(profileImageView)
         setProfileImageView()
-        self.view.addSubview(profileLabel)
+        scrollView.addSubview(profileLabel)
         setProfileLabel()
-        self.view.addSubview(mannerBtn)
+        scrollView.addSubview(mannerBtn)
         setMannerBtn()
-        self.view.addSubview(mannerTempLabel)
+        scrollView.addSubview(showReviewBtn)
+        setShowReviewBtn()
+        scrollView.addSubview(mannerTempLabel)
         setMannerTempLabel()
-        self.view.addSubview(reviewTableView)
-        setReviewTableView()
+        scrollView.addSubview(reviewView)
+        setReviewView()
     }
     
     private func setProfileImageView() {
         
         profileImageView.translatesAutoresizingMaskIntoConstraints = false
-        profileImageView.leadingAnchor.constraint(equalTo: self.view.safeAreaLayoutGuide.leadingAnchor, constant: 20).isActive = true
-        profileImageView.topAnchor.constraint(equalTo: self.view.safeAreaLayoutGuide.topAnchor, constant: 20).isActive = true
-        profileImageView.trailingAnchor.constraint(equalTo: self.view.safeAreaLayoutGuide.leadingAnchor, constant: 100).isActive = true
-        profileImageView.bottomAnchor.constraint(equalTo: self.view.safeAreaLayoutGuide.topAnchor, constant: 100).isActive = true
+        profileImageView.leadingAnchor.constraint(equalTo: scrollView.leadingAnchor, constant: 20).isActive = true
+        profileImageView.topAnchor.constraint(equalTo: scrollView.topAnchor, constant: 20).isActive = true
+        profileImageView.trailingAnchor.constraint(equalTo: scrollView.leadingAnchor, constant: 100).isActive = true
+        profileImageView.bottomAnchor.constraint(equalTo: scrollView.topAnchor, constant: 100).isActive = true
         profileImageView.widthAnchor.constraint(equalToConstant: 80).isActive = true
         profileImageView.heightAnchor.constraint(equalToConstant: 80).isActive = true
         profileImageView.image = UIImage(named: "defaultProfileImage")
@@ -54,7 +74,7 @@ class ProfileViewController: UIViewController, UITableViewDelegate {
         profileLabel.translatesAutoresizingMaskIntoConstraints = false
         profileLabel.isUserInteractionEnabled = false
         profileLabel.leadingAnchor.constraint(equalTo: profileImageView.trailingAnchor, constant: 20).isActive = true
-        profileLabel.trailingAnchor.constraint(equalTo: self.view.safeAreaLayoutGuide.trailingAnchor, constant: -20).isActive = true
+        profileLabel.trailingAnchor.constraint(equalTo: scrollView.trailingAnchor, constant: -20).isActive = true
         profileLabel.bottomAnchor.constraint(equalTo: profileImageView.bottomAnchor).isActive = true
         profileLabel.text = "Waffle Market"
         profileLabel.textColor = .black
@@ -98,25 +118,56 @@ class ProfileViewController: UIViewController, UITableViewDelegate {
         
     }
     
+    private func setShowReviewBtn() {
+        
+        showReviewBtn.translatesAutoresizingMaskIntoConstraints = false
+        showReviewBtn.leadingAnchor.constraint(equalTo: mannerBtn.leadingAnchor).isActive = true
+        showReviewBtn.topAnchor.constraint(equalTo: mannerBtn.bottomAnchor, constant: 10).isActive = true
+        showReviewBtn.trailingAnchor.constraint(equalTo: mannerBtn.leadingAnchor).isActive = true
+        showReviewBtn.bottomAnchor.constraint(equalTo: mannerBtn.bottomAnchor, constant: 40).isActive = true
+        showReviewBtn.widthAnchor.constraint(equalToConstant: 150).isActive = true
+        showReviewBtn.heightAnchor.constraint(equalToConstant: 30).isActive = true
+        
+        showReviewBtn.setTitle("거래후기 조회하기", for: .normal)
+        showReviewBtn.titleLabel?.font = .systemFont(ofSize: 15)
+        showReviewBtn.backgroundColor = .orange
+        showReviewBtn.layer.cornerRadius = 10
+        showReviewBtn.titleLabel?.textColor = .white
+        
+        showReviewBtn.rx.tap.bind {
+            let vc = ReviewViewController()
+            self.present(vc, animated: true)
+        }
+    }
+    
     private func setMannerTempLabel() {
         
         mannerTempLabel.translatesAutoresizingMaskIntoConstraints = false
-        mannerTempLabel.leadingAnchor.constraint(equalTo: mannerBtn.leadingAnchor).isActive = true
-        mannerTempLabel.topAnchor.constraint(equalTo: mannerBtn.bottomAnchor, constant: 20).isActive = true
-        mannerTempLabel.trailingAnchor.constraint(equalTo: profileLabel.trailingAnchor).isActive = true
-        mannerTempLabel.bottomAnchor.constraint(equalTo: mannerBtn.bottomAnchor, constant: 50).isActive = true
+        mannerTempLabel.leadingAnchor.constraint(equalTo: showReviewBtn.leadingAnchor).isActive = true
+        mannerTempLabel.topAnchor.constraint(equalTo: showReviewBtn.bottomAnchor, constant: 20).isActive = true
+        mannerTempLabel.trailingAnchor.constraint(equalTo: showReviewBtn.trailingAnchor).isActive = true
+        mannerTempLabel.bottomAnchor.constraint(equalTo: showReviewBtn.bottomAnchor, constant: 50).isActive = true
         
         mannerTempLabel.text = "36.5°C"
         
     }
     
-    private func setReviewTableView() {
+    private func setReviewView() {
         
-        reviewTableView.translatesAutoresizingMaskIntoConstraints = false
-        reviewTableView.leadingAnchor.constraint(equalTo: self.view.safeAreaLayoutGuide.leadingAnchor).isActive = true
-        reviewTableView.topAnchor.constraint(equalTo: mannerTempLabel.bottomAnchor, constant: 30).isActive = true
-        reviewTableView.trailingAnchor.constraint(equalTo: self.view.safeAreaLayoutGuide.trailingAnchor).isActive = true
-        reviewTableView.bottomAnchor.constraint(equalTo: self.view.safeAreaLayoutGuide.bottomAnchor).isActive = true
+        reviewView.translatesAutoresizingMaskIntoConstraints = false
+        reviewView.leadingAnchor.constraint(equalTo: scrollView.leadingAnchor).isActive = true
+        reviewView.topAnchor.constraint(equalTo: mannerTempLabel.bottomAnchor, constant: 30).isActive = true
+        reviewView.trailingAnchor.constraint(equalTo: scrollView.trailingAnchor).isActive = true
+        reviewView.bottomAnchor.constraint(equalTo: scrollView.bottomAnchor).isActive = true
+        
+        reviewView.addSubview(mannerReviewLabel)
+        mannerReviewLabel.translatesAutoresizingMaskIntoConstraints = false
+        mannerReviewLabel.leadingAnchor.constraint(equalTo: reviewView.leadingAnchor, constant: 20).isActive = true
+        mannerReviewLabel.topAnchor.constraint(equalTo: reviewView.topAnchor, constant: 20).isActive = true
+        mannerReviewLabel.trailingAnchor.constraint(equalTo: reviewView.trailingAnchor).isActive = true
+        
+        mannerReviewLabel.numberOfLines = 4
+        mannerReviewLabel.text = "받은 매너 평가\n👥 " + String(kind) + "  친절하고 매너가 좋아요\n👥 " + String(fast) + " 응답이 빨라요\n👥 " + String(time) + " 시간 약속을 잘 지켜요"
         
     }
     
