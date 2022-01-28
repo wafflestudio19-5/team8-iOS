@@ -8,6 +8,7 @@
 import UIKit
 import RxSwift
 import RxCocoa
+
 class ArticleViewModel: ObservableObject {
     var page = 1
     var articles = [Article]()
@@ -91,94 +92,6 @@ class ArticleViewModel: ObservableObject {
     }
 }
 
-class ArticleCell: UITableViewCell {
-    
-    var titleLabel: UILabel = UILabel()
-    var imageUrl: String?
-    var productImage: UIImageView = UIImageView()
-    var priceLabel: UILabel = UILabel()
-    var commentLikeLabel: UILabel = UILabel()
-    let imageLoader = CachedImageLoader()
-    let viewModel = ArticleViewModel()
-    let disposeBag = DisposeBag()
-    
-    override func prepareForReuse() {
-        super.prepareForReuse()
-        productImage.image = nil
-        titleLabel.text = nil
-        priceLabel.text = nil
-        commentLikeLabel.text = nil
-        imageLoader.cancel()
-    }
-    
-    override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
-        super.init(style: style, reuseIdentifier: reuseIdentifier)
-        setupCell()
-    }
-
-    required init?(coder aDecoder: NSCoder) {
-        super.init(coder: aDecoder)
-    }
-    
-    private func setupCell() {
-        backgroundColor = .white
-        self.heightAnchor.constraint(equalToConstant: 120).isActive = true
-
-        self.contentView.addSubview(productImage)
-        setProductImage()
-        self.contentView.addSubview(titleLabel)
-        setTitleLabel()
-        self.contentView.addSubview(priceLabel)
-        setPriceLabel()
-        self.contentView.addSubview(commentLikeLabel)
-        setCommentLikeLabel()
-        
-    }
-    func loadImage(){
-        if imageUrl == nil {
-            productImage.image = UIImage(named: "defaultProfileImage")
-        } else {
-            imageLoader.load(path: imageUrl!, putOn: productImage)
-        }
-    }
-    
-    private func setProductImage() {
-        
-        productImage.contentMode = .scaleAspectFit
-        productImage.translatesAutoresizingMaskIntoConstraints = false
-        productImage.centerYAnchor.constraint(equalTo: contentView.centerYAnchor).isActive = true
-        productImage.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 20).isActive = true
-        productImage.topAnchor.constraint(equalTo: contentView.topAnchor, constant: 10).isActive = true
-        productImage.bottomAnchor.constraint(equalTo: contentView.bottomAnchor, constant: -10).isActive = true
-        productImage.heightAnchor.constraint(equalToConstant: 80).isActive = true
-        productImage.widthAnchor.constraint(equalToConstant: 80).isActive = true
-        
-    }
-    
-    private func setTitleLabel() {
-        titleLabel.translatesAutoresizingMaskIntoConstraints = false
-        titleLabel.leadingAnchor.constraint(equalTo: productImage.trailingAnchor, constant: 20).isActive = true
-        titleLabel.topAnchor.constraint(equalTo: productImage.topAnchor, constant: 20).isActive = true
-        titleLabel.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -20).isActive = true
-    }
-    
-    private func setPriceLabel() {
-        priceLabel.translatesAutoresizingMaskIntoConstraints = false
-        priceLabel.leadingAnchor.constraint(equalTo: titleLabel.leadingAnchor).isActive = true
-        priceLabel.topAnchor.constraint(equalTo: titleLabel.bottomAnchor).isActive = true
-        priceLabel.trailingAnchor.constraint(equalTo: titleLabel.trailingAnchor).isActive = true
-        priceLabel.bottomAnchor.constraint(equalTo: contentView.bottomAnchor).isActive = true
-    }
-    
-    private func setCommentLikeLabel() {
-        commentLikeLabel.translatesAutoresizingMaskIntoConstraints = false
-        commentLikeLabel.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -20).isActive = true
-        commentLikeLabel.bottomAnchor.constraint(equalTo: contentView.bottomAnchor).isActive = true
-    }
-    
-    
-}
-
 private let reuseIdentifier = "Cell"
 
 class HomeViewController: UIViewController, UITableViewDelegate {
@@ -188,7 +101,7 @@ class HomeViewController: UIViewController, UITableViewDelegate {
 //    var signOutBtn = UIButton(type:.system) // MARK: this is for test. remove later
     let textSize: CGFloat = 16
     let writePostBtn = UIButton(type:.custom)
-    let articleTableView: UITableView = UITableView()
+    let articleListView = ArticleListView()
     let searchField = UISearchTextField()
     let categoryBtn = UIButton()
     var selectedCategory: String?
@@ -206,43 +119,17 @@ class HomeViewController: UIViewController, UITableViewDelegate {
         self.view.backgroundColor = .white
         self.view.addSubview(categoryBtn)
         self.view.addSubview(searchField)
-        self.view.addSubview(articleTableView)
+        self.view.addSubview(articleListView)
         self.view.addSubview(writePostBtn)
         
         setCategoryBtn()
         setSearchField()
-        setArticleTableView()
+        setArticleListView()
         setWritePostBtn()
 
-        articleTableView.register(ArticleCell.self, forCellReuseIdentifier: "Cell")
         self.viewModel.getArticleList(page: viewModel.page, category: selectedCategory, keyword: self.searchField.text)
         
     }
-    
-    func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
-        return 120
-    }
-    
-    private func pagination() {
-        print("page: \(viewModel.page)")
-        viewModel.page += 1
-        viewModel.getArticleList(page: viewModel.page, category: selectedCategory, keyword: self.searchField.text, append: true)
-        // articleCollectionView.reloadData()
-    }
-    
-//    private func setSignOutBtn(){
-//        signOutBtn.setTitle("Test sign out", for: .normal)
-//        signOutBtn.translatesAutoresizingMaskIntoConstraints = false
-//        signOutBtn.centerXAnchor.constraint(equalTo: self.view.centerXAnchor).isActive = true
-//        signOutBtn.topAnchor.constraint(equalTo: self.helloWorldLabel.bottomAnchor).isActive = true
-//        signOutBtn.rx.tap.bind{
-//            GoogleSignInAuthenticator.sharedInstance.signOut()
-//            AccountManager.logout()
-//            let sceneDelegate = UIApplication.shared.connectedScenes.first?.delegate as? SceneDelegate
-//            sceneDelegate?.changeRootViewController(LoginViewController())
-//            print("signed out!")
-//        }.disposed(by: disposeBag)
-//    }
     
     private func setWritePostBtn(){
         let size:CGFloat = 60
@@ -324,33 +211,39 @@ class HomeViewController: UIViewController, UITableViewDelegate {
         }.disposed(by: disposeBag)
     }
     
-    private func setArticleTableView() {
+    private func setArticleListView() {
         
-        articleTableView.translatesAutoresizingMaskIntoConstraints = false
-        articleTableView.leadingAnchor.constraint(equalTo: self.view.safeAreaLayoutGuide.leadingAnchor).isActive = true
-        articleTableView.trailingAnchor.constraint(equalTo: self.view.safeAreaLayoutGuide.trailingAnchor).isActive = true
-        articleTableView.topAnchor.constraint(equalTo: self.view.safeAreaLayoutGuide.topAnchor ,constant: 70).isActive = true
-        articleTableView.bottomAnchor.constraint(equalTo: self.view.safeAreaLayoutGuide.bottomAnchor).isActive = true
-        articleTableView.heightAnchor.constraint(equalTo:self.view.safeAreaLayoutGuide.heightAnchor, constant: -70).isActive = true
-        articleTableView.widthAnchor.constraint(equalTo: self.view.safeAreaLayoutGuide.widthAnchor).isActive = true
+        articleListView.translatesAutoresizingMaskIntoConstraints = false
+        articleListView.leadingAnchor.constraint(equalTo: self.view.safeAreaLayoutGuide.leadingAnchor).isActive = true
+        articleListView.trailingAnchor.constraint(equalTo: self.view.safeAreaLayoutGuide.trailingAnchor).isActive = true
+        articleListView.topAnchor.constraint(equalTo: self.view.safeAreaLayoutGuide.topAnchor ,constant: 70).isActive = true
+        articleListView.bottomAnchor.constraint(equalTo: self.view.safeAreaLayoutGuide.bottomAnchor).isActive = true
+        articleListView.heightAnchor.constraint(equalTo:self.view.safeAreaLayoutGuide.heightAnchor, constant: -70).isActive = true
+        articleListView.widthAnchor.constraint(equalTo: self.view.safeAreaLayoutGuide.widthAnchor).isActive = true
         
-        
-
         bindTableArticleData()
         
     }
     
+    private func pagination() {
+        print("page: \(viewModel.page)")
+        viewModel.page += 1
+        viewModel.getArticleList(page: viewModel.page, append: true)
+    }
+    
     private func bindTableArticleData() {
         
-        articleTableView.rx.didScroll.bind{
-            let offset = self.articleTableView.contentOffset.y + self.articleTableView.frame.height
-            let height = self.articleTableView.contentSize.height
+        let tableView = articleListView.articleTableView
+        
+        tableView.rx.didScroll.bind{
+            let offset = tableView.contentOffset.y + tableView.frame.height
+            let height = tableView.contentSize.height
             if offset > height-10 && !self.viewModel.isLoadingMoreData {
                 self.pagination()
             }
         }.disposed(by: disposeBag)
         
-        viewModel.articleList.bind(to: articleTableView.rx.items(cellIdentifier: reuseIdentifier, cellType: ArticleCell.self)) { row, model, cell in
+        viewModel.articleList.bind(to: tableView.rx.items(cellIdentifier: reuseIdentifier, cellType: ArticleCell.self)) { row, model, cell in
             print(model)
             cell.titleLabel.text = model.title
             let comment = model.commentNum ?? 0
@@ -366,14 +259,12 @@ class HomeViewController: UIViewController, UITableViewDelegate {
             
             
         }.disposed(by: disposeBag)
-        articleTableView.rx.setDelegate(self).disposed(by: disposeBag)
-//        articleCollectionView.rx.modelSelected(Article.self).bind{_ in
-//            self.present(UINavigationController(rootViewController: ArticleViewController()), animated: true)
-//        }.disposed(by: disposeBag)
-        articleTableView.rx.itemSelected.bind { indexPath in
+        tableView.rx.setDelegate(self).disposed(by: disposeBag)
+
+        tableView.rx.itemSelected.bind { indexPath in
                 print("asdf")
             
-            self.articleTableView.deselectRow(at: indexPath, animated: true)
+            self.articleListView.articleTableView.deselectRow(at: indexPath, animated: true)
                 guard let article = self.viewModel.getArticleAt(indexPath) else { return }
                 self.sendArticle(article: article)
             
@@ -391,12 +282,6 @@ class HomeViewController: UIViewController, UITableViewDelegate {
         controller.articleSelected = article
             
         self.navigationController!.pushViewController(controller, animated: true)
-    }
-    
-    func getArticleImage(urlString: String) -> UIImage {
-        let url = URL(string: urlString)
-        guard let data = try? Data(contentsOf: url!) else {return UIImage(named: "noImageAvailable") ?? UIImage(named: "noImageAvailable")!}
-        return UIImage(data: data) ?? UIImage(named: "noImageAvailable")!
     }
 
     
