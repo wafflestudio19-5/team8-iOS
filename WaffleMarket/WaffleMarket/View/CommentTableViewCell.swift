@@ -68,7 +68,7 @@ class CommentTableViewCell: UITableViewCell {
         super.init(coder: coder)
     }
     
-    func setData(isReply: Bool, username: String, profile_image: String, content: String, timestamp: Double){
+    func setData(isReply: Bool, username: String, profile_image: String?, content: String, timestamp: Double){
         if isReply {
             containerView.leadingAnchor.constraint(equalTo: self.contentView.leadingAnchor, constant: 40).isActive = true
         } else {
@@ -76,8 +76,11 @@ class CommentTableViewCell: UITableViewCell {
         }
         if profile_image == "default" {
             profileImageView.image = UIImage(named: "defaultProfileImage")
-        } else {
+        } else if let profile_image = profile_image {
             CachedImageLoader().load(path: profile_image, putOn: profileImageView)
+        } else {
+            profileImageView.image = UIImage(named: "defaultProfileImage")
+
         }
         usernameLabel.text = username
         contentLabel.text = content

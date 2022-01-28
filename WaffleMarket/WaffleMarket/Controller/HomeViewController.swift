@@ -29,9 +29,11 @@ class ArticleViewModel: ObservableObject {
                     if articleResponse.product_images.count > 0 {
                         thumbnail = articleResponse.product_images[0].thumbnail_url
                     }
+                    
                     let article = Article(
                         id: articleResponse.id,
                         title: articleResponse.title,
+                        seller: Profile(phoneNumber: nil, userName: articleResponse.seller.username, profileImageUrl: articleResponse.seller.profile_image, location: nil),
                         category: articleResponse.category,
                         price: articleResponse.price,
                         content: articleResponse.content,

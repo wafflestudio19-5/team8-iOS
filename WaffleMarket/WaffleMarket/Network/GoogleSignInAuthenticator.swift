@@ -23,7 +23,8 @@ class GoogleSignInAuthenticator{
             googleUser.authentication.do { authentication, error in
                 
                 guard error == nil else {
-                    
+                    presenting.toast("구글 로그인에 실패했어요")
+                    print(error!)
                     onFailure(error!)
                     
                     return
@@ -38,14 +39,17 @@ class GoogleSignInAuthenticator{
                     }
                     let decoder = JSONDecoder()
                     if let decoded = try? decoder.decode(LoginResponse.self, from: response.data) {
+                        
                         onSuccess(decoded)
                     } else {
+                        print(String(decoding: response.data, as: UTF8.self))
                         presenting.toast("로그인에 실패했어요")
                     }
                     
                 
                 } onFailure: { error in
-                    
+                    print(error)
+                    presenting.toast("로그인에 실패했어요 (onFailure)")
                     onFailure(error)
                     
                 } onDisposed: {

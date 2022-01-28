@@ -8,10 +8,11 @@
 import Foundation
 import UIKit
 
-struct Profile {
+struct Profile: Codable {
     var phoneNumber: String?
     var userName: String?
-    var profileImage: UIImage
+    
+    var profileImageUrl: String?
     var location: String?
     
 }

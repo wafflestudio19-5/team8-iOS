@@ -11,6 +11,7 @@ import UIKit
 struct Article {
     var id: Int
     var title: String
+    var seller: Profile?
     var category: String
     var price: Int?
     var content: String
