@@ -23,7 +23,8 @@ class GoogleSignInAuthenticator{
             googleUser.authentication.do { authentication, error in
                 
                 guard error == nil else {
-                    
+                    presenting.toast("구글 로그인에 실패했어요")
+                    print(error!)
                     onFailure(error!)
                     
                     return
@@ -45,7 +46,8 @@ class GoogleSignInAuthenticator{
                     
                 
                 } onFailure: { error in
-                    
+                    print(error)
+                    presenting.toast("로그인에 실패했어요 (onFailure)")
                     onFailure(error)
                     
                 } onDisposed: {

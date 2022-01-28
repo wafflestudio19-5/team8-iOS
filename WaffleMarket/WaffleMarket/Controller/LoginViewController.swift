@@ -313,6 +313,7 @@ class LoginViewController: UIViewController {
         googleLoginBtn.style = .wide
         googleLoginBtn.rx.controlEvent(.touchUpInside).bind{
             GoogleSignInAuthenticator.sharedInstance.signIn(presenting: self, disposeBag: self.disposeBag) { data in
+                print("1", data)
                 AccountManager.login(data)
                 if data.location_exists {
                     AccountManager.login(data, autologin: true)
