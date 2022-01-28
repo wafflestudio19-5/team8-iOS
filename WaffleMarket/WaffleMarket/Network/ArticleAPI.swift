@@ -189,4 +189,5 @@ struct Article: Codable {
     var deleted_at: String?
     var hit: Int?
     var like: Int?
+    var user_liked: Bool
 }

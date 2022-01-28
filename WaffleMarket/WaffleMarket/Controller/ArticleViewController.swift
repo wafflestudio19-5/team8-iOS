@@ -25,7 +25,7 @@ class ArticleViewController: UIViewController {
     let chatBtn = UIButton()
     let likeBtn = UIButton(type: .custom)
     let profileImageView = UIImageView()
-    
+    var isProcessingLike = false
     let usernameLabel = UILabel()
     let mannerTempLabel = UILabel()
     let showProfileBtn = UIButton()
@@ -38,7 +38,7 @@ class ArticleViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        
+        isLiked = articleSelected?.user_liked ?? false
         view.backgroundColor = .white
         
         view.addSubview(scrollView)
@@ -227,23 +227,31 @@ class ArticleViewController: UIViewController {
         likeBtn.widthAnchor.constraint(equalTo: bottomView.heightAnchor).isActive = true
         likeBtn.heightAnchor.constraint(equalTo: bottomView.heightAnchor).isActive = true
         likeBtn.tintColor = .systemPink
-        likeBtn.setImage(UIImage(systemName: "heart"), for: .normal)
+        likeBtn.setImage(UIImage(systemName: isLiked ? "heart.fill" : "heart"), for: .normal)
         likeBtn.rx.tap.bind{
+            if self.isProcessingLike {
+                self.toast("처리중이에요")
+                return
+            }
+            self.isProcessingLike = true
             print("click")
             ArticleAPI.like(articleId: self.articleId).subscribe { response in
-                print(String(decoding: response.data, as: UTF8.self))
                 let decoder = JSONDecoder()
                 if let decoded = try? decoder.decode(Article.self, from: response.data) {
-                    
+                    self.isLiked = decoded.user_liked
+                    DispatchQueue.main.async {
+                        self.animateHeart()
+                    }
                 }
+                self.isProcessingLike = false
             } onFailure: { error in
-                
+                self.isProcessingLike = false
             } onDisposed: {
                 
             }.disposed(by: self.disposeBag)
 
-            self.isLiked = !self.isLiked
-            self.animateHeart()
+            
+            
         }.disposed(by: disposeBag)
         
     }
