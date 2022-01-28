@@ -37,6 +37,8 @@ class ArticleViewController: UIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        
+        
         view.backgroundColor = .white
         
         view.addSubview(scrollView)
@@ -94,14 +96,11 @@ class ArticleViewController: UIViewController {
     
     private func setProductImage() {
         let imageLoader = CachedImageLoader()
-        if let url = articleSelected!.thumbnailImage {
-            imageLoader.load(path: url, putOn: productImage){imageView, usedCache in
-                let url = self.articleSelected!.productImages[0]
+        if self.articleSelected!.product_images.count > 0{
+            imageLoader.load(path: self.articleSelected!.product_images[0].thumbnail_url, putOn: productImage){imageView, usedCache in
+                let url = self.articleSelected!.product_images[0].image_url
                 imageLoader.load(path: url, putOn: imageView)
             }
-        } else if self.articleSelected!.productImages.count > 0{
-            let url = self.articleSelected!.productImages[0]
-            imageLoader.load(path: url, putOn: productImage)
         } else {
             productImage.image = UIImage(named:"defaultProfileImage")
         }
@@ -231,6 +230,18 @@ class ArticleViewController: UIViewController {
         likeBtn.setImage(UIImage(systemName: "heart"), for: .normal)
         likeBtn.rx.tap.bind{
             print("click")
+            ArticleAPI.like(articleId: self.articleId).subscribe { response in
+                print(String(decoding: response.data, as: UTF8.self))
+                let decoder = JSONDecoder()
+                if let decoded = try? decoder.decode(Article.self, from: response.data) {
+                    
+                }
+            } onFailure: { error in
+                
+            } onDisposed: {
+                
+            }.disposed(by: self.disposeBag)
+
             self.isLiked = !self.isLiked
             self.animateHeart()
         }.disposed(by: disposeBag)
@@ -252,7 +263,7 @@ class ArticleViewController: UIViewController {
     private func setPriceLabel() {
         let price = articleSelected?.price
         priceLabel.text = "₩ " + String(price!)
-        if articleSelected?.isSold == true {
+        if articleSelected?.sold_at != nil {
             priceLabel.text = "판매완료"
         }
         priceLabel.translatesAutoresizingMaskIntoConstraints = false
@@ -279,6 +290,7 @@ class ArticleViewController: UIViewController {
         commentBtn.rx.tap.bind{
             print("click")
             let vc = CommentViewController()
+            vc.isOwner = self.articleSelected?.delete_enable ?? false
             vc.articleId = self.articleId
             self.navigationController?.pushViewController(vc, animated: true)
         }.disposed(by: disposeBag)

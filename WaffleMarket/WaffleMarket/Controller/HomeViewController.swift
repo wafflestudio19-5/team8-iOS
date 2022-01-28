@@ -21,7 +21,7 @@ class ArticleViewModel: ObservableObject {
         ArticleAPI.list(page: page, category: category, keyword: keyword).subscribe { response in
             print(String(decoding: response.data, as: UTF8.self))
             let decoder = JSONDecoder()
-            if let decoded = try? decoder.decode([ArticleResponse].self, from: response.data){
+            if let decoded = try? decoder.decode([Article].self, from: response.data){
                 var articles: [Article] = []
                 
                 for articleResponse in decoded {
@@ -30,21 +30,8 @@ class ArticleViewModel: ObservableObject {
                         thumbnail = articleResponse.product_images[0].thumbnail_url
                     }
                     
-                    let article = Article(
-                        id: articleResponse.id,
-                        title: articleResponse.title,
-                        seller: Profile(phoneNumber: nil, userName: articleResponse.seller.username, profileImageUrl: articleResponse.seller.profile_image, location: nil),
-                        category: articleResponse.category,
-                        price: articleResponse.price,
-                        content: articleResponse.content,
-                        productImages: articleResponse.product_images.map({ it in
-                            it.image_url
-                        }),
-                        thumbnailImage: thumbnail,
-                        isSold: (articleResponse.buyer != nil)
-                        
-                    )
-                    articles.append(article)
+                    
+                    articles.append(articleResponse)
                 }
                 print("articles count:", articles.count)
                 if append {
@@ -83,13 +70,13 @@ class ArticleViewModel: ObservableObject {
     }
     
     func test_fetchDummyData(){
-        print("fetchDummyData")
-        let articles = [
-            Article(id: 1, title: "맥북 에어 미개봉", category: "디지털기기", price: 1000000, content: "맥북 에어 미개봉 팝니다", productImages: ["https://store.storeimages.cdn-apple.com/8756/as-images.apple.com/is/macbook-air-space-gray-select-201810?wid=904&hei=840&fmt=jpeg&qlt=80&.v=1633027804000"], thumbnailImage: "https://store.storeimages.cdn-apple.com/8756/as-images.apple.com/is/macbook-air-space-gray-select-201810?wid=904&hei=840&fmt=jpeg&qlt=80&.v=1633027804000", isSold: false),
-            Article(id: 2, title: "아이폰 13", category: "디지털기기", price: 700000, content: "아이폰 13입니다. 사용감 거의 없습니다!", productImages: ["https://store.storeimages.cdn-apple.com/8756/as-images.apple.com/is/iphone-13-family-select-2021?wid=940&hei=1112&fmt=jpeg&qlt=80&.v=1629842667000"], thumbnailImage: "https://store.storeimages.cdn-apple.com/8756/as-images.apple.com/is/macbook-air-space-gray-select-201810?wid=904&hei=840&fmt=jpeg&qlt=80&.v=1633027804000", isSold: false)
-        
-        ]
-        articleList.accept(articles)
+//        print("fetchDummyData")
+//        let articles = [
+//            Article(id: 1, title: "맥북 에어 미개봉", category: "디지털기기", price: 1000000, content: "맥북 에어 미개봉 팝니다", productImages: ["https://store.storeimages.cdn-apple.com/8756/as-images.apple.com/is/macbook-air-space-gray-select-201810?wid=904&hei=840&fmt=jpeg&qlt=80&.v=1633027804000"], thumbnailImage: "https://store.storeimages.cdn-apple.com/8756/as-images.apple.com/is/macbook-air-space-gray-select-201810?wid=904&hei=840&fmt=jpeg&qlt=80&.v=1633027804000", isSold: false),
+//            Article(id: 2, title: "아이폰 13", category: "디지털기기", price: 700000, content: "아이폰 13입니다. 사용감 거의 없습니다!", productImages: ["https://store.storeimages.cdn-apple.com/8756/as-images.apple.com/is/iphone-13-family-select-2021?wid=940&hei=1112&fmt=jpeg&qlt=80&.v=1629842667000"], thumbnailImage: "https://store.storeimages.cdn-apple.com/8756/as-images.apple.com/is/macbook-air-space-gray-select-201810?wid=904&hei=840&fmt=jpeg&qlt=80&.v=1633027804000", isSold: false)
+//
+//        ]
+//        articleList.accept(articles)
     }
 }
 
@@ -354,16 +341,17 @@ class HomeViewController: UIViewController, UITableViewDelegate {
         
         viewModel.articleList.bind(to: articleTableView.rx.items(cellIdentifier: reuseIdentifier, cellType: ArticleCell.self)) { row, model, cell in
             print(model)
+            
             cell.titleLabel.text = model.title
-            let comment = model.commentNum ?? 0
-            let like = model.likeNum ?? 0
-            cell.commentLikeLabel.text = "💬 " + String(comment) + " 🧡 " + String(like)
-            let price = model.price!
+            
+            let like = model.like ?? 0
+            cell.commentLikeLabel.text = " 🧡 " + String(like)
+            let price = model.price
             cell.priceLabel.text = "₩ " + String(price)
-            if model.isSold {
+            if model.sold_at != nil {
                 cell.priceLabel.text = "판매완료"
             }
-            cell.imageUrl = model.thumbnailImage
+            cell.imageUrl = model.product_images[0].thumbnail_url
             cell.loadImage()
             
             
