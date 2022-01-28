@@ -156,18 +156,13 @@ class ReviewViewController: UIViewController, UITableViewDelegate {
             cell.imageUrl = model.buyer.profileImageUrl
             cell.usernameLabel.text = model.buyer.userName
             cell.reviewContent.text = model.content
-
+            cell.loadImage()
         }.disposed(by: disposeBag)
         
         reviewTableView.rx.setDelegate(self).disposed(by: disposeBag)
         
     }
-    
-//    func getProfileImage(urlString: String) -> UIImage {
-//        let url = URL(string: urlString)
-//        guard let data = try? Data(contentsOf: url!) else {return UIImage(named: "noImageAvailable") ?? UIImage(named: "noImageAvailable")!}
-//        return UIImage(data: data) ?? UIImage(named: "noImageAvailable")!
-//    }
+
     
     /*
     // MARK: - Navigation
