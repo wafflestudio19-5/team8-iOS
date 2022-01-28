@@ -25,7 +25,7 @@ class AccountManager {
         let status: OSStatus = SecItemAdd(keychainQuery, nil)
         assert(status == noErr, "failed to save jwt token: \(status)")
     }
-    static func login(disposeBag: DisposeBag, _ data: LoginResponse, autologin: Bool = false, completion: @escaping(()->Void)) {
+    static func login(disposeBag: DisposeBag, _ data: LoginResponse, autologin: Bool = false) {
         token = data.token
         userProfile = Profile(phoneNumber: data.user.phone_number, userName: data.user.username, profileImageUrl: data.user.profile_image, location: nil)
         if autologin {
@@ -46,7 +46,7 @@ class AccountManager {
         }
         UserDefaults.standard.removeObject(forKey: "userProfile")
     }
-    static func tryAutologin(disposeBag: DisposeBag, completion: @escaping((Bool)->Void)) -> Bool {
+    static func tryAutologin(disposeBag: DisposeBag) -> Bool {
         let keychainQuery: NSDictionary = [
             kSecClass: kSecClassGenericPassword,
             kSecAttrService: "com.wafflestudio.team8.WaffleMarket",
@@ -74,7 +74,7 @@ class AccountManager {
             return false
         } else {
             print("autologin failure")
-            completion(false)
+            
             return false
         }
     }

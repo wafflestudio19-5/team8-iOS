@@ -51,7 +51,7 @@ class SetLocationViewModel {
                 print("fetchNearbyAddresses Failed!", response.statusCode)
             }
         } onFailure: { error in
-            
+            print("fetchNearbyAddresses Failed!", error)
         } onDisposed: {
             
         }.disposed(by: disposeBag)
@@ -82,7 +82,8 @@ class SetLocationViewModel {
     func fetchNeighborhoodByLocation(longitude: CLLocationDegrees, latitude: CLLocationDegrees) {
         NaverMapAPI.reverseGeocode(longitude: longitude, latitude: latitude)
             .subscribe { response in
-                
+                print(longitude, latitude)
+                print(String(decoding: response.data, as: UTF8.self))
                 let decoder = JSONDecoder()
                 if let decoded = try? decoder.decode(ReverseGeocodeResponse.self, from: response.data) {
                     if !decoded.results.isEmpty {

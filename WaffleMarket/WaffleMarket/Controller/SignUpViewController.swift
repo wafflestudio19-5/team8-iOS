@@ -218,13 +218,11 @@ class SignUpViewController: UIViewController {
                             
                         }
                     } else if let decoded = try? decoder.decode(LoginResponse.self, from: response.data) {
-                        AccountManager.login(disposeBag: self.disposeBag, decoded){
-                        
-                            let sceneDelegate = UIApplication.shared.connectedScenes.first?.delegate as? SceneDelegate
-                            sceneDelegate?.changeRootViewController(MainTabBarController())
-                        
-                            self.navigationController?.pushViewController(SetLocationViewController(), animated:true)
-                        }
+                        AccountManager.login(disposeBag: self.disposeBag, decoded)
+                        let sceneDelegate = UIApplication.shared.connectedScenes.first?.delegate as? SceneDelegate
+                        sceneDelegate?.changeRootViewController(MainTabBarController())
+                    
+                        self.navigationController?.pushViewController(SetLocationViewController(), animated:true)
                         
                     }
                 }

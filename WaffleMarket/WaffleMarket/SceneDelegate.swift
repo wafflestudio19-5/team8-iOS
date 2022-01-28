@@ -21,9 +21,9 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
     
         self.window = UIWindow(windowScene: windowScene)
         window?.tintColor = .orange
-        AccountManager.tryAutologin(disposeBag: disposeBag) { success in
-            self.presentRootViewController(success)
-        }
+       
+        self.presentRootViewController(AccountManager.tryAutologin(disposeBag: disposeBag))
+        
     }
     
     
