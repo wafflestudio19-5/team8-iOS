@@ -26,7 +26,7 @@ class ArticleListViewController: UIViewController, UITableViewDelegate {
     override func viewDidLoad() {
         super.viewDidLoad()
         self.view.backgroundColor = .white
-        
+        viewModel.presenting = self
         self.view.addSubview(articleListView)
         setArticleListView()
 //        self.viewModel.getArticleList(page: viewModel.page, listNmae: listName)
@@ -76,8 +76,7 @@ class ArticleListViewController: UIViewController, UITableViewDelegate {
                 print("asdf")
             
             self.articleListView.articleTableView.deselectRow(at: indexPath, animated: true)
-                guard let article = self.viewModel.getArticleAt(indexPath) else { return }
-                self.sendArticle(article: article)
+            self.viewModel.didSelect(indexPath)
             
         }.disposed(by: disposeBag)
 
@@ -85,14 +84,6 @@ class ArticleListViewController: UIViewController, UITableViewDelegate {
         
     }
     
-    private func sendArticle(article: Article) {
-        print("sendArticle")
-        let controller = ArticleViewController()
-        controller.articleId = article.id
-        controller.articleSelected = article
-            
-        self.navigationController!.pushViewController(controller, animated: true)
-    }
 
     /*
     // MARK: - Navigation

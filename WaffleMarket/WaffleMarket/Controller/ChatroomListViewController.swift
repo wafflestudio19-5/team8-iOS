@@ -20,28 +20,35 @@ struct Chatroom {
     var lastChat: String
     
 }
+protocol BuyerChooserDelegate {
+    func setBuyer(articleId: Int, userId: Int)
+}
 class ChatroomListViewController: UIViewController {
+    var buyerChooserMode = false
+    var buyerCandidates: [String] = []
     var prevRoomNames: Set<String> = Set<String> ()
     let tableView = UITableView()
     let chatroomList = BehaviorRelay<[Chatroom]>(value: [])
     let disposeBag = DisposeBag()
     var poller: Observable<Int>?
     var subscription: Disposable?
+    var delegate: BuyerChooserDelegate?
     override func viewDidAppear(_ animated: Bool) {
         updateList()
         
-        poller = Observable<Int>.interval(.seconds(3), scheduler: MainScheduler.instance)
-        subscription = poller?.subscribe {_ in
-            print("poll")
-            self.updateList()
-        } onError: { error in
-            
-        } onCompleted: {
-            
-        } onDisposed: {
-            
+        if !buyerChooserMode {
+            poller = Observable<Int>.interval(.seconds(3), scheduler: MainScheduler.instance)
+            subscription = poller?.subscribe {_ in
+                print("poll")
+                self.updateList()
+            } onError: { error in
+                
+            } onCompleted: {
+                
+            } onDisposed: {
+                
+            }
         }
-        
     }
     override func viewDidDisappear(_ animated: Bool) {
         subscription?.dispose()
@@ -60,6 +67,9 @@ class ChatroomListViewController: UIViewController {
     
     }
     @objc func handleLongPress(longPressGesture: UILongPressGestureRecognizer) {
+        if buyerChooserMode {
+            return
+        }
         let p = longPressGesture.location(in: self.tableView)
         let indexPath = self.tableView.indexPathForRow(at: p)
         if indexPath == nil {
@@ -112,25 +122,31 @@ class ChatroomListViewController: UIViewController {
             
             self.tableView.deselectRow(at: indexPath, animated: true)
             let chatroom = self.chatroomList.value[indexPath.item]
-            let imageView = UIImageView()
-        
-            CachedImageLoader().load(path: chatroom.profileImageUrl, putOn: imageView) { imageView, usedCache in
-                DispatchQueue.main.async{
-                    
-                    let chatView = ChatView()
-                    
-                    if !ChatCommunicator.shared.checkConnection(roomName: chatroom.roomName){
-                        ChatCommunicator.shared.connect(roomName: chatroom.roomName)
+            if self.buyerChooserMode {
+                let spl = chatroom.roomName.split(separator: "_")
+                self.delegate?.setBuyer(articleId: Int(spl[1])!, userId: Int(spl[0])!)
+                self.dismiss(animated: true)
+            } else {
+                let imageView = UIImageView()
+            
+                CachedImageLoader().load(path: chatroom.profileImageUrl, putOn: imageView) { imageView, usedCache in
+                    DispatchQueue.main.async{
+                        
+                        let chatView = ChatView()
+                        
+                        if !ChatCommunicator.shared.checkConnection(roomName: chatroom.roomName){
+                            ChatCommunicator.shared.connect(roomName: chatroom.roomName)
+                        }
+                        let me = ChatUser(name: AccountManager.userProfile!.userName!, avatar: nil, isCurrentUser: true)
+                        let opponent = ChatUser(name: chatroom.userName, avatar: imageView.image)
+                        let dataSource = DataSource(me:me, opponent: opponent, messages: ChatCommunicator.shared.chatLog[chatroom.roomName] ?? [], productImage: chatroom.productImageUrl)
+                        let chatHelper = ChatHelper(roomName: chatroom.roomName, dataSource: dataSource)
+                        let vc = UIHostingController(rootView: chatView.environmentObject(chatHelper))
+                        vc.navigationItem.title = chatroom.userName
+                        self.navigationController?.pushViewController(vc, animated: true)
                     }
-                    let me = ChatUser(name: AccountManager.userProfile!.userName!, avatar: nil, isCurrentUser: true)
-                    let opponent = ChatUser(name: chatroom.userName, avatar: imageView.image)
-                    let dataSource = DataSource(me:me, opponent: opponent, messages: ChatCommunicator.shared.chatLog[chatroom.roomName] ?? [], productImage: chatroom.productImageUrl)
-                    let chatHelper = ChatHelper(roomName: chatroom.roomName, dataSource: dataSource)
-                    let vc = UIHostingController(rootView: chatView.environmentObject(chatHelper))
-                    vc.navigationItem.title = chatroom.userName
-                    self.navigationController?.pushViewController(vc, animated: true)
+                    
                 }
-                
             }
             
         }.disposed(by: disposeBag)
@@ -142,8 +158,13 @@ class ChatroomListViewController: UIViewController {
                 var temp: [Chatroom] = []
                 var roomNames = Set<String>()
                 for item in decoded{
+                    ChatCommunicator.shared.hasRoom[item.roomname] = true
                     let lastChat = ChatCommunicator.shared.chatLog[item.roomname]?.last?.content ?? " "
                     roomNames.insert(item.roomname+lastChat)
+                    if self.buyerChooserMode && !self.buyerCandidates.contains(item.roomname) {
+                        continue
+                    }
+                    
                     temp.append(Chatroom(roomName: item.roomname, userName: item.username, profileImageUrl: item.profile_image, productImageUrl: item.product_image.thumbnail_url, lastChat: lastChat))
                 }
                 if roomNames != self.prevRoomNames {

@@ -54,6 +54,15 @@ class HomeListViewModel: ArticleListViewModel {
             
         }.disposed(by: disposeBag)
     }
+    override func didSelect(_ index: IndexPath) {
+    
+        let controller = ArticleViewController()
+        guard let article = getArticleAt(index) else {return}
+        controller.articleId = article.id
+        controller.articleSelected = article
+            
+        self.presenting!.navigationController!.pushViewController(controller, animated: true)
+    }
 }
 
 
@@ -87,12 +96,12 @@ class HomeViewController: UIViewController, UITableViewDelegate {
         self.view.addSubview(searchField)
         self.view.addSubview(articleListView)
         self.view.addSubview(writePostBtn)
-        
+        self.viewModel.presenting = self
         setCategoryBtn()
         setSearchField()
         setArticleListView()
         setWritePostBtn()
-
+        
         self.viewModel.getArticleList(page: viewModel.page, category: selectedCategory, keyword: self.searchField.text)
         
     }
