@@ -18,6 +18,7 @@ enum ArticleService {
     case deleteComment(articleId: Int, commentId: Int)
     case registerBuyer(articleId: Int, buyer_id: Int)
     case like(articleId: Int)
+    case delete(articleId: Int)
 }
 extension ArticleService: TargetType {
     var baseURL: URL {
@@ -42,6 +43,8 @@ extension ArticleService: TargetType {
             return "/\(articleId)/buyer/"
         case let .like(articleId):
             return "/\(articleId)/like/"
+        case let .delete(articleId):
+            return "/\(articleId)/"
         }
     }
     
@@ -63,6 +66,8 @@ extension ArticleService: TargetType {
             return .put
         case .like:
             return .put
+        case .delete:
+            return .delete
         }
     }
     
@@ -107,6 +112,8 @@ extension ArticleService: TargetType {
             return .requestJSONEncodable(["buyer_id": buyer_id])
         case .like:
             return .requestPlain
+        case .delete:
+            return .requestPlain
         }
         
         
@@ -149,6 +156,9 @@ class ArticleAPI {
     }
     static func like(articleId: Int) -> Single<Response> {
         return provider.rx.request(.like(articleId: articleId))
+    }
+    static func delete(articleId: Int) -> Single<Response> {
+        return provider.rx.request(.delete(articleId: articleId))
     }
 }
 struct CommentResponse: Codable {

@@ -15,6 +15,7 @@ class ArticleListViewModel: ObservableObject {
     let articleList = BehaviorRelay<[Article]>(value: [])
     let disposeBag = DisposeBag()
     var isLoadingMoreData = false
+    var presenting: UIViewController?
     func getArticleList(page:Int, category: String? = nil, keyword: String? = nil, append: Bool = false) {
         
     }
@@ -27,6 +28,9 @@ class ArticleListViewModel: ObservableObject {
         
         let article = articleList.value[index.item]
         return article
+    }
+    func didSelect(_ index: IndexPath){
+        
     }
     
     func test_fetchDummyData(){

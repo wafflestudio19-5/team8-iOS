@@ -6,6 +6,7 @@
 //
 
 import Foundation
+import UIKit
 
 class BoughtListViewModel: ArticleListViewModel {
     override func getArticleList(page: Int, category: String? = nil, keyword: String? = nil, append: Bool = false) {
@@ -51,5 +52,30 @@ class BoughtListViewModel: ArticleListViewModel {
         } onDisposed: {
             
         }.disposed(by: disposeBag)
+    }
+    override func didSelect(_ index: IndexPath) {
+//        let alert = UIAlertController(title: "리뷰 남기기", message: nil, preferredStyle: .alert)
+//        alert.addTextField { textField in
+//            
+//        }
+//        let reviewAction = UIAlertAction(title: "확인", style: .default) { _ in
+//            ReviewAPI.reviewAsBuyer(articleId: self.getArticleAt(index)!.id, review: alert.textFields![0].text ?? "").subscribe { response in
+//                print(String(decoding: response.data, as: UTF8.self))
+//                if response.statusCode / 100 == 2 {
+//                    alert.dismiss(animated:true)
+//                }
+//            } onFailure: { error in
+//                
+//            } onDisposed: {
+//                
+//            }.disposed(by: self.disposeBag)
+//
+//        }
+//        let cancelAction = UIAlertAction(title: "취소", style: .cancel) { _ in
+//            alert.dismiss(animated: true)
+//        }
+//        alert.addAction(reviewAction)
+//        alert.addAction(cancelAction)
+//        presenting!.present(alert, animated: true)
     }
 }
