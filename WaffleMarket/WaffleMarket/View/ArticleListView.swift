@@ -97,7 +97,7 @@ class ArticleCell: UITableViewCell {
         self.titleLabel.text = model.title
         
         let like = model.like ?? 0
-        self.commentLikeLabel.text = "🧡 " + String(like)
+        self.commentLikeLabel.text = "♡ " + String(like)
         let price = model.price
         self.priceLabel.text = "₩ " + String(price)
         if model.sold_at != nil {
