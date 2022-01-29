@@ -68,15 +68,19 @@ class ArticleCell: UITableViewCell {
         productImage.topAnchor.constraint(equalTo: contentView.topAnchor, constant: 10).isActive = true
         productImage.bottomAnchor.constraint(equalTo: contentView.bottomAnchor, constant: -10).isActive = true
         productImage.heightAnchor.constraint(equalToConstant: 80).isActive = true
-        productImage.widthAnchor.constraint(equalToConstant: 80).isActive = true
+        productImage.widthAnchor.constraint(equalToConstant: 90).isActive = true
+        productImage.clipsToBounds = true
+        productImage.layer.cornerRadius = 8
+        productImage.contentMode = .scaleAspectFill
         
     }
     
     private func setTitleLabel() {
         titleLabel.translatesAutoresizingMaskIntoConstraints = false
         titleLabel.leadingAnchor.constraint(equalTo: productImage.trailingAnchor, constant: 20).isActive = true
-        titleLabel.topAnchor.constraint(equalTo: productImage.topAnchor, constant: 20).isActive = true
+        titleLabel.topAnchor.constraint(equalTo: productImage.topAnchor, constant: 10).isActive = true
         titleLabel.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -20).isActive = true
+        titleLabel.font = .boldSystemFont(ofSize: 16)
     }
     
     private func setPriceLabel() {
@@ -90,14 +94,14 @@ class ArticleCell: UITableViewCell {
     private func setCommentLikeLabel() {
         commentLikeLabel.translatesAutoresizingMaskIntoConstraints = false
         commentLikeLabel.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -20).isActive = true
-        commentLikeLabel.bottomAnchor.constraint(equalTo: contentView.bottomAnchor).isActive = true
+        commentLikeLabel.bottomAnchor.constraint(equalTo: contentView.bottomAnchor, constant: -5).isActive = true
     }
     
     func setData(_ model: Article){
         self.titleLabel.text = model.title
         
         let like = model.like ?? 0
-        self.commentLikeLabel.text = "♡ " + String(like)
+        self.commentLikeLabel.text =  like > 0 ? ("♡ " + String(like)) : " "
         let price = model.price
         self.priceLabel.text = "₩ " + String(price)
         if model.sold_at != nil {
