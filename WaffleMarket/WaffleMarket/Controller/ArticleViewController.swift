@@ -359,7 +359,7 @@ class ArticleViewController: UIViewController {
                             }
                             let me = ChatUser(name: AccountManager.userProfile!.userName!, avatar: nil, isCurrentUser: true)
                             let opponent = ChatUser(name: decoded.username, avatar: imageView.image)
-                            let dataSource = DataSource(me:me, opponent: opponent, messages: ChatCommunicator.shared.chatLog[decoded.roomname] ?? [], productImage: decoded.product_image.image_url)
+                            let dataSource = DataSource(me:me, opponent: opponent, messages: ChatCommunicator.shared.chatLog[decoded.roomname] ?? [], productImage: decoded.product_image!.image_url)
                             let chatHelper = ChatHelper(roomName: decoded.roomname, dataSource: dataSource)
                             let vc = UIHostingController(rootView: chatView.environmentObject(chatHelper))
                             vc.navigationItem.title = decoded.username

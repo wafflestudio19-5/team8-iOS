@@ -158,6 +158,7 @@ class ChatroomListViewController: UIViewController {
                 var temp: [Chatroom] = []
                 var roomNames = Set<String>()
                 for item in decoded{
+                    guard let productImage = item.product_image else { continue }
                     ChatCommunicator.shared.hasRoom[item.roomname] = true
                     let lastChat = ChatCommunicator.shared.chatLog[item.roomname]?.last?.content ?? " "
                     roomNames.insert(item.roomname+lastChat)
@@ -165,7 +166,7 @@ class ChatroomListViewController: UIViewController {
                         continue
                     }
                     
-                    temp.append(Chatroom(roomName: item.roomname, userName: item.username, profileImageUrl: item.profile_image, productImageUrl: item.product_image.thumbnail_url, lastChat: lastChat))
+                    temp.append(Chatroom(roomName: item.roomname, userName: item.username, profileImageUrl: item.profile_image, productImageUrl: productImage.thumbnail_url, lastChat: lastChat))
                 }
                 if roomNames != self.prevRoomNames {
                     self.chatroomList.accept(temp)
@@ -173,6 +174,7 @@ class ChatroomListViewController: UIViewController {
                 }
             } else {
                 self.toast("채팅방 목록을 불러오는데 실패했어요")
+                try! decoder.decode([ChatroomResponse].self, from: response.data)
                 print(String(decoding: response.data, as: UTF8.self))
             }
         } onFailure: { error in
