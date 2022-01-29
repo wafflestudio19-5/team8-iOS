@@ -71,7 +71,8 @@ class ProfileViewController: UIViewController, UITableViewDelegate {
             profileImageView.image = UIImage(named: "defaultProfileImage")
         }
         profileImageView.isUserInteractionEnabled = false
-        
+        profileImageView.clipsToBounds = true
+        profileImageView.layer.cornerRadius = 8
     }
     
     private func setProfileLabel() {
