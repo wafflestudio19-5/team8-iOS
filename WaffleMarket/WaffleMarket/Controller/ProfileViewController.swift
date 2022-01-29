@@ -139,7 +139,7 @@ class ProfileViewController: UIViewController, UITableViewDelegate {
         showReviewBtn.bottomAnchor.constraint(equalTo: mannerBtn.bottomAnchor, constant: 40).isActive = true
         showReviewBtn.widthAnchor.constraint(equalToConstant: 150).isActive = true
         showReviewBtn.heightAnchor.constraint(equalToConstant: 30).isActive = true
-        
+        showReviewBtn.isHidden = true
         showReviewBtn.setTitle("거래후기 조회하기", for: .normal)
         showReviewBtn.titleLabel?.font = .systemFont(ofSize: 15)
         showReviewBtn.backgroundColor = .orange
