@@ -52,4 +52,13 @@ class LikedListViewModel: ArticleListViewModel {
         }.disposed(by: disposeBag)
 
     }
+    override func didSelect(_ index: IndexPath) {
+        
+            let controller = ArticleViewController()
+            guard let article = getArticleAt(index) else {return}
+            controller.articleId = article.id
+            controller.articleSelected = article
+                
+            self.presenting!.navigationController!.pushViewController(controller, animated: true)
+    }
 }
