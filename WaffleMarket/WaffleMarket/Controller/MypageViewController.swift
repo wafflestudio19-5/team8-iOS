@@ -60,7 +60,8 @@ class MypageViewController: UIViewController {
         
         
         profileImageView.isUserInteractionEnabled = false
-        
+        profileImageView.clipsToBounds = true
+        profileImageView.layer.cornerRadius = 8
         topView.addSubview(usernameLabel)
         usernameLabel.translatesAutoresizingMaskIntoConstraints = false
         usernameLabel.leadingAnchor.constraint(equalTo: profileImageView.trailingAnchor, constant: 20).isActive = true

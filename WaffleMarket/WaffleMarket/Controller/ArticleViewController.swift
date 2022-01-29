@@ -165,7 +165,8 @@ class ArticleViewController: UIViewController {
         }
         
         profileImageView.isUserInteractionEnabled = false
-
+        profileImageView.clipsToBounds = true
+        profileImageView.layer.cornerRadius = 8
         profileView.addSubview(usernameLabel)
         profileView.addSubview(mannerTempLabel)
         profileView.addSubview(showProfileBtn)
