@@ -61,6 +61,8 @@ class SoldListViewModel: ArticleListViewModel {
                 print(String(decoding: response.data, as: UTF8.self))
                 if response.statusCode / 100 == 2 {
                     alert.dismiss(animated:true)
+                    self.page = 1
+                    self.getArticleList(page: 1)
                 }
             } onFailure: { error in
                 
@@ -83,7 +85,7 @@ class SoldListViewModel: ArticleListViewModel {
                 vc.delegate = self
                 self.presenting!.present(vc, animated: true)
             } else {
-                self.presenting?.toast("채팅을 통해 이야기한 상대가 없어요")
+                self.presenting?.toast("채팅을 통해 이야기한 상대가 없어요", y: 50)
             }
             alert.dismiss(animated: true)
             
